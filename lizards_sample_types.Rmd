@@ -53,40 +53,29 @@ library(hilldiv2)
 
 ```{r directories, comment="", echo=FALSE, message=FALSE, warning=FALSE}
 set.seed(0024)
-
-## Declare directories and files
-workingdir="~/Documents/Projects/Lizards_Mauricio"
-counts_file="./genome.count.tsv"
-tree_file="./gtdbtk.backbone.bac120.classify.tree"
-taxonomy_file="./gtdbtk.summary.tsv"
-metadata_file="./metadata.csv"
-coverage_file="./genome.covered_bases.tsv"
-genome_lenght="./genome.length.tsv"
-annotations_file="./annotations.tsv"
-contam_comp="./quality_report.tsv"
-
 ```
 
 ```{r loaddata, comment="", echo=FALSE, message=FALSE, warning=FALSE}
 ## Load data 
-setwd(workingdir)
-counts_table <- read_tsv(counts_file) %>%
+counts_table <- read_tsv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/coverm/genome.count.tsv") %>%
     dplyr::rename(Genome=1)
-basehits <- read_tsv(coverage_file) %>%
-    dplyr::rename(Genome=1)
-maglengths <- read_tsv(genome_lenght) %>%
+genomes <- counts_table$Genome # create list of genome names
+basehits <- read_tsv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/coverm/genome.covered_bases.tsv") %>%
+    dplyr::rename(Genome=1) %>%
+  arrange(match(Genome, genomes))
+maglengths <- read_tsv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/coverm/genome.length.tsv") %>%
   dplyr::rename(Genome=1,MAGlength=2) %>% #remove redundancy and rename
   dplyr::select(Genome,MAGlength)
-metadata <- read_csv(metadata_file)
+metadata <- read_csv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/coverm/metadata.csv")
 metarow <- column_to_rownames(metadata, "sample")
-mags_table <- read_tsv(taxonomy_file)%>%
+mags_table <- read_tsv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/gtdbtk/gtdbtk.summary.tsv")%>%
     dplyr::rename(Genome=1)
-contam_comp_table <- read_tsv(contam_comp) %>%
+contam_comp_table <- read_tsv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/checkm2/quality_report.tsv") %>%
     dplyr::rename(Genome=1)
-magtree <- read.tree(tree_file)
+magtree <- read.tree("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/gtdbtk/classify/gtdbtk.backbone.bac120.classify.tree")
 magtree$tip.label <- str_replace_all(magtree$tip.label,"'", "") #remove .fa extension
 magtree <- keep.tip(magtree, tip=maglengths$Genome) # keep only MAG tips
-filtered_df <- read_tsv(annotations_file)
+filtered_df <- read_tsv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/dram/annotations.tsv")
 # Load EHI taxonomy colours. Download it first if you have not them in your computer
 ehi_phylum_colors <- read.table("~/Documents/Projects/ehi_phylum_colors.tsv",sep="\t",header=T,comment.char = "")
 ehi_phylum_colors1 <- ehi_phylum_colors %>%
@@ -98,7 +87,6 @@ taxonomy <- mags_table%>%
   mutate_at(vars(Domain,Phylum,Class,Order,Family,Genus,Species), ~ str_replace(., "[dpcofgs]__", ""))
 coverage <- basehits %>%
   mutate(across(where(is.numeric), ~ ./maglengths$MAGlength))
-
 ```
 
 ```{r coverage, comment="", echo=FALSE, message=FALSE, warning=FALSE}
