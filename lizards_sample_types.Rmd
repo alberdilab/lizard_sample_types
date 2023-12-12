@@ -61,17 +61,19 @@ counts_table <- read_tsv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/
     dplyr::rename(Genome=1)
 genomes <- counts_table$Genome # create list of genome names
 basehits <- read_tsv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/coverm/genome.covered_bases.tsv") %>%
-    dplyr::rename(Genome=1) %>%
+  dplyr::rename(Genome=1) %>%
   arrange(match(Genome, genomes))
 maglengths <- read_tsv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/coverm/genome.length.tsv") %>%
   dplyr::rename(Genome=1,MAGlength=2) %>% #remove redundancy and rename
-  dplyr::select(Genome,MAGlength)
+  dplyr::select(Genome,MAGlength)%>%
+  arrange(match(Genome, genomes))
 metadata <- read_csv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/coverm/metadata.csv")
 metarow <- column_to_rownames(metadata, "sample")
 mags_table <- read_tsv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/gtdbtk/gtdbtk.summary.tsv")%>%
     dplyr::rename(Genome=1)
 contam_comp_table <- read_tsv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/checkm2/quality_report.tsv") %>%
-    dplyr::rename(Genome=1)
+  dplyr::rename(Genome=1)%>%
+  arrange(match(Genome, genomes))
 magtree <- read.tree("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/gtdbtk/classify/gtdbtk.backbone.bac120.classify.tree")
 magtree$tip.label <- str_replace_all(magtree$tip.label,"'", "") #remove .fa extension
 magtree <- keep.tip(magtree, tip=maglengths$Genome) # keep only MAG tips
@@ -100,12 +102,9 @@ count_table_cov <- coverage %>%
   as.data.frame()
 rownames(count_table_cov) <- rownames(counts_table_row)
 
-maglengths_row <- column_to_rownames(maglengths, "Genome")
-genome_read_sizes <- maglengths %>%
-    mutate(MAGlength = MAGlength / 150) %>%
-    pull()
-count_table_cov_size <- sweep(count_table_cov, 1, genome_read_sizes, "/")
-
+readlength=150 #change if sequencing read length is different
+count_table_cov_size <- count_table_cov %>%
+  mutate(across(where(is.numeric), ~ . / (maglengths$MAGlength / readlength) ))
 ```
 
 ```{r count relative,  comment="", echo=FALSE, message=FALSE, warning=FALSE}
@@ -1090,14 +1089,3 @@ GIFTs_elements_tSNE_rel_means_GroupB %>%
   theme_minimal() +
   theme()
 ```
-
-
-
-
-
-
-
-
-
-
-
