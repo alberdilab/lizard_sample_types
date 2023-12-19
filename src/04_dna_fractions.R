@@ -16,7 +16,7 @@ reads %>%
   ggplot(aes(x = sample_id, y = value, fill = name)) +
   geom_bar(stat = "identity", position = "fill") +
   scale_fill_manual(values = c("#CCCCCC", "#178a94", "#ee8080", "#d03161"))
-  geom_bar(stat = "identity")
+# geom_bar(stat = "identity")
 
 
 # 4.2 Estimated vs prokaryotic
@@ -55,7 +55,8 @@ singlem_data %>%
   theme(
     axis.text.x = element_text(
       angle = 90, vjust = 0.5, hjust = 1, size = 6
-    ), legend.position = "right"
+    ),
+    legend.position = "right"
   )
 
 
@@ -65,14 +66,14 @@ mapped_mags_aim <- 2 * 1e9 / 150
 mapped_host_aim <- 5 * 1e9 / 150
 
 # sequence_fractions_required <-
-  ehi_metadata %>%
+ehi_metadata %>%
   select(
     -singlem_metagenome_size, -singlem_prokaryotic_bases, -singlem_read_fraction
   ) %>%
   mutate(
-    mapped_mags =           mapped_mags,
+    mapped_mags = mapped_mags,
     lowqual_reads = raw_reads - trimmed_reads,
-    unmapped_bases =        trimmed_reads - mapped_SceUnd - mapped_mags,
+    unmapped_bases = trimmed_reads - mapped_SceUnd - mapped_mags,
     mapped_mags_fraction = mapped_mags / raw_reads,
     mapped_mags_difference = mapped_mags_aim - mapped_mags,
     meta_required = mapped_mags_difference / mapped_mags_fraction,
@@ -80,7 +81,7 @@ mapped_host_aim <- 5 * 1e9 / 150
     host_fraction = mapped_SceUnd / raw_reads,
     host_difference = mapped_host_aim / mapped_SceUnd,
     host_required = host_difference / host_fraction,
-    host_required = if_else(host_required < 0, 0 , host_required)
+    host_required = if_else(host_required < 0, 0, host_required)
   ) %>%
   select(sample_id, mapped_mags, unmapped_bases, mapped_SceUnd, lowqual_reads)
-  select(sample, mapped_mags, unmapped_bases, host_bases, lowqual_bases, meta_required, host_required)
+# select(sample, mapped_mags, unmapped_bases, host_bases, lowqual_bases, meta_required, host_required)

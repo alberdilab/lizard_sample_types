@@ -19,7 +19,7 @@ circular_tree <-
   theme(
     legend.position = "none",
     plot.margin = margin(0, 0, 0, 0),
-    panel.margin = margin(0, 0, 0, 0)
+    panel.spacing = margin(0, 0, 0, 0)
   )
 
 # Flush color scale to enable a new color scheme in the next ring
@@ -105,7 +105,7 @@ mag_quality <-
 ### 3.2.1 Biplot chart ----
 
 mag_quality_biplot <-
- mag_quality %>%
+  mag_quality %>%
   ggplot(
     aes(x = completeness, y = contamination, size = genome_size, color = phylum)
   ) +
@@ -155,7 +155,7 @@ completeness_bar <-
 
 
 layout_matrix <- matrix(2, nrow = 11, ncol = 11)
-layout_matrix[1,] <- 1
+layout_matrix[1, ] <- 1
 layout_matrix[, 11] <- 3
 layout_matrix[11, 11] <- 4
 
@@ -170,16 +170,16 @@ kegg_tree <-
   tree %>%
   phytools::force.ultrametric(method = "extend", message = FALSE) %>%
   ggtree::ggtree(size = 0.3) %>%
-  ggtree::gheatmap(mag_to_phylum, offset=0, width=0.1, colnames=FALSE) +
+  ggtree::gheatmap(mag_to_phylum, offset = 0, width = 0.1, colnames = FALSE) +
   scale_fill_manual(values = colors_alphabetic) +
   ggnewscale::new_scale_fill()
 
 kegg_tree %>%
-  gheatmap(kegg %>% column_to_rownames("mag_id"), offset=0.5, width=3.5, colnames=FALSE) +
+  ggtree::gheatmap(kegg %>% column_to_rownames("mag_id"), offset = 0.5, width = 3.5, colnames = FALSE) +
   # vexpand(.08) +
   coord_cartesian(clip = "off") +
-  scale_fill_gradient(low = "#f4f4f4", high = "steelblue", na.value="white") +
-  theme(legend.position='none')
+  scale_fill_gradient(low = "#f4f4f4", high = "steelblue", na.value = "white") +
+  theme(legend.position = "none")
 
 
 ## 3.4 Functional ordination of MAGs ----

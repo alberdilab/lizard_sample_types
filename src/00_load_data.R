@@ -1,9 +1,9 @@
 library(tidyverse)
 
-counts <- read_tsv("resources/coverm/genome.count.tsv.gz")
-coverage <- read_tsv("resources/coverm/genome.covered_bases.tsv.gz")
+counts <- read_tsv("resources/coverm/genome.count.tsv.xz")
+coverage <- read_tsv("resources/coverm/genome.covered_bases.tsv.xz")
 taxonomy <-
-  read_tsv("resources/gtdbtk/gtdbtk.summary.tsv.gz") %>%
+  read_tsv("resources/gtdbtk/gtdbtk.summary.tsv.xz") %>%
   select(mag_id = user_genome, classification) %>%
   separate(
     classification,
@@ -12,7 +12,7 @@ taxonomy <-
   )
 
 checkm2 <-
-  read_tsv("resources/checkm2/quality_report.tsv") %>%
+  read_tsv("resources/checkm2/quality_report.tsv.xz") %>%
   select(
     mag_id = Name, completeness = Completeness, contamination = Contamination,
     genome_size = Genome_Size, gc_content = GC_Content
@@ -21,7 +21,7 @@ checkm2 <-
 tree <- ape::read.tree("resources/gtdbtk/gtdbtk.backbone.bac120.classify.tree")
 tips_to_keep <-
   tree$tip.label %>%
-  tibble(node_id=.) %>%
+  tibble(node_id = .) %>%
   filter(
     !str_detect(node_id, "^GB_"),
     !str_detect(node_id, "^RS_")
@@ -48,19 +48,19 @@ colors_alphabetic <-
 
 # dram
 dram <-
-  read_tsv("resources/dram/annotations.tsv.gz") %>%
+  read_tsv("resources/dram/annotations.tsv.xz") %>%
   rename(gene_id = `...1`, mag_id = fasta, contig_id = scaffold) %>%
   select(mag_id, contig_id, gene_id, everything())
 
 kegg <-
-  read_tsv("resources/dram/product.tsv.gz") %>%
+  read_tsv("resources/dram/product.tsv.xz") %>%
   rename(mag_id = genome)
 
 mag_data <-
   taxonomy %>%
   left_join(checkm2)
 
-rm(taxonomy, checkm2)
+rm(checkm2)
 
 # Interesting tables
 phyla <-
@@ -89,4 +89,3 @@ sample_data <-
     col = name, into = c("sample_name", "tissue"), sep = "\\.", remove = FALSE
   ) %>%
   rename(sample_id = name)
-

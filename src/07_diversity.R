@@ -7,7 +7,7 @@ library(hilldiv2)
 library(vegan)
 library(ggpubr)
 
-#7.1 Data prepraration
+# 7.1 Data prepraration ---
 
 present_mags <-
   counts_filtered %>%
@@ -33,10 +33,8 @@ kegg_filtered <-
 
 counts_filtered_again <- counts_filtered %>% filter(mag_id %in% present_mags)
 
+
 ## 7.2 Alpha diversity
-
-
-
 q0n <- counts_filtered %>%
   column_to_rownames("mag_id") %>%
   hilldiv(q = 0) %>%
@@ -48,7 +46,7 @@ q1n <-
   hilldiv(q = 1) %>%
   c()
 
-q1p <-   counts_filtered %>%
+q1p <- counts_filtered %>%
   column_to_rownames("mag_id") %>%
   hilldiv(q = 1, tree = tree) %>%
   c()
@@ -100,7 +98,7 @@ alpha_diversity %>%
   ) %>%
   ggplot(aes(x = value, y = sample_id)) +
   geom_bar(stat = "identity", fill = "#6c9ebc") +
-  facet_wrap(~ metric, scales = "free_x", ncol = 6) +
+  facet_wrap(~metric, scales = "free_x", ncol = 6) +
   theme_classic() +
   theme(
     strip.background = element_blank(),
@@ -128,7 +126,7 @@ sample_data <-
   ungroup()
 
 
- ### Neutral diversity ----
+### Neutral diversity ----
 alpha_diversity %>%
   select(sample_id, neutral) %>%
   pivot_longer(-sample_id) %>%

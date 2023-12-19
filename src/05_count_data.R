@@ -48,7 +48,9 @@ vertical_tree <-
     breaks = phylum_to_color$phylum,
     values = phylum_to_color$colors
   )
+
 vertical_tree <- vertical_tree + ggnewscale::new_scale_fill()
+
 vertical_tree <-
   vertical_tree %>%
   ggtree::gheatmap(
@@ -95,7 +97,10 @@ count_legend <-
 
 # Arrange both legends
 gridExtra::grid.arrange(
-  grobs = list(vertical_tree, phyla_legend, count_legend),
+  grobs = list(
+    vertical_tree,
+    count_legend
+  ),
   layout_matrix = rbind(
     c(1, 1, 2),
     c(1, 1, 3)

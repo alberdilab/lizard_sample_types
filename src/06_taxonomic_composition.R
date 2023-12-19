@@ -22,5 +22,5 @@ names(color_vector) <- colors$phylum
 
 
 ggplot(taxonomy_data, aes(x = name, y = value, fill = phylum)) +
-  geom_bar(stat = "identity", position="fill") +
-  scale_color_manual(values=color_vector)
+  geom_bar(stat = "identity", position = "fill") +
+  scale_color_manual(values = color_vector)
