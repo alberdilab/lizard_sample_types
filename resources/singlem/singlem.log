@@ -1,0 +1,1628 @@
+12/11/2023 12:02:53 PM INFO: SingleM v0.15.0
+12/11/2023 12:02:53 PM INFO: Using the metapackage at resources/databases/singlem/S3.2.1.GTDB_r214.metapackage_20231006.smpkg.zb
+12/11/2023 12:02:53 PM INFO: Acquiring SingleM metapackage from Zenodo backpack directory specified ..
+12/11/2023 12:02:53 PM INFO: Retrieval successful. Location of backpack is: resources/databases/singlem/S3.2.1.GTDB_r214.metapackage_20231006.smpkg.zb
+12/11/2023 12:02:53 PM INFO: Loaded 59 SingleM packages
+12/11/2023 12:02:53 PM INFO: Writing taxonomic profile to results/preprocess/singlem/singlem.tsv
+12/11/2023 12:02:53 PM INFO: Using minimum taxon coverage of 0.35
+12/11/2023 12:02:53 PM INFO: Removing off-target OTUs from Sg1.cloaca_1
+12/11/2023 12:02:53 PM INFO: Found 234.94 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:02:53 PM INFO: After removing off-target OTUs, found 153.07 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:02:53 PM INFO: Total coverage by query: 128.81849377644616
+12/11/2023 12:02:53 PM INFO: Total coverage by diamond: 24.252987447028293
+12/11/2023 12:02:53 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:02:53 PM INFO: Found 0 species uniquely hitting >= 10 marker genes
+12/11/2023 12:02:53 PM INFO: Species-wise EM converged in 20 steps
+12/11/2023 12:02:53 PM INFO: Gathering equivalence classes
+12/11/2023 12:02:53 PM INFO: Demultiplexing OTU table
+12/11/2023 12:02:53 PM INFO: Finished expectation maximization
+12/11/2023 12:02:53 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:02:53 PM INFO: Converted 9 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:02:53 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:02:53 PM INFO: Genus-wise EM converged in 8 steps
+12/11/2023 12:02:53 PM INFO: Gathering equivalence classes
+12/11/2023 12:02:53 PM INFO: Demultiplexing OTU table
+12/11/2023 12:02:53 PM INFO: Finished genus expectation maximization
+12/11/2023 12:02:53 PM INFO: Total coverage: 153.07148122347445
+12/11/2023 12:02:53 PM INFO: Taxonomic level coverage:
+12/11/2023 12:02:53 PM INFO: kingdom:	14.78%	1 taxons
+12/11/2023 12:02:53 PM INFO: phylum:	0.00%	0 taxons
+12/11/2023 12:02:53 PM INFO: class:	0.00%	0 taxons
+12/11/2023 12:02:53 PM INFO: order:	0.00%	0 taxons
+12/11/2023 12:02:53 PM INFO: family:	2.07%	1 taxons
+12/11/2023 12:02:53 PM INFO: genus:	0.00%	0 taxons
+12/11/2023 12:02:53 PM INFO: species:	83.15%	1 taxons
+12/11/2023 12:02:53 PM INFO: Removing off-target OTUs from Sg1.feces_1
+12/11/2023 12:02:53 PM INFO: Found 44460.43 assigned and 30.40 unassigned OTU coverage units
+12/11/2023 12:02:53 PM INFO: After removing off-target OTUs, found 37520.12 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:02:53 PM INFO: Total coverage by query: 16522.630394404914
+12/11/2023 12:02:53 PM INFO: Total coverage by diamond: 20997.49178320026
+12/11/2023 12:02:53 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:02:53 PM INFO: Found 13 species uniquely hitting >= 10 marker genes
+12/11/2023 12:02:54 PM INFO: Species-wise EM converged in 35 steps
+12/11/2023 12:02:54 PM INFO: Gathering equivalence classes
+12/11/2023 12:02:54 PM INFO: Demultiplexing OTU table
+12/11/2023 12:02:54 PM INFO: Finished expectation maximization
+12/11/2023 12:02:54 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:03:21 PM INFO: Converted 4161 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:03:21 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:03:30 PM INFO: Genus-wise EM converged in 231 steps
+12/11/2023 12:03:30 PM INFO: Gathering equivalence classes
+12/11/2023 12:03:30 PM INFO: Demultiplexing OTU table
+12/11/2023 12:03:30 PM INFO: Finished genus expectation maximization
+12/11/2023 12:03:30 PM INFO: Total coverage: 37520.122177606165
+12/11/2023 12:03:30 PM INFO: Taxonomic level coverage:
+12/11/2023 12:03:30 PM INFO: kingdom:	0.88%	2 taxons
+12/11/2023 12:03:30 PM INFO: phylum:	0.26%	6 taxons
+12/11/2023 12:03:30 PM INFO: class:	0.90%	7 taxons
+12/11/2023 12:03:30 PM INFO: order:	2.28%	14 taxons
+12/11/2023 12:03:30 PM INFO: family:	15.86%	37 taxons
+12/11/2023 12:03:30 PM INFO: genus:	63.22%	123 taxons
+12/11/2023 12:03:30 PM INFO: species:	16.60%	35 taxons
+12/11/2023 12:03:31 PM INFO: Removing off-target OTUs from Sg10.cloaca_1
+12/11/2023 12:03:31 PM INFO: Found 190.44 assigned and 1.66 unassigned OTU coverage units
+12/11/2023 12:03:31 PM INFO: After removing off-target OTUs, found 99.41 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:03:31 PM INFO: Total coverage by query: 46.204273504273516
+12/11/2023 12:03:31 PM INFO: Total coverage by diamond: 53.20565391125995
+12/11/2023 12:03:31 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:03:31 PM INFO: Found 0 species uniquely hitting >= 10 marker genes
+12/11/2023 12:03:31 PM INFO: Species-wise EM converged in 6 steps
+12/11/2023 12:03:31 PM INFO: Gathering equivalence classes
+12/11/2023 12:03:31 PM INFO: Demultiplexing OTU table
+12/11/2023 12:03:31 PM INFO: Finished expectation maximization
+12/11/2023 12:03:31 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:03:31 PM INFO: Converted 25 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:03:31 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:03:31 PM INFO: Genus-wise EM converged in 7 steps
+12/11/2023 12:03:31 PM INFO: Gathering equivalence classes
+12/11/2023 12:03:31 PM INFO: Demultiplexing OTU table
+12/11/2023 12:03:31 PM INFO: Finished genus expectation maximization
+12/11/2023 12:03:31 PM INFO: Total coverage: 99.40992741553346
+12/11/2023 12:03:31 PM INFO: Taxonomic level coverage:
+12/11/2023 12:03:31 PM INFO: kingdom:	35.98%	1 taxons
+12/11/2023 12:03:31 PM INFO: phylum:	0.00%	0 taxons
+12/11/2023 12:03:31 PM INFO: class:	13.55%	1 taxons
+12/11/2023 12:03:31 PM INFO: order:	50.47%	1 taxons
+12/11/2023 12:03:31 PM INFO: family:	0.00%	0 taxons
+12/11/2023 12:03:31 PM INFO: genus:	0.00%	0 taxons
+12/11/2023 12:03:31 PM INFO: species:	0.00%	0 taxons
+12/11/2023 12:03:31 PM INFO: Removing off-target OTUs from Sg10.feces_1
+12/11/2023 12:03:31 PM INFO: Found 16769.39 assigned and 8.06 unassigned OTU coverage units
+12/11/2023 12:03:31 PM INFO: After removing off-target OTUs, found 14061.28 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:03:31 PM INFO: Total coverage by query: 6777.720711068967
+12/11/2023 12:03:31 PM INFO: Total coverage by diamond: 7283.5573345706025
+12/11/2023 12:03:31 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:03:31 PM INFO: Found 3 species uniquely hitting >= 10 marker genes
+12/11/2023 12:03:31 PM INFO: Species-wise EM converged in 38 steps
+12/11/2023 12:03:31 PM INFO: Gathering equivalence classes
+12/11/2023 12:03:31 PM INFO: Demultiplexing OTU table
+12/11/2023 12:03:31 PM INFO: Finished expectation maximization
+12/11/2023 12:03:31 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:03:45 PM INFO: Converted 1911 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:03:45 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:03:47 PM INFO: Genus-wise EM converged in 54 steps
+12/11/2023 12:03:47 PM INFO: Gathering equivalence classes
+12/11/2023 12:03:47 PM INFO: Demultiplexing OTU table
+12/11/2023 12:03:47 PM INFO: Finished genus expectation maximization
+12/11/2023 12:03:47 PM INFO: Total coverage: 14061.278045639372
+12/11/2023 12:03:47 PM INFO: Taxonomic level coverage:
+12/11/2023 12:03:47 PM INFO: kingdom:	1.59%	2 taxons
+12/11/2023 12:03:47 PM INFO: phylum:	0.42%	3 taxons
+12/11/2023 12:03:47 PM INFO: class:	1.46%	5 taxons
+12/11/2023 12:03:47 PM INFO: order:	1.88%	8 taxons
+12/11/2023 12:03:47 PM INFO: family:	21.04%	20 taxons
+12/11/2023 12:03:47 PM INFO: genus:	53.19%	51 taxons
+12/11/2023 12:03:47 PM INFO: species:	20.42%	19 taxons
+12/11/2023 12:03:47 PM INFO: Removing off-target OTUs from Sg2.cloaca_1
+12/11/2023 12:03:47 PM INFO: Found 192.10 assigned and 1.65 unassigned OTU coverage units
+12/11/2023 12:03:47 PM INFO: After removing off-target OTUs, found 87.75 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:03:47 PM INFO: Total coverage by query: 62.852010259962626
+12/11/2023 12:03:47 PM INFO: Total coverage by diamond: 24.900491689736626
+12/11/2023 12:03:47 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:03:47 PM INFO: Found 0 species uniquely hitting >= 10 marker genes
+12/11/2023 12:03:47 PM INFO: Species-wise EM converged in 11 steps
+12/11/2023 12:03:47 PM INFO: Gathering equivalence classes
+12/11/2023 12:03:47 PM INFO: Demultiplexing OTU table
+12/11/2023 12:03:47 PM INFO: Finished expectation maximization
+12/11/2023 12:03:47 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:03:47 PM INFO: Converted 12 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:03:47 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:03:47 PM INFO: Genus-wise EM converged in 7 steps
+12/11/2023 12:03:47 PM INFO: Gathering equivalence classes
+12/11/2023 12:03:47 PM INFO: Demultiplexing OTU table
+12/11/2023 12:03:47 PM INFO: Finished genus expectation maximization
+12/11/2023 12:03:47 PM INFO: Total coverage: 87.75250194969924
+12/11/2023 12:03:47 PM INFO: Taxonomic level coverage:
+12/11/2023 12:03:47 PM INFO: kingdom:	26.62%	1 taxons
+12/11/2023 12:03:47 PM INFO: phylum:	2.96%	1 taxons
+12/11/2023 12:03:47 PM INFO: class:	2.93%	1 taxons
+12/11/2023 12:03:47 PM INFO: order:	0.00%	0 taxons
+12/11/2023 12:03:47 PM INFO: family:	3.36%	1 taxons
+12/11/2023 12:03:47 PM INFO: genus:	0.00%	0 taxons
+12/11/2023 12:03:47 PM INFO: species:	64.12%	1 taxons
+12/11/2023 12:03:47 PM INFO: Removing off-target OTUs from Sg2.feces_1
+12/11/2023 12:03:47 PM INFO: Found 23671.88 assigned and 8.14 unassigned OTU coverage units
+12/11/2023 12:03:47 PM INFO: After removing off-target OTUs, found 19877.16 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:03:47 PM INFO: Total coverage by query: 8971.356712399494
+12/11/2023 12:03:47 PM INFO: Total coverage by diamond: 10905.799118517252
+12/11/2023 12:03:47 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:03:47 PM INFO: Found 2 species uniquely hitting >= 10 marker genes
+12/11/2023 12:03:48 PM INFO: Species-wise EM converged in 49 steps
+12/11/2023 12:03:48 PM INFO: Gathering equivalence classes
+12/11/2023 12:03:48 PM INFO: Demultiplexing OTU table
+12/11/2023 12:03:48 PM INFO: Finished expectation maximization
+12/11/2023 12:03:48 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:04:04 PM INFO: Converted 2060 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:04:04 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:04:06 PM INFO: Genus-wise EM converged in 90 steps
+12/11/2023 12:04:06 PM INFO: Gathering equivalence classes
+12/11/2023 12:04:06 PM INFO: Demultiplexing OTU table
+12/11/2023 12:04:06 PM INFO: Finished genus expectation maximization
+12/11/2023 12:04:06 PM INFO: Total coverage: 19877.155830917087
+12/11/2023 12:04:06 PM INFO: Taxonomic level coverage:
+12/11/2023 12:04:06 PM INFO: kingdom:	2.40%	2 taxons
+12/11/2023 12:04:06 PM INFO: phylum:	0.50%	6 taxons
+12/11/2023 12:04:06 PM INFO: class:	1.14%	7 taxons
+12/11/2023 12:04:06 PM INFO: order:	1.77%	8 taxons
+12/11/2023 12:04:06 PM INFO: family:	19.48%	22 taxons
+12/11/2023 12:04:06 PM INFO: genus:	61.20%	65 taxons
+12/11/2023 12:04:06 PM INFO: species:	13.50%	31 taxons
+12/11/2023 12:04:06 PM INFO: Removing off-target OTUs from Sg3.cloaca_1
+12/11/2023 12:04:06 PM INFO: Found 1591.68 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:04:06 PM INFO: After removing off-target OTUs, found 1340.23 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:04:06 PM INFO: Total coverage by query: 159.0284348480649
+12/11/2023 12:04:06 PM INFO: Total coverage by diamond: 1181.2002745952852
+12/11/2023 12:04:06 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:04:06 PM INFO: Found 0 species uniquely hitting >= 10 marker genes
+12/11/2023 12:04:06 PM INFO: Species-wise EM converged in 9 steps
+12/11/2023 12:04:06 PM INFO: Gathering equivalence classes
+12/11/2023 12:04:06 PM INFO: Demultiplexing OTU table
+12/11/2023 12:04:06 PM INFO: Finished expectation maximization
+12/11/2023 12:04:06 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:04:06 PM INFO: Converted 78 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:04:06 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:04:06 PM INFO: Genus-wise EM converged in 58 steps
+12/11/2023 12:04:06 PM INFO: Gathering equivalence classes
+12/11/2023 12:04:06 PM INFO: Demultiplexing OTU table
+12/11/2023 12:04:06 PM INFO: Finished genus expectation maximization
+12/11/2023 12:04:06 PM INFO: Total coverage: 1340.22870944335
+12/11/2023 12:04:06 PM INFO: Taxonomic level coverage:
+12/11/2023 12:04:06 PM INFO: kingdom:	1.65%	1 taxons
+12/11/2023 12:04:06 PM INFO: phylum:	0.33%	1 taxons
+12/11/2023 12:04:06 PM INFO: class:	0.00%	0 taxons
+12/11/2023 12:04:06 PM INFO: order:	2.95%	1 taxons
+12/11/2023 12:04:06 PM INFO: family:	10.75%	2 taxons
+12/11/2023 12:04:06 PM INFO: genus:	84.33%	2 taxons
+12/11/2023 12:04:06 PM INFO: species:	0.00%	0 taxons
+12/11/2023 12:04:07 PM INFO: Removing off-target OTUs from Sg3.feces_1
+12/11/2023 12:04:07 PM INFO: Found 27110.58 assigned and 50.84 unassigned OTU coverage units
+12/11/2023 12:04:07 PM INFO: After removing off-target OTUs, found 22536.99 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:04:07 PM INFO: Total coverage by query: 8264.985208535227
+12/11/2023 12:04:07 PM INFO: Total coverage by diamond: 14272.008754314023
+12/11/2023 12:04:07 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:04:07 PM INFO: Found 6 species uniquely hitting >= 10 marker genes
+12/11/2023 12:04:07 PM INFO: Species-wise EM converged in 69 steps
+12/11/2023 12:04:07 PM INFO: Gathering equivalence classes
+12/11/2023 12:04:07 PM INFO: Demultiplexing OTU table
+12/11/2023 12:04:07 PM INFO: Finished expectation maximization
+12/11/2023 12:04:07 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:04:31 PM INFO: Converted 2910 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:04:31 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:04:34 PM INFO: Genus-wise EM converged in 123 steps
+12/11/2023 12:04:34 PM INFO: Gathering equivalence classes
+12/11/2023 12:04:34 PM INFO: Demultiplexing OTU table
+12/11/2023 12:04:34 PM INFO: Finished genus expectation maximization
+12/11/2023 12:04:34 PM INFO: Total coverage: 22536.993962849974
+12/11/2023 12:04:34 PM INFO: Taxonomic level coverage:
+12/11/2023 12:04:34 PM INFO: kingdom:	1.68%	2 taxons
+12/11/2023 12:04:34 PM INFO: phylum:	0.23%	4 taxons
+12/11/2023 12:04:34 PM INFO: class:	1.32%	7 taxons
+12/11/2023 12:04:34 PM INFO: order:	1.97%	9 taxons
+12/11/2023 12:04:34 PM INFO: family:	20.26%	21 taxons
+12/11/2023 12:04:34 PM INFO: genus:	65.04%	74 taxons
+12/11/2023 12:04:34 PM INFO: species:	9.51%	31 taxons
+12/11/2023 12:04:34 PM INFO: Removing off-target OTUs from Sg4.cloaca_1
+12/11/2023 12:04:34 PM INFO: Found 289.12 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:04:34 PM INFO: After removing off-target OTUs, found 215.59 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:04:34 PM INFO: Total coverage by query: 190.75073526974407
+12/11/2023 12:04:34 PM INFO: Total coverage by diamond: 24.838166334368868
+12/11/2023 12:04:34 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:04:34 PM INFO: Found 1 species uniquely hitting >= 10 marker genes
+12/11/2023 12:04:34 PM INFO: Species-wise EM converged in 35 steps
+12/11/2023 12:04:34 PM INFO: Gathering equivalence classes
+12/11/2023 12:04:34 PM INFO: Demultiplexing OTU table
+12/11/2023 12:04:34 PM INFO: Finished expectation maximization
+12/11/2023 12:04:34 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:04:34 PM INFO: Converted 10 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:04:34 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:04:34 PM INFO: Genus-wise EM converged in 57 steps
+12/11/2023 12:04:34 PM INFO: Gathering equivalence classes
+12/11/2023 12:04:34 PM INFO: Demultiplexing OTU table
+12/11/2023 12:04:34 PM INFO: Finished genus expectation maximization
+12/11/2023 12:04:34 PM INFO: Total coverage: 215.58890160411298
+12/11/2023 12:04:34 PM INFO: Taxonomic level coverage:
+12/11/2023 12:04:34 PM INFO: kingdom:	15.07%	1 taxons
+12/11/2023 12:04:34 PM INFO: phylum:	2.15%	1 taxons
+12/11/2023 12:04:34 PM INFO: class:	0.00%	0 taxons
+12/11/2023 12:04:34 PM INFO: order:	0.00%	0 taxons
+12/11/2023 12:04:34 PM INFO: family:	7.12%	1 taxons
+12/11/2023 12:04:34 PM INFO: genus:	0.00%	0 taxons
+12/11/2023 12:04:34 PM INFO: species:	75.67%	1 taxons
+12/11/2023 12:04:34 PM INFO: Removing off-target OTUs from Sg4.feces_1
+12/11/2023 12:04:34 PM INFO: Found 19523.55 assigned and 42.27 unassigned OTU coverage units
+12/11/2023 12:04:34 PM INFO: After removing off-target OTUs, found 16394.69 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:04:34 PM INFO: Total coverage by query: 7820.103782383561
+12/11/2023 12:04:34 PM INFO: Total coverage by diamond: 8574.581716008124
+12/11/2023 12:04:34 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:04:34 PM INFO: Found 1 species uniquely hitting >= 10 marker genes
+12/11/2023 12:04:35 PM INFO: Species-wise EM converged in 38 steps
+12/11/2023 12:04:35 PM INFO: Gathering equivalence classes
+12/11/2023 12:04:35 PM INFO: Demultiplexing OTU table
+12/11/2023 12:04:35 PM INFO: Finished expectation maximization
+12/11/2023 12:04:35 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:04:47 PM INFO: Converted 1386 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:04:47 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:04:49 PM INFO: Genus-wise EM converged in 83 steps
+12/11/2023 12:04:49 PM INFO: Gathering equivalence classes
+12/11/2023 12:04:49 PM INFO: Demultiplexing OTU table
+12/11/2023 12:04:49 PM INFO: Finished genus expectation maximization
+12/11/2023 12:04:49 PM INFO: Total coverage: 16394.685498391616
+12/11/2023 12:04:49 PM INFO: Taxonomic level coverage:
+12/11/2023 12:04:49 PM INFO: kingdom:	0.54%	2 taxons
+12/11/2023 12:04:49 PM INFO: phylum:	0.14%	3 taxons
+12/11/2023 12:04:49 PM INFO: class:	0.75%	7 taxons
+12/11/2023 12:04:49 PM INFO: order:	2.58%	7 taxons
+12/11/2023 12:04:49 PM INFO: family:	14.23%	19 taxons
+12/11/2023 12:04:49 PM INFO: genus:	61.32%	40 taxons
+12/11/2023 12:04:49 PM INFO: species:	20.45%	18 taxons
+12/11/2023 12:04:49 PM INFO: Removing off-target OTUs from Sg5.cloaca_1
+12/11/2023 12:04:49 PM INFO: Found 714.20 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:04:49 PM INFO: After removing off-target OTUs, found 544.62 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:04:49 PM INFO: Total coverage by query: 510.42588095932757
+12/11/2023 12:04:49 PM INFO: Total coverage by diamond: 34.19718073869513
+12/11/2023 12:04:49 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:04:49 PM INFO: Found 1 species uniquely hitting >= 10 marker genes
+12/11/2023 12:04:49 PM INFO: Species-wise EM converged in 5 steps
+12/11/2023 12:04:49 PM INFO: Gathering equivalence classes
+12/11/2023 12:04:49 PM INFO: Demultiplexing OTU table
+12/11/2023 12:04:49 PM INFO: Finished expectation maximization
+12/11/2023 12:04:49 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:04:49 PM INFO: Converted 8 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:04:49 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:04:49 PM INFO: Genus-wise EM converged in 9 steps
+12/11/2023 12:04:49 PM INFO: Gathering equivalence classes
+12/11/2023 12:04:49 PM INFO: Demultiplexing OTU table
+12/11/2023 12:04:49 PM INFO: Finished genus expectation maximization
+12/11/2023 12:04:49 PM INFO: Total coverage: 544.6230616980228
+12/11/2023 12:04:49 PM INFO: Taxonomic level coverage:
+12/11/2023 12:04:49 PM INFO: kingdom:	1.91%	1 taxons
+12/11/2023 12:04:49 PM INFO: phylum:	0.38%	1 taxons
+12/11/2023 12:04:49 PM INFO: class:	0.38%	1 taxons
+12/11/2023 12:04:49 PM INFO: order:	0.00%	0 taxons
+12/11/2023 12:04:49 PM INFO: family:	0.00%	0 taxons
+12/11/2023 12:04:49 PM INFO: genus:	0.00%	0 taxons
+12/11/2023 12:04:49 PM INFO: species:	97.33%	1 taxons
+12/11/2023 12:04:49 PM INFO: Removing off-target OTUs from Sg5.feces_1
+12/11/2023 12:04:49 PM INFO: Found 22077.78 assigned and 76.41 unassigned OTU coverage units
+12/11/2023 12:04:49 PM INFO: After removing off-target OTUs, found 18662.88 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:04:49 PM INFO: Total coverage by query: 8374.365357855633
+12/11/2023 12:04:49 PM INFO: Total coverage by diamond: 10288.514817684953
+12/11/2023 12:04:49 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:04:49 PM INFO: Found 7 species uniquely hitting >= 10 marker genes
+12/11/2023 12:04:50 PM INFO: Species-wise EM converged in 100 steps
+12/11/2023 12:04:50 PM INFO: Gathering equivalence classes
+12/11/2023 12:04:50 PM INFO: Demultiplexing OTU table
+12/11/2023 12:04:50 PM INFO: Finished expectation maximization
+12/11/2023 12:04:50 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:05:06 PM INFO: Converted 2371 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:05:06 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:05:08 PM INFO: Genus-wise EM converged in 76 steps
+12/11/2023 12:05:08 PM INFO: Gathering equivalence classes
+12/11/2023 12:05:08 PM INFO: Demultiplexing OTU table
+12/11/2023 12:05:08 PM INFO: Finished genus expectation maximization
+12/11/2023 12:05:08 PM INFO: Total coverage: 18662.8801755407
+12/11/2023 12:05:08 PM INFO: Taxonomic level coverage:
+12/11/2023 12:05:08 PM INFO: kingdom:	2.13%	2 taxons
+12/11/2023 12:05:08 PM INFO: phylum:	0.20%	5 taxons
+12/11/2023 12:05:08 PM INFO: class:	0.83%	6 taxons
+12/11/2023 12:05:08 PM INFO: order:	1.90%	9 taxons
+12/11/2023 12:05:08 PM INFO: family:	16.34%	21 taxons
+12/11/2023 12:05:08 PM INFO: genus:	64.75%	63 taxons
+12/11/2023 12:05:08 PM INFO: species:	13.85%	25 taxons
+12/11/2023 12:05:08 PM INFO: Removing off-target OTUs from Sg6.cloaca_1
+12/11/2023 12:05:08 PM INFO: Found 1320.78 assigned and 1.71 unassigned OTU coverage units
+12/11/2023 12:05:08 PM INFO: After removing off-target OTUs, found 1066.94 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:05:08 PM INFO: Total coverage by query: 620.518520220404
+12/11/2023 12:05:08 PM INFO: Total coverage by diamond: 446.42116622136575
+12/11/2023 12:05:08 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:05:08 PM INFO: Found 1 species uniquely hitting >= 10 marker genes
+12/11/2023 12:05:08 PM INFO: Species-wise EM converged in 19 steps
+12/11/2023 12:05:08 PM INFO: Gathering equivalence classes
+12/11/2023 12:05:08 PM INFO: Demultiplexing OTU table
+12/11/2023 12:05:08 PM INFO: Finished expectation maximization
+12/11/2023 12:05:08 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:05:10 PM INFO: Converted 192 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:05:10 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:05:10 PM INFO: Genus-wise EM converged in 22 steps
+12/11/2023 12:05:10 PM INFO: Gathering equivalence classes
+12/11/2023 12:05:10 PM INFO: Demultiplexing OTU table
+12/11/2023 12:05:10 PM INFO: Finished genus expectation maximization
+12/11/2023 12:05:10 PM INFO: Total coverage: 1066.939686441769
+12/11/2023 12:05:10 PM INFO: Taxonomic level coverage:
+12/11/2023 12:05:10 PM INFO: kingdom:	3.55%	2 taxons
+12/11/2023 12:05:10 PM INFO: phylum:	1.67%	2 taxons
+12/11/2023 12:05:10 PM INFO: class:	6.14%	3 taxons
+12/11/2023 12:05:10 PM INFO: order:	8.21%	4 taxons
+12/11/2023 12:05:10 PM INFO: family:	30.97%	9 taxons
+12/11/2023 12:05:10 PM INFO: genus:	18.26%	5 taxons
+12/11/2023 12:05:10 PM INFO: species:	31.20%	1 taxons
+12/11/2023 12:05:10 PM INFO: Removing off-target OTUs from Sg6.feces_1
+12/11/2023 12:05:10 PM INFO: Found 16756.61 assigned and 24.28 unassigned OTU coverage units
+12/11/2023 12:05:10 PM INFO: After removing off-target OTUs, found 14021.65 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:05:10 PM INFO: Total coverage by query: 6432.232952759223
+12/11/2023 12:05:10 PM INFO: Total coverage by diamond: 7589.4185836883835
+12/11/2023 12:05:10 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:05:10 PM INFO: Found 4 species uniquely hitting >= 10 marker genes
+12/11/2023 12:05:10 PM INFO: Species-wise EM converged in 39 steps
+12/11/2023 12:05:10 PM INFO: Gathering equivalence classes
+12/11/2023 12:05:10 PM INFO: Demultiplexing OTU table
+12/11/2023 12:05:10 PM INFO: Finished expectation maximization
+12/11/2023 12:05:10 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:05:22 PM INFO: Converted 1727 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:05:22 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:05:22 PM INFO: Genus-wise EM converged in 43 steps
+12/11/2023 12:05:22 PM INFO: Gathering equivalence classes
+12/11/2023 12:05:22 PM INFO: Demultiplexing OTU table
+12/11/2023 12:05:22 PM INFO: Finished genus expectation maximization
+12/11/2023 12:05:22 PM INFO: Total coverage: 14021.651536447438
+12/11/2023 12:05:22 PM INFO: Taxonomic level coverage:
+12/11/2023 12:05:22 PM INFO: kingdom:	1.15%	2 taxons
+12/11/2023 12:05:22 PM INFO: phylum:	0.65%	6 taxons
+12/11/2023 12:05:22 PM INFO: class:	0.86%	7 taxons
+12/11/2023 12:05:22 PM INFO: order:	1.40%	7 taxons
+12/11/2023 12:05:22 PM INFO: family:	20.63%	21 taxons
+12/11/2023 12:05:22 PM INFO: genus:	62.13%	53 taxons
+12/11/2023 12:05:22 PM INFO: species:	13.18%	25 taxons
+12/11/2023 12:05:22 PM INFO: Removing off-target OTUs from Sg7.cloaca_1
+12/11/2023 12:05:22 PM INFO: Found 890.54 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:05:22 PM INFO: After removing off-target OTUs, found 758.95 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:05:22 PM INFO: Total coverage by query: 66.14666305916306
+12/11/2023 12:05:22 PM INFO: Total coverage by diamond: 692.7992633531932
+12/11/2023 12:05:22 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:05:22 PM INFO: Found 0 species uniquely hitting >= 10 marker genes
+12/11/2023 12:05:22 PM INFO: Species-wise EM converged in 18 steps
+12/11/2023 12:05:22 PM INFO: Gathering equivalence classes
+12/11/2023 12:05:22 PM INFO: Demultiplexing OTU table
+12/11/2023 12:05:22 PM INFO: Finished expectation maximization
+12/11/2023 12:05:22 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:05:23 PM INFO: Converted 63 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:05:23 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:05:23 PM INFO: Genus-wise EM converged in 75 steps
+12/11/2023 12:05:23 PM INFO: Gathering equivalence classes
+12/11/2023 12:05:23 PM INFO: Demultiplexing OTU table
+12/11/2023 12:05:23 PM INFO: Finished genus expectation maximization
+12/11/2023 12:05:23 PM INFO: Total coverage: 758.9459264123564
+12/11/2023 12:05:23 PM INFO: Taxonomic level coverage:
+12/11/2023 12:05:23 PM INFO: kingdom:	1.47%	1 taxons
+12/11/2023 12:05:23 PM INFO: phylum:	0.00%	0 taxons
+12/11/2023 12:05:23 PM INFO: class:	0.00%	0 taxons
+12/11/2023 12:05:23 PM INFO: order:	2.06%	1 taxons
+12/11/2023 12:05:23 PM INFO: family:	12.17%	1 taxons
+12/11/2023 12:05:23 PM INFO: genus:	84.30%	2 taxons
+12/11/2023 12:05:23 PM INFO: species:	0.00%	0 taxons
+12/11/2023 12:05:23 PM INFO: Removing off-target OTUs from Sg7.feces_1
+12/11/2023 12:05:23 PM INFO: Found 17059.41 assigned and 15.07 unassigned OTU coverage units
+12/11/2023 12:05:23 PM INFO: After removing off-target OTUs, found 14292.20 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:05:23 PM INFO: Total coverage by query: 6570.445832832479
+12/11/2023 12:05:23 PM INFO: Total coverage by diamond: 7721.754930017737
+12/11/2023 12:05:23 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:05:23 PM INFO: Found 4 species uniquely hitting >= 10 marker genes
+12/11/2023 12:05:23 PM INFO: Species-wise EM converged in 16 steps
+12/11/2023 12:05:23 PM INFO: Gathering equivalence classes
+12/11/2023 12:05:23 PM INFO: Demultiplexing OTU table
+12/11/2023 12:05:23 PM INFO: Finished expectation maximization
+12/11/2023 12:05:23 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:05:36 PM INFO: Converted 1872 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:05:36 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:05:37 PM INFO: Genus-wise EM converged in 89 steps
+12/11/2023 12:05:37 PM INFO: Gathering equivalence classes
+12/11/2023 12:05:37 PM INFO: Demultiplexing OTU table
+12/11/2023 12:05:37 PM INFO: Finished genus expectation maximization
+12/11/2023 12:05:37 PM INFO: Total coverage: 14292.200762850009
+12/11/2023 12:05:37 PM INFO: Taxonomic level coverage:
+12/11/2023 12:05:37 PM INFO: kingdom:	2.52%	2 taxons
+12/11/2023 12:05:37 PM INFO: phylum:	0.31%	7 taxons
+12/11/2023 12:05:37 PM INFO: class:	0.85%	5 taxons
+12/11/2023 12:05:37 PM INFO: order:	3.30%	9 taxons
+12/11/2023 12:05:37 PM INFO: family:	18.32%	23 taxons
+12/11/2023 12:05:37 PM INFO: genus:	60.41%	49 taxons
+12/11/2023 12:05:37 PM INFO: species:	14.29%	24 taxons
+12/11/2023 12:05:38 PM INFO: Removing off-target OTUs from Sg8.cloaca_1
+12/11/2023 12:05:38 PM INFO: Found 272.66 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:05:38 PM INFO: After removing off-target OTUs, found 203.93 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:05:38 PM INFO: Total coverage by query: 195.89367703350413
+12/11/2023 12:05:38 PM INFO: Total coverage by diamond: 8.037838450209584
+12/11/2023 12:05:38 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:05:38 PM INFO: Found 1 species uniquely hitting >= 10 marker genes
+12/11/2023 12:05:38 PM INFO: Species-wise EM converged in 4 steps
+12/11/2023 12:05:38 PM INFO: Gathering equivalence classes
+12/11/2023 12:05:38 PM INFO: Demultiplexing OTU table
+12/11/2023 12:05:38 PM INFO: Finished expectation maximization
+12/11/2023 12:05:38 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:05:38 PM INFO: Converted 3 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:05:38 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:05:38 PM INFO: Genus-wise EM converged in 4 steps
+12/11/2023 12:05:38 PM INFO: Gathering equivalence classes
+12/11/2023 12:05:38 PM INFO: Demultiplexing OTU table
+12/11/2023 12:05:38 PM INFO: Finished genus expectation maximization
+12/11/2023 12:05:38 PM INFO: Total coverage: 203.93151548371372
+12/11/2023 12:05:38 PM INFO: Taxonomic level coverage:
+12/11/2023 12:05:38 PM INFO: kingdom:	1.00%	1 taxons
+12/11/2023 12:05:38 PM INFO: phylum:	0.00%	0 taxons
+12/11/2023 12:05:38 PM INFO: class:	0.00%	0 taxons
+12/11/2023 12:05:38 PM INFO: order:	0.00%	0 taxons
+12/11/2023 12:05:38 PM INFO: family:	0.00%	0 taxons
+12/11/2023 12:05:38 PM INFO: genus:	0.00%	0 taxons
+12/11/2023 12:05:38 PM INFO: species:	99.00%	1 taxons
+12/11/2023 12:05:38 PM INFO: Removing off-target OTUs from Sg8.feces_1
+12/11/2023 12:05:38 PM INFO: Found 18431.37 assigned and 21.45 unassigned OTU coverage units
+12/11/2023 12:05:38 PM INFO: After removing off-target OTUs, found 15317.60 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:05:38 PM INFO: Total coverage by query: 5907.336931052424
+12/11/2023 12:05:38 PM INFO: Total coverage by diamond: 9410.265521895786
+12/11/2023 12:05:38 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:05:38 PM INFO: Found 5 species uniquely hitting >= 10 marker genes
+12/11/2023 12:05:38 PM INFO: Species-wise EM converged in 153 steps
+12/11/2023 12:05:38 PM INFO: Gathering equivalence classes
+12/11/2023 12:05:38 PM INFO: Demultiplexing OTU table
+12/11/2023 12:05:39 PM INFO: Finished expectation maximization
+12/11/2023 12:05:39 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:05:56 PM INFO: Converted 2109 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:05:56 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:05:59 PM INFO: Genus-wise EM converged in 126 steps
+12/11/2023 12:05:59 PM INFO: Gathering equivalence classes
+12/11/2023 12:05:59 PM INFO: Demultiplexing OTU table
+12/11/2023 12:05:59 PM INFO: Finished genus expectation maximization
+12/11/2023 12:05:59 PM INFO: Total coverage: 15317.602452948013
+12/11/2023 12:05:59 PM INFO: Taxonomic level coverage:
+12/11/2023 12:05:59 PM INFO: kingdom:	2.44%	2 taxons
+12/11/2023 12:05:59 PM INFO: phylum:	0.34%	5 taxons
+12/11/2023 12:05:59 PM INFO: class:	1.27%	6 taxons
+12/11/2023 12:05:59 PM INFO: order:	2.69%	8 taxons
+12/11/2023 12:05:59 PM INFO: family:	19.13%	24 taxons
+12/11/2023 12:05:59 PM INFO: genus:	64.06%	63 taxons
+12/11/2023 12:05:59 PM INFO: species:	10.07%	16 taxons
+12/11/2023 12:05:59 PM INFO: Removing off-target OTUs from Sg9.cloaca_1
+12/11/2023 12:05:59 PM INFO: Found 414.37 assigned and 1.70 unassigned OTU coverage units
+12/11/2023 12:05:59 PM INFO: After removing off-target OTUs, found 310.06 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:05:59 PM INFO: Total coverage by query: 292.1267688862042
+12/11/2023 12:05:59 PM INFO: Total coverage by diamond: 17.93515224752338
+12/11/2023 12:05:59 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:05:59 PM INFO: Found 1 species uniquely hitting >= 10 marker genes
+12/11/2023 12:05:59 PM INFO: Species-wise EM converged in 13 steps
+12/11/2023 12:05:59 PM INFO: Gathering equivalence classes
+12/11/2023 12:05:59 PM INFO: Demultiplexing OTU table
+12/11/2023 12:05:59 PM INFO: Finished expectation maximization
+12/11/2023 12:05:59 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:05:59 PM INFO: Converted 5 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:05:59 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:05:59 PM INFO: Genus-wise EM converged in 13 steps
+12/11/2023 12:05:59 PM INFO: Gathering equivalence classes
+12/11/2023 12:05:59 PM INFO: Demultiplexing OTU table
+12/11/2023 12:05:59 PM INFO: Finished genus expectation maximization
+12/11/2023 12:05:59 PM INFO: Total coverage: 310.06192113372765
+12/11/2023 12:05:59 PM INFO: Taxonomic level coverage:
+12/11/2023 12:05:59 PM INFO: kingdom:	1.36%	1 taxons
+12/11/2023 12:05:59 PM INFO: phylum:	2.73%	1 taxons
+12/11/2023 12:05:59 PM INFO: class:	0.00%	0 taxons
+12/11/2023 12:05:59 PM INFO: order:	0.00%	0 taxons
+12/11/2023 12:05:59 PM INFO: family:	2.05%	1 taxons
+12/11/2023 12:05:59 PM INFO: genus:	0.00%	0 taxons
+12/11/2023 12:05:59 PM INFO: species:	93.87%	1 taxons
+12/11/2023 12:05:59 PM INFO: Removing off-target OTUs from Sg9.feces_1
+12/11/2023 12:05:59 PM INFO: Found 15927.15 assigned and 28.20 unassigned OTU coverage units
+12/11/2023 12:05:59 PM INFO: After removing off-target OTUs, found 13318.66 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:05:59 PM INFO: Total coverage by query: 6178.2713756903795
+12/11/2023 12:05:59 PM INFO: Total coverage by diamond: 7140.385217193838
+12/11/2023 12:05:59 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:05:59 PM INFO: Found 3 species uniquely hitting >= 10 marker genes
+12/11/2023 12:05:59 PM INFO: Species-wise EM converged in 29 steps
+12/11/2023 12:05:59 PM INFO: Gathering equivalence classes
+12/11/2023 12:05:59 PM INFO: Demultiplexing OTU table
+12/11/2023 12:05:59 PM INFO: Finished expectation maximization
+12/11/2023 12:05:59 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:06:08 PM INFO: Converted 1579 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:06:08 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:06:09 PM INFO: Genus-wise EM converged in 77 steps
+12/11/2023 12:06:09 PM INFO: Gathering equivalence classes
+12/11/2023 12:06:09 PM INFO: Demultiplexing OTU table
+12/11/2023 12:06:09 PM INFO: Finished genus expectation maximization
+12/11/2023 12:06:09 PM INFO: Total coverage: 13318.656592884066
+12/11/2023 12:06:09 PM INFO: Taxonomic level coverage:
+12/11/2023 12:06:09 PM INFO: kingdom:	1.70%	2 taxons
+12/11/2023 12:06:09 PM INFO: phylum:	0.38%	5 taxons
+12/11/2023 12:06:09 PM INFO: class:	0.64%	7 taxons
+12/11/2023 12:06:09 PM INFO: order:	3.10%	10 taxons
+12/11/2023 12:06:09 PM INFO: family:	16.98%	24 taxons
+12/11/2023 12:06:09 PM INFO: genus:	62.37%	42 taxons
+12/11/2023 12:06:09 PM INFO: species:	14.82%	17 taxons
+12/11/2023 12:06:10 PM INFO: Removing off-target OTUs from Sg1.cloaca_1
+12/11/2023 12:06:10 PM INFO: Found 234.94 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:06:10 PM INFO: After removing off-target OTUs, found 153.07 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:06:10 PM INFO: Total coverage by query: 128.81849377644616
+12/11/2023 12:06:10 PM INFO: Total coverage by diamond: 24.252987447028293
+12/11/2023 12:06:10 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:06:10 PM INFO: Found 0 species uniquely hitting >= 10 marker genes
+12/11/2023 12:06:10 PM INFO: Species-wise EM converged in 20 steps
+12/11/2023 12:06:10 PM INFO: Gathering equivalence classes
+12/11/2023 12:06:10 PM INFO: Demultiplexing OTU table
+12/11/2023 12:06:10 PM INFO: Finished expectation maximization
+12/11/2023 12:06:10 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:06:10 PM INFO: Converted 9 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:06:10 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:06:10 PM INFO: Genus-wise EM converged in 8 steps
+12/11/2023 12:06:10 PM INFO: Gathering equivalence classes
+12/11/2023 12:06:10 PM INFO: Demultiplexing OTU table
+12/11/2023 12:06:10 PM INFO: Finished genus expectation maximization
+12/11/2023 12:06:10 PM INFO: Total coverage: 153.07148122347445
+12/11/2023 12:06:10 PM INFO: Taxonomic level coverage:
+12/11/2023 12:06:10 PM INFO: kingdom:	14.78%	1 taxons
+12/11/2023 12:06:10 PM INFO: phylum:	0.00%	0 taxons
+12/11/2023 12:06:10 PM INFO: class:	0.00%	0 taxons
+12/11/2023 12:06:10 PM INFO: order:	0.00%	0 taxons
+12/11/2023 12:06:10 PM INFO: family:	2.07%	1 taxons
+12/11/2023 12:06:10 PM INFO: genus:	0.00%	0 taxons
+12/11/2023 12:06:10 PM INFO: species:	83.15%	1 taxons
+12/11/2023 12:06:10 PM INFO: Removing off-target OTUs from Sg1.feces_1
+12/11/2023 12:06:10 PM INFO: Found 44460.43 assigned and 30.40 unassigned OTU coverage units
+12/11/2023 12:06:10 PM INFO: After removing off-target OTUs, found 37520.12 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:06:10 PM INFO: Total coverage by query: 16522.630394404914
+12/11/2023 12:06:10 PM INFO: Total coverage by diamond: 20997.49178320026
+12/11/2023 12:06:10 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:06:10 PM INFO: Found 13 species uniquely hitting >= 10 marker genes
+12/11/2023 12:06:10 PM INFO: Species-wise EM converged in 35 steps
+12/11/2023 12:06:11 PM INFO: Gathering equivalence classes
+12/11/2023 12:06:11 PM INFO: Demultiplexing OTU table
+12/11/2023 12:06:11 PM INFO: Finished expectation maximization
+12/11/2023 12:06:11 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:06:38 PM INFO: Converted 4161 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:06:38 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:06:47 PM INFO: Genus-wise EM converged in 231 steps
+12/11/2023 12:06:47 PM INFO: Gathering equivalence classes
+12/11/2023 12:06:47 PM INFO: Demultiplexing OTU table
+12/11/2023 12:06:47 PM INFO: Finished genus expectation maximization
+12/11/2023 12:06:47 PM INFO: Total coverage: 37520.122177606165
+12/11/2023 12:06:48 PM INFO: Taxonomic level coverage:
+12/11/2023 12:06:48 PM INFO: kingdom:	0.88%	2 taxons
+12/11/2023 12:06:48 PM INFO: phylum:	0.26%	6 taxons
+12/11/2023 12:06:48 PM INFO: class:	0.90%	7 taxons
+12/11/2023 12:06:48 PM INFO: order:	2.28%	14 taxons
+12/11/2023 12:06:48 PM INFO: family:	15.86%	37 taxons
+12/11/2023 12:06:48 PM INFO: genus:	63.22%	123 taxons
+12/11/2023 12:06:48 PM INFO: species:	16.60%	35 taxons
+12/11/2023 12:06:48 PM INFO: Removing off-target OTUs from Sg10.cloaca_1
+12/11/2023 12:06:48 PM INFO: Found 190.44 assigned and 1.66 unassigned OTU coverage units
+12/11/2023 12:06:48 PM INFO: After removing off-target OTUs, found 99.41 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:06:48 PM INFO: Total coverage by query: 46.204273504273516
+12/11/2023 12:06:48 PM INFO: Total coverage by diamond: 53.20565391125995
+12/11/2023 12:06:48 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:06:48 PM INFO: Found 0 species uniquely hitting >= 10 marker genes
+12/11/2023 12:06:48 PM INFO: Species-wise EM converged in 6 steps
+12/11/2023 12:06:48 PM INFO: Gathering equivalence classes
+12/11/2023 12:06:48 PM INFO: Demultiplexing OTU table
+12/11/2023 12:06:48 PM INFO: Finished expectation maximization
+12/11/2023 12:06:48 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:06:48 PM INFO: Converted 25 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:06:48 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:06:48 PM INFO: Genus-wise EM converged in 7 steps
+12/11/2023 12:06:48 PM INFO: Gathering equivalence classes
+12/11/2023 12:06:48 PM INFO: Demultiplexing OTU table
+12/11/2023 12:06:48 PM INFO: Finished genus expectation maximization
+12/11/2023 12:06:48 PM INFO: Total coverage: 99.40992741553346
+12/11/2023 12:06:48 PM INFO: Taxonomic level coverage:
+12/11/2023 12:06:48 PM INFO: kingdom:	35.98%	1 taxons
+12/11/2023 12:06:48 PM INFO: phylum:	0.00%	0 taxons
+12/11/2023 12:06:48 PM INFO: class:	13.55%	1 taxons
+12/11/2023 12:06:48 PM INFO: order:	50.47%	1 taxons
+12/11/2023 12:06:48 PM INFO: family:	0.00%	0 taxons
+12/11/2023 12:06:48 PM INFO: genus:	0.00%	0 taxons
+12/11/2023 12:06:48 PM INFO: species:	0.00%	0 taxons
+12/11/2023 12:06:48 PM INFO: Removing off-target OTUs from Sg10.feces_1
+12/11/2023 12:06:48 PM INFO: Found 16769.39 assigned and 8.06 unassigned OTU coverage units
+12/11/2023 12:06:48 PM INFO: After removing off-target OTUs, found 14061.28 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:06:48 PM INFO: Total coverage by query: 6777.720711068967
+12/11/2023 12:06:48 PM INFO: Total coverage by diamond: 7283.5573345706025
+12/11/2023 12:06:48 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:06:48 PM INFO: Found 3 species uniquely hitting >= 10 marker genes
+12/11/2023 12:06:49 PM INFO: Species-wise EM converged in 38 steps
+12/11/2023 12:06:49 PM INFO: Gathering equivalence classes
+12/11/2023 12:06:49 PM INFO: Demultiplexing OTU table
+12/11/2023 12:06:49 PM INFO: Finished expectation maximization
+12/11/2023 12:06:49 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:07:01 PM INFO: Converted 1911 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:07:01 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:07:02 PM INFO: Genus-wise EM converged in 54 steps
+12/11/2023 12:07:02 PM INFO: Gathering equivalence classes
+12/11/2023 12:07:02 PM INFO: Demultiplexing OTU table
+12/11/2023 12:07:02 PM INFO: Finished genus expectation maximization
+12/11/2023 12:07:02 PM INFO: Total coverage: 14061.278045639372
+12/11/2023 12:07:03 PM INFO: Taxonomic level coverage:
+12/11/2023 12:07:03 PM INFO: kingdom:	1.59%	2 taxons
+12/11/2023 12:07:03 PM INFO: phylum:	0.42%	3 taxons
+12/11/2023 12:07:03 PM INFO: class:	1.46%	5 taxons
+12/11/2023 12:07:03 PM INFO: order:	1.88%	8 taxons
+12/11/2023 12:07:03 PM INFO: family:	21.04%	20 taxons
+12/11/2023 12:07:03 PM INFO: genus:	53.19%	51 taxons
+12/11/2023 12:07:03 PM INFO: species:	20.42%	19 taxons
+12/11/2023 12:07:03 PM INFO: Removing off-target OTUs from Sg2.cloaca_1
+12/11/2023 12:07:03 PM INFO: Found 192.10 assigned and 1.65 unassigned OTU coverage units
+12/11/2023 12:07:03 PM INFO: After removing off-target OTUs, found 87.75 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:07:03 PM INFO: Total coverage by query: 62.852010259962626
+12/11/2023 12:07:03 PM INFO: Total coverage by diamond: 24.900491689736626
+12/11/2023 12:07:03 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:07:03 PM INFO: Found 0 species uniquely hitting >= 10 marker genes
+12/11/2023 12:07:03 PM INFO: Species-wise EM converged in 11 steps
+12/11/2023 12:07:03 PM INFO: Gathering equivalence classes
+12/11/2023 12:07:03 PM INFO: Demultiplexing OTU table
+12/11/2023 12:07:03 PM INFO: Finished expectation maximization
+12/11/2023 12:07:03 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:07:03 PM INFO: Converted 12 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:07:03 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:07:03 PM INFO: Genus-wise EM converged in 7 steps
+12/11/2023 12:07:03 PM INFO: Gathering equivalence classes
+12/11/2023 12:07:03 PM INFO: Demultiplexing OTU table
+12/11/2023 12:07:03 PM INFO: Finished genus expectation maximization
+12/11/2023 12:07:03 PM INFO: Total coverage: 87.75250194969924
+12/11/2023 12:07:03 PM INFO: Taxonomic level coverage:
+12/11/2023 12:07:03 PM INFO: kingdom:	26.62%	1 taxons
+12/11/2023 12:07:03 PM INFO: phylum:	2.96%	1 taxons
+12/11/2023 12:07:03 PM INFO: class:	2.93%	1 taxons
+12/11/2023 12:07:03 PM INFO: order:	0.00%	0 taxons
+12/11/2023 12:07:03 PM INFO: family:	3.36%	1 taxons
+12/11/2023 12:07:03 PM INFO: genus:	0.00%	0 taxons
+12/11/2023 12:07:03 PM INFO: species:	64.12%	1 taxons
+12/11/2023 12:07:03 PM INFO: Removing off-target OTUs from Sg2.feces_1
+12/11/2023 12:07:03 PM INFO: Found 23671.88 assigned and 8.14 unassigned OTU coverage units
+12/11/2023 12:07:03 PM INFO: After removing off-target OTUs, found 19877.16 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:07:03 PM INFO: Total coverage by query: 8971.356712399494
+12/11/2023 12:07:03 PM INFO: Total coverage by diamond: 10905.799118517252
+12/11/2023 12:07:03 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:07:03 PM INFO: Found 2 species uniquely hitting >= 10 marker genes
+12/11/2023 12:07:03 PM INFO: Species-wise EM converged in 49 steps
+12/11/2023 12:07:03 PM INFO: Gathering equivalence classes
+12/11/2023 12:07:03 PM INFO: Demultiplexing OTU table
+12/11/2023 12:07:03 PM INFO: Finished expectation maximization
+12/11/2023 12:07:03 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:07:17 PM INFO: Converted 2060 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:07:17 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:07:19 PM INFO: Genus-wise EM converged in 90 steps
+12/11/2023 12:07:19 PM INFO: Gathering equivalence classes
+12/11/2023 12:07:19 PM INFO: Demultiplexing OTU table
+12/11/2023 12:07:19 PM INFO: Finished genus expectation maximization
+12/11/2023 12:07:19 PM INFO: Total coverage: 19877.155830917087
+12/11/2023 12:07:20 PM INFO: Taxonomic level coverage:
+12/11/2023 12:07:20 PM INFO: kingdom:	2.40%	2 taxons
+12/11/2023 12:07:20 PM INFO: phylum:	0.50%	6 taxons
+12/11/2023 12:07:20 PM INFO: class:	1.14%	7 taxons
+12/11/2023 12:07:20 PM INFO: order:	1.77%	8 taxons
+12/11/2023 12:07:20 PM INFO: family:	19.48%	22 taxons
+12/11/2023 12:07:20 PM INFO: genus:	61.20%	65 taxons
+12/11/2023 12:07:20 PM INFO: species:	13.50%	31 taxons
+12/11/2023 12:07:20 PM INFO: Removing off-target OTUs from Sg3.cloaca_1
+12/11/2023 12:07:20 PM INFO: Found 1591.68 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:07:20 PM INFO: After removing off-target OTUs, found 1340.23 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:07:20 PM INFO: Total coverage by query: 159.0284348480649
+12/11/2023 12:07:20 PM INFO: Total coverage by diamond: 1181.2002745952852
+12/11/2023 12:07:20 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:07:20 PM INFO: Found 0 species uniquely hitting >= 10 marker genes
+12/11/2023 12:07:20 PM INFO: Species-wise EM converged in 9 steps
+12/11/2023 12:07:20 PM INFO: Gathering equivalence classes
+12/11/2023 12:07:20 PM INFO: Demultiplexing OTU table
+12/11/2023 12:07:20 PM INFO: Finished expectation maximization
+12/11/2023 12:07:20 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:07:20 PM INFO: Converted 78 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:07:20 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:07:20 PM INFO: Genus-wise EM converged in 58 steps
+12/11/2023 12:07:20 PM INFO: Gathering equivalence classes
+12/11/2023 12:07:20 PM INFO: Demultiplexing OTU table
+12/11/2023 12:07:20 PM INFO: Finished genus expectation maximization
+12/11/2023 12:07:20 PM INFO: Total coverage: 1340.22870944335
+12/11/2023 12:07:20 PM INFO: Taxonomic level coverage:
+12/11/2023 12:07:20 PM INFO: kingdom:	1.65%	1 taxons
+12/11/2023 12:07:20 PM INFO: phylum:	0.33%	1 taxons
+12/11/2023 12:07:20 PM INFO: class:	0.00%	0 taxons
+12/11/2023 12:07:20 PM INFO: order:	2.95%	1 taxons
+12/11/2023 12:07:20 PM INFO: family:	10.75%	2 taxons
+12/11/2023 12:07:20 PM INFO: genus:	84.33%	2 taxons
+12/11/2023 12:07:20 PM INFO: species:	0.00%	0 taxons
+12/11/2023 12:07:20 PM INFO: Removing off-target OTUs from Sg3.feces_1
+12/11/2023 12:07:20 PM INFO: Found 27110.58 assigned and 50.84 unassigned OTU coverage units
+12/11/2023 12:07:20 PM INFO: After removing off-target OTUs, found 22536.99 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:07:20 PM INFO: Total coverage by query: 8264.985208535227
+12/11/2023 12:07:20 PM INFO: Total coverage by diamond: 14272.008754314023
+12/11/2023 12:07:20 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:07:20 PM INFO: Found 6 species uniquely hitting >= 10 marker genes
+12/11/2023 12:07:21 PM INFO: Species-wise EM converged in 69 steps
+12/11/2023 12:07:21 PM INFO: Gathering equivalence classes
+12/11/2023 12:07:21 PM INFO: Demultiplexing OTU table
+12/11/2023 12:07:21 PM INFO: Finished expectation maximization
+12/11/2023 12:07:21 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:07:45 PM INFO: Converted 2910 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:07:45 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:07:48 PM INFO: Genus-wise EM converged in 123 steps
+12/11/2023 12:07:48 PM INFO: Gathering equivalence classes
+12/11/2023 12:07:48 PM INFO: Demultiplexing OTU table
+12/11/2023 12:07:48 PM INFO: Finished genus expectation maximization
+12/11/2023 12:07:48 PM INFO: Total coverage: 22536.993962849974
+12/11/2023 12:07:48 PM INFO: Taxonomic level coverage:
+12/11/2023 12:07:48 PM INFO: kingdom:	1.68%	2 taxons
+12/11/2023 12:07:48 PM INFO: phylum:	0.23%	4 taxons
+12/11/2023 12:07:48 PM INFO: class:	1.32%	7 taxons
+12/11/2023 12:07:48 PM INFO: order:	1.97%	9 taxons
+12/11/2023 12:07:48 PM INFO: family:	20.26%	21 taxons
+12/11/2023 12:07:48 PM INFO: genus:	65.04%	74 taxons
+12/11/2023 12:07:48 PM INFO: species:	9.51%	31 taxons
+12/11/2023 12:07:48 PM INFO: Removing off-target OTUs from Sg4.cloaca_1
+12/11/2023 12:07:48 PM INFO: Found 289.12 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:07:48 PM INFO: After removing off-target OTUs, found 215.59 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:07:48 PM INFO: Total coverage by query: 190.75073526974407
+12/11/2023 12:07:48 PM INFO: Total coverage by diamond: 24.838166334368868
+12/11/2023 12:07:48 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:07:48 PM INFO: Found 1 species uniquely hitting >= 10 marker genes
+12/11/2023 12:07:48 PM INFO: Species-wise EM converged in 35 steps
+12/11/2023 12:07:48 PM INFO: Gathering equivalence classes
+12/11/2023 12:07:48 PM INFO: Demultiplexing OTU table
+12/11/2023 12:07:48 PM INFO: Finished expectation maximization
+12/11/2023 12:07:48 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:07:48 PM INFO: Converted 10 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:07:48 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:07:49 PM INFO: Genus-wise EM converged in 57 steps
+12/11/2023 12:07:49 PM INFO: Gathering equivalence classes
+12/11/2023 12:07:49 PM INFO: Demultiplexing OTU table
+12/11/2023 12:07:49 PM INFO: Finished genus expectation maximization
+12/11/2023 12:07:49 PM INFO: Total coverage: 215.58890160411298
+12/11/2023 12:07:49 PM INFO: Taxonomic level coverage:
+12/11/2023 12:07:49 PM INFO: kingdom:	15.07%	1 taxons
+12/11/2023 12:07:49 PM INFO: phylum:	2.15%	1 taxons
+12/11/2023 12:07:49 PM INFO: class:	0.00%	0 taxons
+12/11/2023 12:07:49 PM INFO: order:	0.00%	0 taxons
+12/11/2023 12:07:49 PM INFO: family:	7.12%	1 taxons
+12/11/2023 12:07:49 PM INFO: genus:	0.00%	0 taxons
+12/11/2023 12:07:49 PM INFO: species:	75.67%	1 taxons
+12/11/2023 12:07:49 PM INFO: Removing off-target OTUs from Sg4.feces_1
+12/11/2023 12:07:49 PM INFO: Found 19523.55 assigned and 42.27 unassigned OTU coverage units
+12/11/2023 12:07:49 PM INFO: After removing off-target OTUs, found 16394.69 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:07:49 PM INFO: Total coverage by query: 7820.103782383561
+12/11/2023 12:07:49 PM INFO: Total coverage by diamond: 8574.581716008124
+12/11/2023 12:07:49 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:07:49 PM INFO: Found 1 species uniquely hitting >= 10 marker genes
+12/11/2023 12:07:49 PM INFO: Species-wise EM converged in 38 steps
+12/11/2023 12:07:49 PM INFO: Gathering equivalence classes
+12/11/2023 12:07:49 PM INFO: Demultiplexing OTU table
+12/11/2023 12:07:49 PM INFO: Finished expectation maximization
+12/11/2023 12:07:49 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:08:02 PM INFO: Converted 1386 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:08:02 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:08:03 PM INFO: Genus-wise EM converged in 83 steps
+12/11/2023 12:08:03 PM INFO: Gathering equivalence classes
+12/11/2023 12:08:03 PM INFO: Demultiplexing OTU table
+12/11/2023 12:08:03 PM INFO: Finished genus expectation maximization
+12/11/2023 12:08:03 PM INFO: Total coverage: 16394.685498391616
+12/11/2023 12:08:04 PM INFO: Taxonomic level coverage:
+12/11/2023 12:08:04 PM INFO: kingdom:	0.54%	2 taxons
+12/11/2023 12:08:04 PM INFO: phylum:	0.14%	3 taxons
+12/11/2023 12:08:04 PM INFO: class:	0.75%	7 taxons
+12/11/2023 12:08:04 PM INFO: order:	2.58%	7 taxons
+12/11/2023 12:08:04 PM INFO: family:	14.23%	19 taxons
+12/11/2023 12:08:04 PM INFO: genus:	61.32%	40 taxons
+12/11/2023 12:08:04 PM INFO: species:	20.45%	18 taxons
+12/11/2023 12:08:04 PM INFO: Removing off-target OTUs from Sg5.cloaca_1
+12/11/2023 12:08:04 PM INFO: Found 714.20 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:08:04 PM INFO: After removing off-target OTUs, found 544.62 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:08:04 PM INFO: Total coverage by query: 510.42588095932757
+12/11/2023 12:08:04 PM INFO: Total coverage by diamond: 34.19718073869513
+12/11/2023 12:08:04 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:08:04 PM INFO: Found 1 species uniquely hitting >= 10 marker genes
+12/11/2023 12:08:04 PM INFO: Species-wise EM converged in 5 steps
+12/11/2023 12:08:04 PM INFO: Gathering equivalence classes
+12/11/2023 12:08:04 PM INFO: Demultiplexing OTU table
+12/11/2023 12:08:04 PM INFO: Finished expectation maximization
+12/11/2023 12:08:04 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:08:04 PM INFO: Converted 8 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:08:04 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:08:04 PM INFO: Genus-wise EM converged in 9 steps
+12/11/2023 12:08:04 PM INFO: Gathering equivalence classes
+12/11/2023 12:08:04 PM INFO: Demultiplexing OTU table
+12/11/2023 12:08:04 PM INFO: Finished genus expectation maximization
+12/11/2023 12:08:04 PM INFO: Total coverage: 544.6230616980228
+12/11/2023 12:08:04 PM INFO: Taxonomic level coverage:
+12/11/2023 12:08:04 PM INFO: kingdom:	1.91%	1 taxons
+12/11/2023 12:08:04 PM INFO: phylum:	0.38%	1 taxons
+12/11/2023 12:08:04 PM INFO: class:	0.38%	1 taxons
+12/11/2023 12:08:04 PM INFO: order:	0.00%	0 taxons
+12/11/2023 12:08:04 PM INFO: family:	0.00%	0 taxons
+12/11/2023 12:08:04 PM INFO: genus:	0.00%	0 taxons
+12/11/2023 12:08:04 PM INFO: species:	97.33%	1 taxons
+12/11/2023 12:08:04 PM INFO: Removing off-target OTUs from Sg5.feces_1
+12/11/2023 12:08:04 PM INFO: Found 22077.78 assigned and 76.41 unassigned OTU coverage units
+12/11/2023 12:08:04 PM INFO: After removing off-target OTUs, found 18662.88 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:08:04 PM INFO: Total coverage by query: 8374.365357855633
+12/11/2023 12:08:04 PM INFO: Total coverage by diamond: 10288.514817684953
+12/11/2023 12:08:04 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:08:04 PM INFO: Found 7 species uniquely hitting >= 10 marker genes
+12/11/2023 12:08:04 PM INFO: Species-wise EM converged in 100 steps
+12/11/2023 12:08:04 PM INFO: Gathering equivalence classes
+12/11/2023 12:08:04 PM INFO: Demultiplexing OTU table
+12/11/2023 12:08:04 PM INFO: Finished expectation maximization
+12/11/2023 12:08:04 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:08:20 PM INFO: Converted 2371 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:08:20 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:08:22 PM INFO: Genus-wise EM converged in 76 steps
+12/11/2023 12:08:22 PM INFO: Gathering equivalence classes
+12/11/2023 12:08:22 PM INFO: Demultiplexing OTU table
+12/11/2023 12:08:22 PM INFO: Finished genus expectation maximization
+12/11/2023 12:08:22 PM INFO: Total coverage: 18662.8801755407
+12/11/2023 12:08:22 PM INFO: Taxonomic level coverage:
+12/11/2023 12:08:22 PM INFO: kingdom:	2.13%	2 taxons
+12/11/2023 12:08:22 PM INFO: phylum:	0.20%	5 taxons
+12/11/2023 12:08:22 PM INFO: class:	0.83%	6 taxons
+12/11/2023 12:08:22 PM INFO: order:	1.90%	9 taxons
+12/11/2023 12:08:22 PM INFO: family:	16.34%	21 taxons
+12/11/2023 12:08:22 PM INFO: genus:	64.75%	63 taxons
+12/11/2023 12:08:22 PM INFO: species:	13.85%	25 taxons
+12/11/2023 12:08:22 PM INFO: Removing off-target OTUs from Sg6.cloaca_1
+12/11/2023 12:08:22 PM INFO: Found 1320.78 assigned and 1.71 unassigned OTU coverage units
+12/11/2023 12:08:22 PM INFO: After removing off-target OTUs, found 1066.94 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:08:22 PM INFO: Total coverage by query: 620.518520220404
+12/11/2023 12:08:22 PM INFO: Total coverage by diamond: 446.42116622136575
+12/11/2023 12:08:22 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:08:22 PM INFO: Found 1 species uniquely hitting >= 10 marker genes
+12/11/2023 12:08:22 PM INFO: Species-wise EM converged in 19 steps
+12/11/2023 12:08:22 PM INFO: Gathering equivalence classes
+12/11/2023 12:08:22 PM INFO: Demultiplexing OTU table
+12/11/2023 12:08:22 PM INFO: Finished expectation maximization
+12/11/2023 12:08:22 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:08:23 PM INFO: Converted 192 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:08:23 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:08:23 PM INFO: Genus-wise EM converged in 22 steps
+12/11/2023 12:08:23 PM INFO: Gathering equivalence classes
+12/11/2023 12:08:23 PM INFO: Demultiplexing OTU table
+12/11/2023 12:08:23 PM INFO: Finished genus expectation maximization
+12/11/2023 12:08:23 PM INFO: Total coverage: 1066.939686441769
+12/11/2023 12:08:23 PM INFO: Taxonomic level coverage:
+12/11/2023 12:08:23 PM INFO: kingdom:	3.55%	2 taxons
+12/11/2023 12:08:23 PM INFO: phylum:	1.67%	2 taxons
+12/11/2023 12:08:23 PM INFO: class:	6.14%	3 taxons
+12/11/2023 12:08:23 PM INFO: order:	8.21%	4 taxons
+12/11/2023 12:08:23 PM INFO: family:	30.97%	9 taxons
+12/11/2023 12:08:23 PM INFO: genus:	18.26%	5 taxons
+12/11/2023 12:08:23 PM INFO: species:	31.20%	1 taxons
+12/11/2023 12:08:23 PM INFO: Removing off-target OTUs from Sg6.feces_1
+12/11/2023 12:08:23 PM INFO: Found 16756.61 assigned and 24.28 unassigned OTU coverage units
+12/11/2023 12:08:23 PM INFO: After removing off-target OTUs, found 14021.65 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:08:23 PM INFO: Total coverage by query: 6432.232952759223
+12/11/2023 12:08:23 PM INFO: Total coverage by diamond: 7589.4185836883835
+12/11/2023 12:08:23 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:08:23 PM INFO: Found 4 species uniquely hitting >= 10 marker genes
+12/11/2023 12:08:23 PM INFO: Species-wise EM converged in 39 steps
+12/11/2023 12:08:23 PM INFO: Gathering equivalence classes
+12/11/2023 12:08:23 PM INFO: Demultiplexing OTU table
+12/11/2023 12:08:23 PM INFO: Finished expectation maximization
+12/11/2023 12:08:23 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:08:33 PM INFO: Converted 1727 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:08:33 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:08:33 PM INFO: Genus-wise EM converged in 43 steps
+12/11/2023 12:08:33 PM INFO: Gathering equivalence classes
+12/11/2023 12:08:33 PM INFO: Demultiplexing OTU table
+12/11/2023 12:08:33 PM INFO: Finished genus expectation maximization
+12/11/2023 12:08:33 PM INFO: Total coverage: 14021.651536447438
+12/11/2023 12:08:34 PM INFO: Taxonomic level coverage:
+12/11/2023 12:08:34 PM INFO: kingdom:	1.15%	2 taxons
+12/11/2023 12:08:34 PM INFO: phylum:	0.65%	6 taxons
+12/11/2023 12:08:34 PM INFO: class:	0.86%	7 taxons
+12/11/2023 12:08:34 PM INFO: order:	1.40%	7 taxons
+12/11/2023 12:08:34 PM INFO: family:	20.63%	21 taxons
+12/11/2023 12:08:34 PM INFO: genus:	62.13%	53 taxons
+12/11/2023 12:08:34 PM INFO: species:	13.18%	25 taxons
+12/11/2023 12:08:34 PM INFO: Removing off-target OTUs from Sg7.cloaca_1
+12/11/2023 12:08:34 PM INFO: Found 890.54 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:08:34 PM INFO: After removing off-target OTUs, found 758.95 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:08:34 PM INFO: Total coverage by query: 66.14666305916306
+12/11/2023 12:08:34 PM INFO: Total coverage by diamond: 692.7992633531932
+12/11/2023 12:08:34 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:08:34 PM INFO: Found 0 species uniquely hitting >= 10 marker genes
+12/11/2023 12:08:34 PM INFO: Species-wise EM converged in 18 steps
+12/11/2023 12:08:34 PM INFO: Gathering equivalence classes
+12/11/2023 12:08:34 PM INFO: Demultiplexing OTU table
+12/11/2023 12:08:34 PM INFO: Finished expectation maximization
+12/11/2023 12:08:34 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:08:34 PM INFO: Converted 63 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:08:34 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:08:34 PM INFO: Genus-wise EM converged in 75 steps
+12/11/2023 12:08:34 PM INFO: Gathering equivalence classes
+12/11/2023 12:08:34 PM INFO: Demultiplexing OTU table
+12/11/2023 12:08:34 PM INFO: Finished genus expectation maximization
+12/11/2023 12:08:34 PM INFO: Total coverage: 758.9459264123564
+12/11/2023 12:08:34 PM INFO: Taxonomic level coverage:
+12/11/2023 12:08:34 PM INFO: kingdom:	1.47%	1 taxons
+12/11/2023 12:08:34 PM INFO: phylum:	0.00%	0 taxons
+12/11/2023 12:08:34 PM INFO: class:	0.00%	0 taxons
+12/11/2023 12:08:34 PM INFO: order:	2.06%	1 taxons
+12/11/2023 12:08:34 PM INFO: family:	12.17%	1 taxons
+12/11/2023 12:08:34 PM INFO: genus:	84.30%	2 taxons
+12/11/2023 12:08:34 PM INFO: species:	0.00%	0 taxons
+12/11/2023 12:08:34 PM INFO: Removing off-target OTUs from Sg7.feces_1
+12/11/2023 12:08:34 PM INFO: Found 17059.41 assigned and 15.07 unassigned OTU coverage units
+12/11/2023 12:08:34 PM INFO: After removing off-target OTUs, found 14292.20 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:08:34 PM INFO: Total coverage by query: 6570.445832832479
+12/11/2023 12:08:34 PM INFO: Total coverage by diamond: 7721.754930017737
+12/11/2023 12:08:34 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:08:34 PM INFO: Found 4 species uniquely hitting >= 10 marker genes
+12/11/2023 12:08:34 PM INFO: Species-wise EM converged in 16 steps
+12/11/2023 12:08:34 PM INFO: Gathering equivalence classes
+12/11/2023 12:08:34 PM INFO: Demultiplexing OTU table
+12/11/2023 12:08:34 PM INFO: Finished expectation maximization
+12/11/2023 12:08:34 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:08:48 PM INFO: Converted 1872 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:08:48 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:08:49 PM INFO: Genus-wise EM converged in 89 steps
+12/11/2023 12:08:49 PM INFO: Gathering equivalence classes
+12/11/2023 12:08:49 PM INFO: Demultiplexing OTU table
+12/11/2023 12:08:49 PM INFO: Finished genus expectation maximization
+12/11/2023 12:08:49 PM INFO: Total coverage: 14292.200762850009
+12/11/2023 12:08:49 PM INFO: Taxonomic level coverage:
+12/11/2023 12:08:49 PM INFO: kingdom:	2.52%	2 taxons
+12/11/2023 12:08:49 PM INFO: phylum:	0.31%	7 taxons
+12/11/2023 12:08:49 PM INFO: class:	0.85%	5 taxons
+12/11/2023 12:08:49 PM INFO: order:	3.30%	9 taxons
+12/11/2023 12:08:49 PM INFO: family:	18.32%	23 taxons
+12/11/2023 12:08:49 PM INFO: genus:	60.41%	49 taxons
+12/11/2023 12:08:49 PM INFO: species:	14.29%	24 taxons
+12/11/2023 12:08:49 PM INFO: Removing off-target OTUs from Sg8.cloaca_1
+12/11/2023 12:08:49 PM INFO: Found 272.66 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:08:49 PM INFO: After removing off-target OTUs, found 203.93 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:08:49 PM INFO: Total coverage by query: 195.89367703350413
+12/11/2023 12:08:49 PM INFO: Total coverage by diamond: 8.037838450209584
+12/11/2023 12:08:49 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:08:49 PM INFO: Found 1 species uniquely hitting >= 10 marker genes
+12/11/2023 12:08:49 PM INFO: Species-wise EM converged in 4 steps
+12/11/2023 12:08:49 PM INFO: Gathering equivalence classes
+12/11/2023 12:08:49 PM INFO: Demultiplexing OTU table
+12/11/2023 12:08:49 PM INFO: Finished expectation maximization
+12/11/2023 12:08:49 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:08:49 PM INFO: Converted 3 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:08:49 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:08:49 PM INFO: Genus-wise EM converged in 4 steps
+12/11/2023 12:08:49 PM INFO: Gathering equivalence classes
+12/11/2023 12:08:49 PM INFO: Demultiplexing OTU table
+12/11/2023 12:08:49 PM INFO: Finished genus expectation maximization
+12/11/2023 12:08:49 PM INFO: Total coverage: 203.93151548371372
+12/11/2023 12:08:49 PM INFO: Taxonomic level coverage:
+12/11/2023 12:08:49 PM INFO: kingdom:	1.00%	1 taxons
+12/11/2023 12:08:49 PM INFO: phylum:	0.00%	0 taxons
+12/11/2023 12:08:49 PM INFO: class:	0.00%	0 taxons
+12/11/2023 12:08:49 PM INFO: order:	0.00%	0 taxons
+12/11/2023 12:08:49 PM INFO: family:	0.00%	0 taxons
+12/11/2023 12:08:49 PM INFO: genus:	0.00%	0 taxons
+12/11/2023 12:08:49 PM INFO: species:	99.00%	1 taxons
+12/11/2023 12:08:49 PM INFO: Removing off-target OTUs from Sg8.feces_1
+12/11/2023 12:08:49 PM INFO: Found 18431.37 assigned and 21.45 unassigned OTU coverage units
+12/11/2023 12:08:49 PM INFO: After removing off-target OTUs, found 15317.60 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:08:49 PM INFO: Total coverage by query: 5907.336931052424
+12/11/2023 12:08:49 PM INFO: Total coverage by diamond: 9410.265521895786
+12/11/2023 12:08:49 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:08:49 PM INFO: Found 5 species uniquely hitting >= 10 marker genes
+12/11/2023 12:08:50 PM INFO: Species-wise EM converged in 153 steps
+12/11/2023 12:08:50 PM INFO: Gathering equivalence classes
+12/11/2023 12:08:50 PM INFO: Demultiplexing OTU table
+12/11/2023 12:08:50 PM INFO: Finished expectation maximization
+12/11/2023 12:08:50 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:09:10 PM INFO: Converted 2109 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:09:10 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:13 PM INFO: Genus-wise EM converged in 126 steps
+12/11/2023 12:09:13 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:13 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:13 PM INFO: Finished genus expectation maximization
+12/11/2023 12:09:13 PM INFO: Total coverage: 15317.602452948013
+12/11/2023 12:09:13 PM INFO: Taxonomic level coverage:
+12/11/2023 12:09:13 PM INFO: kingdom:	2.44%	2 taxons
+12/11/2023 12:09:13 PM INFO: phylum:	0.34%	5 taxons
+12/11/2023 12:09:13 PM INFO: class:	1.27%	6 taxons
+12/11/2023 12:09:13 PM INFO: order:	2.69%	8 taxons
+12/11/2023 12:09:13 PM INFO: family:	19.13%	24 taxons
+12/11/2023 12:09:13 PM INFO: genus:	64.06%	63 taxons
+12/11/2023 12:09:13 PM INFO: species:	10.07%	16 taxons
+12/11/2023 12:09:13 PM INFO: Removing off-target OTUs from Sg9.cloaca_1
+12/11/2023 12:09:13 PM INFO: Found 414.37 assigned and 1.70 unassigned OTU coverage units
+12/11/2023 12:09:13 PM INFO: After removing off-target OTUs, found 310.06 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:09:13 PM INFO: Total coverage by query: 292.1267688862042
+12/11/2023 12:09:13 PM INFO: Total coverage by diamond: 17.93515224752338
+12/11/2023 12:09:13 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:13 PM INFO: Found 1 species uniquely hitting >= 10 marker genes
+12/11/2023 12:09:13 PM INFO: Species-wise EM converged in 13 steps
+12/11/2023 12:09:13 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:13 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:13 PM INFO: Finished expectation maximization
+12/11/2023 12:09:13 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:09:13 PM INFO: Converted 5 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:09:13 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:13 PM INFO: Genus-wise EM converged in 13 steps
+12/11/2023 12:09:13 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:13 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:13 PM INFO: Finished genus expectation maximization
+12/11/2023 12:09:13 PM INFO: Total coverage: 310.06192113372765
+12/11/2023 12:09:13 PM INFO: Taxonomic level coverage:
+12/11/2023 12:09:13 PM INFO: kingdom:	1.36%	1 taxons
+12/11/2023 12:09:13 PM INFO: phylum:	2.73%	1 taxons
+12/11/2023 12:09:13 PM INFO: class:	0.00%	0 taxons
+12/11/2023 12:09:13 PM INFO: order:	0.00%	0 taxons
+12/11/2023 12:09:13 PM INFO: family:	2.05%	1 taxons
+12/11/2023 12:09:13 PM INFO: genus:	0.00%	0 taxons
+12/11/2023 12:09:13 PM INFO: species:	93.87%	1 taxons
+12/11/2023 12:09:13 PM INFO: Removing off-target OTUs from Sg9.feces_1
+12/11/2023 12:09:13 PM INFO: Found 15927.15 assigned and 28.20 unassigned OTU coverage units
+12/11/2023 12:09:13 PM INFO: After removing off-target OTUs, found 13318.66 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:09:13 PM INFO: Total coverage by query: 6178.2713756903795
+12/11/2023 12:09:13 PM INFO: Total coverage by diamond: 7140.385217193838
+12/11/2023 12:09:13 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:13 PM INFO: Found 3 species uniquely hitting >= 10 marker genes
+12/11/2023 12:09:13 PM INFO: Species-wise EM converged in 29 steps
+12/11/2023 12:09:13 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:13 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:13 PM INFO: Finished expectation maximization
+12/11/2023 12:09:13 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:09:23 PM INFO: Converted 1579 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:09:23 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:24 PM INFO: Genus-wise EM converged in 77 steps
+12/11/2023 12:09:24 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:24 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:24 PM INFO: Finished genus expectation maximization
+12/11/2023 12:09:24 PM INFO: Total coverage: 13318.656592884066
+12/11/2023 12:09:24 PM INFO: Taxonomic level coverage:
+12/11/2023 12:09:24 PM INFO: kingdom:	1.70%	2 taxons
+12/11/2023 12:09:24 PM INFO: phylum:	0.38%	5 taxons
+12/11/2023 12:09:24 PM INFO: class:	0.64%	7 taxons
+12/11/2023 12:09:24 PM INFO: order:	3.10%	10 taxons
+12/11/2023 12:09:24 PM INFO: family:	16.98%	24 taxons
+12/11/2023 12:09:24 PM INFO: genus:	62.37%	42 taxons
+12/11/2023 12:09:24 PM INFO: species:	14.82%	17 taxons
+12/11/2023 12:09:24 PM INFO: Removing off-target OTUs from Sg1.cloaca_1
+12/11/2023 12:09:24 PM INFO: Found 234.94 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:09:24 PM INFO: After removing off-target OTUs, found 153.07 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:09:24 PM INFO: Total coverage by query: 128.81849377644616
+12/11/2023 12:09:24 PM INFO: Total coverage by diamond: 24.252987447028293
+12/11/2023 12:09:24 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:24 PM INFO: Found 0 species uniquely hitting >= 10 marker genes
+12/11/2023 12:09:24 PM INFO: Species-wise EM converged in 20 steps
+12/11/2023 12:09:24 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:24 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:24 PM INFO: Finished expectation maximization
+12/11/2023 12:09:24 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:09:24 PM INFO: Converted 9 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:09:24 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:24 PM INFO: Genus-wise EM converged in 8 steps
+12/11/2023 12:09:24 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:24 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:24 PM INFO: Finished genus expectation maximization
+12/11/2023 12:09:24 PM INFO: Total coverage: 153.07148122347445
+12/11/2023 12:09:24 PM INFO: Taxonomic level coverage:
+12/11/2023 12:09:24 PM INFO: kingdom:	14.78%	1 taxons
+12/11/2023 12:09:24 PM INFO: phylum:	0.00%	0 taxons
+12/11/2023 12:09:24 PM INFO: class:	0.00%	0 taxons
+12/11/2023 12:09:24 PM INFO: order:	0.00%	0 taxons
+12/11/2023 12:09:24 PM INFO: family:	2.07%	1 taxons
+12/11/2023 12:09:24 PM INFO: genus:	0.00%	0 taxons
+12/11/2023 12:09:24 PM INFO: species:	83.15%	1 taxons
+12/11/2023 12:09:24 PM INFO: Removing off-target OTUs from Sg10.cloaca_1
+12/11/2023 12:09:24 PM INFO: Found 190.44 assigned and 1.66 unassigned OTU coverage units
+12/11/2023 12:09:24 PM INFO: After removing off-target OTUs, found 99.41 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:09:24 PM INFO: Total coverage by query: 46.204273504273516
+12/11/2023 12:09:24 PM INFO: Total coverage by diamond: 53.20565391125995
+12/11/2023 12:09:24 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:24 PM INFO: Found 0 species uniquely hitting >= 10 marker genes
+12/11/2023 12:09:24 PM INFO: Species-wise EM converged in 6 steps
+12/11/2023 12:09:24 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:24 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:24 PM INFO: Finished expectation maximization
+12/11/2023 12:09:24 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:09:24 PM INFO: Converted 25 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:09:24 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:24 PM INFO: Genus-wise EM converged in 7 steps
+12/11/2023 12:09:24 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:24 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:24 PM INFO: Finished genus expectation maximization
+12/11/2023 12:09:24 PM INFO: Total coverage: 99.40992741553346
+12/11/2023 12:09:24 PM INFO: Taxonomic level coverage:
+12/11/2023 12:09:24 PM INFO: kingdom:	35.98%	1 taxons
+12/11/2023 12:09:24 PM INFO: phylum:	0.00%	0 taxons
+12/11/2023 12:09:24 PM INFO: class:	13.55%	1 taxons
+12/11/2023 12:09:24 PM INFO: order:	50.47%	1 taxons
+12/11/2023 12:09:24 PM INFO: family:	0.00%	0 taxons
+12/11/2023 12:09:24 PM INFO: genus:	0.00%	0 taxons
+12/11/2023 12:09:24 PM INFO: species:	0.00%	0 taxons
+12/11/2023 12:09:24 PM INFO: Removing off-target OTUs from Sg2.cloaca_1
+12/11/2023 12:09:24 PM INFO: Found 192.10 assigned and 1.65 unassigned OTU coverage units
+12/11/2023 12:09:24 PM INFO: After removing off-target OTUs, found 87.75 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:09:24 PM INFO: Total coverage by query: 62.852010259962626
+12/11/2023 12:09:24 PM INFO: Total coverage by diamond: 24.900491689736626
+12/11/2023 12:09:24 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:24 PM INFO: Found 0 species uniquely hitting >= 10 marker genes
+12/11/2023 12:09:24 PM INFO: Species-wise EM converged in 11 steps
+12/11/2023 12:09:24 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:24 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:25 PM INFO: Finished expectation maximization
+12/11/2023 12:09:25 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:09:25 PM INFO: Converted 12 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:09:25 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:25 PM INFO: Genus-wise EM converged in 7 steps
+12/11/2023 12:09:25 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:25 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:25 PM INFO: Finished genus expectation maximization
+12/11/2023 12:09:25 PM INFO: Total coverage: 87.75250194969924
+12/11/2023 12:09:25 PM INFO: Taxonomic level coverage:
+12/11/2023 12:09:25 PM INFO: kingdom:	26.62%	1 taxons
+12/11/2023 12:09:25 PM INFO: phylum:	2.96%	1 taxons
+12/11/2023 12:09:25 PM INFO: class:	2.93%	1 taxons
+12/11/2023 12:09:25 PM INFO: order:	0.00%	0 taxons
+12/11/2023 12:09:25 PM INFO: family:	3.36%	1 taxons
+12/11/2023 12:09:25 PM INFO: genus:	0.00%	0 taxons
+12/11/2023 12:09:25 PM INFO: species:	64.12%	1 taxons
+12/11/2023 12:09:25 PM INFO: Removing off-target OTUs from Sg3.cloaca_1
+12/11/2023 12:09:25 PM INFO: Found 1591.68 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:09:25 PM INFO: After removing off-target OTUs, found 1340.23 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:09:25 PM INFO: Total coverage by query: 159.0284348480649
+12/11/2023 12:09:25 PM INFO: Total coverage by diamond: 1181.2002745952852
+12/11/2023 12:09:25 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:25 PM INFO: Found 0 species uniquely hitting >= 10 marker genes
+12/11/2023 12:09:25 PM INFO: Species-wise EM converged in 9 steps
+12/11/2023 12:09:25 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:25 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:25 PM INFO: Finished expectation maximization
+12/11/2023 12:09:25 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:09:25 PM INFO: Converted 78 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:09:25 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:25 PM INFO: Genus-wise EM converged in 58 steps
+12/11/2023 12:09:25 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:25 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:25 PM INFO: Finished genus expectation maximization
+12/11/2023 12:09:25 PM INFO: Total coverage: 1340.22870944335
+12/11/2023 12:09:25 PM INFO: Taxonomic level coverage:
+12/11/2023 12:09:25 PM INFO: kingdom:	1.65%	1 taxons
+12/11/2023 12:09:25 PM INFO: phylum:	0.33%	1 taxons
+12/11/2023 12:09:25 PM INFO: class:	0.00%	0 taxons
+12/11/2023 12:09:25 PM INFO: order:	2.95%	1 taxons
+12/11/2023 12:09:25 PM INFO: family:	10.75%	2 taxons
+12/11/2023 12:09:25 PM INFO: genus:	84.33%	2 taxons
+12/11/2023 12:09:25 PM INFO: species:	0.00%	0 taxons
+12/11/2023 12:09:25 PM INFO: Removing off-target OTUs from Sg4.cloaca_1
+12/11/2023 12:09:25 PM INFO: Found 289.12 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:09:25 PM INFO: After removing off-target OTUs, found 215.59 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:09:25 PM INFO: Total coverage by query: 190.75073526974407
+12/11/2023 12:09:25 PM INFO: Total coverage by diamond: 24.838166334368868
+12/11/2023 12:09:25 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:25 PM INFO: Found 1 species uniquely hitting >= 10 marker genes
+12/11/2023 12:09:25 PM INFO: Species-wise EM converged in 35 steps
+12/11/2023 12:09:25 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:25 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:25 PM INFO: Finished expectation maximization
+12/11/2023 12:09:25 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:09:25 PM INFO: Converted 10 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:09:25 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:25 PM INFO: Genus-wise EM converged in 57 steps
+12/11/2023 12:09:25 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:25 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:25 PM INFO: Finished genus expectation maximization
+12/11/2023 12:09:25 PM INFO: Total coverage: 215.58890160411298
+12/11/2023 12:09:25 PM INFO: Taxonomic level coverage:
+12/11/2023 12:09:25 PM INFO: kingdom:	15.07%	1 taxons
+12/11/2023 12:09:25 PM INFO: phylum:	2.15%	1 taxons
+12/11/2023 12:09:25 PM INFO: class:	0.00%	0 taxons
+12/11/2023 12:09:25 PM INFO: order:	0.00%	0 taxons
+12/11/2023 12:09:25 PM INFO: family:	7.12%	1 taxons
+12/11/2023 12:09:25 PM INFO: genus:	0.00%	0 taxons
+12/11/2023 12:09:25 PM INFO: species:	75.67%	1 taxons
+12/11/2023 12:09:25 PM INFO: Removing off-target OTUs from Sg5.cloaca_1
+12/11/2023 12:09:25 PM INFO: Found 714.20 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:09:25 PM INFO: After removing off-target OTUs, found 544.62 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:09:25 PM INFO: Total coverage by query: 510.42588095932757
+12/11/2023 12:09:25 PM INFO: Total coverage by diamond: 34.19718073869513
+12/11/2023 12:09:25 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:25 PM INFO: Found 1 species uniquely hitting >= 10 marker genes
+12/11/2023 12:09:25 PM INFO: Species-wise EM converged in 5 steps
+12/11/2023 12:09:25 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:25 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:25 PM INFO: Finished expectation maximization
+12/11/2023 12:09:25 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:09:25 PM INFO: Converted 8 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:09:25 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:25 PM INFO: Genus-wise EM converged in 9 steps
+12/11/2023 12:09:25 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:25 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:25 PM INFO: Finished genus expectation maximization
+12/11/2023 12:09:25 PM INFO: Total coverage: 544.6230616980228
+12/11/2023 12:09:25 PM INFO: Taxonomic level coverage:
+12/11/2023 12:09:25 PM INFO: kingdom:	1.91%	1 taxons
+12/11/2023 12:09:25 PM INFO: phylum:	0.38%	1 taxons
+12/11/2023 12:09:25 PM INFO: class:	0.38%	1 taxons
+12/11/2023 12:09:25 PM INFO: order:	0.00%	0 taxons
+12/11/2023 12:09:25 PM INFO: family:	0.00%	0 taxons
+12/11/2023 12:09:25 PM INFO: genus:	0.00%	0 taxons
+12/11/2023 12:09:25 PM INFO: species:	97.33%	1 taxons
+12/11/2023 12:09:25 PM INFO: Removing off-target OTUs from Sg6.cloaca_1
+12/11/2023 12:09:25 PM INFO: Found 1320.78 assigned and 1.71 unassigned OTU coverage units
+12/11/2023 12:09:25 PM INFO: After removing off-target OTUs, found 1066.94 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:09:25 PM INFO: Total coverage by query: 620.518520220404
+12/11/2023 12:09:25 PM INFO: Total coverage by diamond: 446.42116622136575
+12/11/2023 12:09:25 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:25 PM INFO: Found 1 species uniquely hitting >= 10 marker genes
+12/11/2023 12:09:25 PM INFO: Species-wise EM converged in 19 steps
+12/11/2023 12:09:25 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:25 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:25 PM INFO: Finished expectation maximization
+12/11/2023 12:09:25 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:09:26 PM INFO: Converted 192 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:09:26 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:27 PM INFO: Genus-wise EM converged in 22 steps
+12/11/2023 12:09:27 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:27 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:27 PM INFO: Finished genus expectation maximization
+12/11/2023 12:09:27 PM INFO: Total coverage: 1066.939686441769
+12/11/2023 12:09:27 PM INFO: Taxonomic level coverage:
+12/11/2023 12:09:27 PM INFO: kingdom:	3.55%	2 taxons
+12/11/2023 12:09:27 PM INFO: phylum:	1.67%	2 taxons
+12/11/2023 12:09:27 PM INFO: class:	6.14%	3 taxons
+12/11/2023 12:09:27 PM INFO: order:	8.21%	4 taxons
+12/11/2023 12:09:27 PM INFO: family:	30.97%	9 taxons
+12/11/2023 12:09:27 PM INFO: genus:	18.26%	5 taxons
+12/11/2023 12:09:27 PM INFO: species:	31.20%	1 taxons
+12/11/2023 12:09:27 PM INFO: Removing off-target OTUs from Sg7.cloaca_1
+12/11/2023 12:09:27 PM INFO: Found 890.54 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:09:27 PM INFO: After removing off-target OTUs, found 758.95 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:09:27 PM INFO: Total coverage by query: 66.14666305916306
+12/11/2023 12:09:27 PM INFO: Total coverage by diamond: 692.7992633531932
+12/11/2023 12:09:27 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:27 PM INFO: Found 0 species uniquely hitting >= 10 marker genes
+12/11/2023 12:09:27 PM INFO: Species-wise EM converged in 18 steps
+12/11/2023 12:09:27 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:27 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:27 PM INFO: Finished expectation maximization
+12/11/2023 12:09:27 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:09:27 PM INFO: Converted 63 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:09:27 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:27 PM INFO: Genus-wise EM converged in 75 steps
+12/11/2023 12:09:27 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:27 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:27 PM INFO: Finished genus expectation maximization
+12/11/2023 12:09:27 PM INFO: Total coverage: 758.9459264123564
+12/11/2023 12:09:27 PM INFO: Taxonomic level coverage:
+12/11/2023 12:09:27 PM INFO: kingdom:	1.47%	1 taxons
+12/11/2023 12:09:27 PM INFO: phylum:	0.00%	0 taxons
+12/11/2023 12:09:27 PM INFO: class:	0.00%	0 taxons
+12/11/2023 12:09:27 PM INFO: order:	2.06%	1 taxons
+12/11/2023 12:09:27 PM INFO: family:	12.17%	1 taxons
+12/11/2023 12:09:27 PM INFO: genus:	84.30%	2 taxons
+12/11/2023 12:09:27 PM INFO: species:	0.00%	0 taxons
+12/11/2023 12:09:27 PM INFO: Removing off-target OTUs from Sg8.cloaca_1
+12/11/2023 12:09:27 PM INFO: Found 272.66 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:09:27 PM INFO: After removing off-target OTUs, found 203.93 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:09:27 PM INFO: Total coverage by query: 195.89367703350413
+12/11/2023 12:09:27 PM INFO: Total coverage by diamond: 8.037838450209584
+12/11/2023 12:09:27 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:27 PM INFO: Found 1 species uniquely hitting >= 10 marker genes
+12/11/2023 12:09:27 PM INFO: Species-wise EM converged in 4 steps
+12/11/2023 12:09:27 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:27 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:27 PM INFO: Finished expectation maximization
+12/11/2023 12:09:27 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:09:27 PM INFO: Converted 3 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:09:27 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:27 PM INFO: Genus-wise EM converged in 4 steps
+12/11/2023 12:09:27 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:27 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:27 PM INFO: Finished genus expectation maximization
+12/11/2023 12:09:27 PM INFO: Total coverage: 203.93151548371372
+12/11/2023 12:09:27 PM INFO: Taxonomic level coverage:
+12/11/2023 12:09:27 PM INFO: kingdom:	1.00%	1 taxons
+12/11/2023 12:09:27 PM INFO: phylum:	0.00%	0 taxons
+12/11/2023 12:09:27 PM INFO: class:	0.00%	0 taxons
+12/11/2023 12:09:27 PM INFO: order:	0.00%	0 taxons
+12/11/2023 12:09:27 PM INFO: family:	0.00%	0 taxons
+12/11/2023 12:09:27 PM INFO: genus:	0.00%	0 taxons
+12/11/2023 12:09:27 PM INFO: species:	99.00%	1 taxons
+12/11/2023 12:09:27 PM INFO: Removing off-target OTUs from Sg9.cloaca_1
+12/11/2023 12:09:27 PM INFO: Found 414.37 assigned and 1.70 unassigned OTU coverage units
+12/11/2023 12:09:27 PM INFO: After removing off-target OTUs, found 310.06 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:09:27 PM INFO: Total coverage by query: 292.1267688862042
+12/11/2023 12:09:27 PM INFO: Total coverage by diamond: 17.93515224752338
+12/11/2023 12:09:27 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:27 PM INFO: Found 1 species uniquely hitting >= 10 marker genes
+12/11/2023 12:09:27 PM INFO: Species-wise EM converged in 13 steps
+12/11/2023 12:09:27 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:27 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:27 PM INFO: Finished expectation maximization
+12/11/2023 12:09:27 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:09:27 PM INFO: Converted 5 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:09:27 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:27 PM INFO: Genus-wise EM converged in 13 steps
+12/11/2023 12:09:27 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:27 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:27 PM INFO: Finished genus expectation maximization
+12/11/2023 12:09:27 PM INFO: Total coverage: 310.06192113372765
+12/11/2023 12:09:27 PM INFO: Taxonomic level coverage:
+12/11/2023 12:09:27 PM INFO: kingdom:	1.36%	1 taxons
+12/11/2023 12:09:27 PM INFO: phylum:	2.73%	1 taxons
+12/11/2023 12:09:27 PM INFO: class:	0.00%	0 taxons
+12/11/2023 12:09:27 PM INFO: order:	0.00%	0 taxons
+12/11/2023 12:09:27 PM INFO: family:	2.05%	1 taxons
+12/11/2023 12:09:27 PM INFO: genus:	0.00%	0 taxons
+12/11/2023 12:09:27 PM INFO: species:	93.87%	1 taxons
+12/11/2023 12:09:27 PM INFO: Removing off-target OTUs from Sg1.feces_1
+12/11/2023 12:09:27 PM INFO: Found 44460.43 assigned and 30.40 unassigned OTU coverage units
+12/11/2023 12:09:27 PM INFO: After removing off-target OTUs, found 37520.12 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:09:27 PM INFO: Total coverage by query: 16522.630394404914
+12/11/2023 12:09:27 PM INFO: Total coverage by diamond: 20997.49178320026
+12/11/2023 12:09:27 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:09:27 PM INFO: Found 13 species uniquely hitting >= 10 marker genes
+12/11/2023 12:09:28 PM INFO: Species-wise EM converged in 35 steps
+12/11/2023 12:09:28 PM INFO: Gathering equivalence classes
+12/11/2023 12:09:28 PM INFO: Demultiplexing OTU table
+12/11/2023 12:09:28 PM INFO: Finished expectation maximization
+12/11/2023 12:09:28 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:09:57 PM INFO: Converted 4161 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:09:57 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:10:06 PM INFO: Genus-wise EM converged in 231 steps
+12/11/2023 12:10:06 PM INFO: Gathering equivalence classes
+12/11/2023 12:10:06 PM INFO: Demultiplexing OTU table
+12/11/2023 12:10:06 PM INFO: Finished genus expectation maximization
+12/11/2023 12:10:06 PM INFO: Total coverage: 37520.122177606165
+12/11/2023 12:10:06 PM INFO: Taxonomic level coverage:
+12/11/2023 12:10:06 PM INFO: kingdom:	0.88%	2 taxons
+12/11/2023 12:10:06 PM INFO: phylum:	0.26%	6 taxons
+12/11/2023 12:10:06 PM INFO: class:	0.90%	7 taxons
+12/11/2023 12:10:06 PM INFO: order:	2.28%	14 taxons
+12/11/2023 12:10:06 PM INFO: family:	15.86%	37 taxons
+12/11/2023 12:10:06 PM INFO: genus:	63.22%	123 taxons
+12/11/2023 12:10:06 PM INFO: species:	16.60%	35 taxons
+12/11/2023 12:10:06 PM INFO: Removing off-target OTUs from Sg10.feces_1
+12/11/2023 12:10:06 PM INFO: Found 16769.39 assigned and 8.06 unassigned OTU coverage units
+12/11/2023 12:10:06 PM INFO: After removing off-target OTUs, found 14061.28 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:10:06 PM INFO: Total coverage by query: 6777.720711068967
+12/11/2023 12:10:06 PM INFO: Total coverage by diamond: 7283.5573345706025
+12/11/2023 12:10:06 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:10:06 PM INFO: Found 3 species uniquely hitting >= 10 marker genes
+12/11/2023 12:10:07 PM INFO: Species-wise EM converged in 38 steps
+12/11/2023 12:10:07 PM INFO: Gathering equivalence classes
+12/11/2023 12:10:07 PM INFO: Demultiplexing OTU table
+12/11/2023 12:10:07 PM INFO: Finished expectation maximization
+12/11/2023 12:10:07 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:10:21 PM INFO: Converted 1911 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:10:21 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:10:23 PM INFO: Genus-wise EM converged in 54 steps
+12/11/2023 12:10:23 PM INFO: Gathering equivalence classes
+12/11/2023 12:10:23 PM INFO: Demultiplexing OTU table
+12/11/2023 12:10:23 PM INFO: Finished genus expectation maximization
+12/11/2023 12:10:23 PM INFO: Total coverage: 14061.278045639372
+12/11/2023 12:10:23 PM INFO: Taxonomic level coverage:
+12/11/2023 12:10:23 PM INFO: kingdom:	1.59%	2 taxons
+12/11/2023 12:10:23 PM INFO: phylum:	0.42%	3 taxons
+12/11/2023 12:10:23 PM INFO: class:	1.46%	5 taxons
+12/11/2023 12:10:23 PM INFO: order:	1.88%	8 taxons
+12/11/2023 12:10:23 PM INFO: family:	21.04%	20 taxons
+12/11/2023 12:10:23 PM INFO: genus:	53.19%	51 taxons
+12/11/2023 12:10:23 PM INFO: species:	20.42%	19 taxons
+12/11/2023 12:10:23 PM INFO: Removing off-target OTUs from Sg2.feces_1
+12/11/2023 12:10:23 PM INFO: Found 23671.88 assigned and 8.14 unassigned OTU coverage units
+12/11/2023 12:10:23 PM INFO: After removing off-target OTUs, found 19877.16 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:10:23 PM INFO: Total coverage by query: 8971.356712399494
+12/11/2023 12:10:23 PM INFO: Total coverage by diamond: 10905.799118517252
+12/11/2023 12:10:23 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:10:23 PM INFO: Found 2 species uniquely hitting >= 10 marker genes
+12/11/2023 12:10:23 PM INFO: Species-wise EM converged in 49 steps
+12/11/2023 12:10:23 PM INFO: Gathering equivalence classes
+12/11/2023 12:10:23 PM INFO: Demultiplexing OTU table
+12/11/2023 12:10:23 PM INFO: Finished expectation maximization
+12/11/2023 12:10:23 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:10:38 PM INFO: Converted 2060 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:10:38 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:10:40 PM INFO: Genus-wise EM converged in 90 steps
+12/11/2023 12:10:40 PM INFO: Gathering equivalence classes
+12/11/2023 12:10:40 PM INFO: Demultiplexing OTU table
+12/11/2023 12:10:40 PM INFO: Finished genus expectation maximization
+12/11/2023 12:10:40 PM INFO: Total coverage: 19877.155830917087
+12/11/2023 12:10:41 PM INFO: Taxonomic level coverage:
+12/11/2023 12:10:41 PM INFO: kingdom:	2.40%	2 taxons
+12/11/2023 12:10:41 PM INFO: phylum:	0.50%	6 taxons
+12/11/2023 12:10:41 PM INFO: class:	1.14%	7 taxons
+12/11/2023 12:10:41 PM INFO: order:	1.77%	8 taxons
+12/11/2023 12:10:41 PM INFO: family:	19.48%	22 taxons
+12/11/2023 12:10:41 PM INFO: genus:	61.20%	65 taxons
+12/11/2023 12:10:41 PM INFO: species:	13.50%	31 taxons
+12/11/2023 12:10:41 PM INFO: Removing off-target OTUs from Sg3.feces_1
+12/11/2023 12:10:41 PM INFO: Found 27110.58 assigned and 50.84 unassigned OTU coverage units
+12/11/2023 12:10:41 PM INFO: After removing off-target OTUs, found 22536.99 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:10:41 PM INFO: Total coverage by query: 8264.985208535227
+12/11/2023 12:10:41 PM INFO: Total coverage by diamond: 14272.008754314023
+12/11/2023 12:10:41 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:10:41 PM INFO: Found 6 species uniquely hitting >= 10 marker genes
+12/11/2023 12:10:41 PM INFO: Species-wise EM converged in 69 steps
+12/11/2023 12:10:41 PM INFO: Gathering equivalence classes
+12/11/2023 12:10:41 PM INFO: Demultiplexing OTU table
+12/11/2023 12:10:41 PM INFO: Finished expectation maximization
+12/11/2023 12:10:41 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:11:05 PM INFO: Converted 2910 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:11:05 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:11:09 PM INFO: Genus-wise EM converged in 123 steps
+12/11/2023 12:11:09 PM INFO: Gathering equivalence classes
+12/11/2023 12:11:09 PM INFO: Demultiplexing OTU table
+12/11/2023 12:11:09 PM INFO: Finished genus expectation maximization
+12/11/2023 12:11:09 PM INFO: Total coverage: 22536.993962849974
+12/11/2023 12:11:09 PM INFO: Taxonomic level coverage:
+12/11/2023 12:11:09 PM INFO: kingdom:	1.68%	2 taxons
+12/11/2023 12:11:09 PM INFO: phylum:	0.23%	4 taxons
+12/11/2023 12:11:09 PM INFO: class:	1.32%	7 taxons
+12/11/2023 12:11:09 PM INFO: order:	1.97%	9 taxons
+12/11/2023 12:11:09 PM INFO: family:	20.26%	21 taxons
+12/11/2023 12:11:09 PM INFO: genus:	65.04%	74 taxons
+12/11/2023 12:11:09 PM INFO: species:	9.51%	31 taxons
+12/11/2023 12:11:09 PM INFO: Removing off-target OTUs from Sg4.feces_1
+12/11/2023 12:11:09 PM INFO: Found 19523.55 assigned and 42.27 unassigned OTU coverage units
+12/11/2023 12:11:09 PM INFO: After removing off-target OTUs, found 16394.69 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:11:09 PM INFO: Total coverage by query: 7820.103782383561
+12/11/2023 12:11:09 PM INFO: Total coverage by diamond: 8574.581716008124
+12/11/2023 12:11:09 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:11:09 PM INFO: Found 1 species uniquely hitting >= 10 marker genes
+12/11/2023 12:11:09 PM INFO: Species-wise EM converged in 38 steps
+12/11/2023 12:11:09 PM INFO: Gathering equivalence classes
+12/11/2023 12:11:09 PM INFO: Demultiplexing OTU table
+12/11/2023 12:11:09 PM INFO: Finished expectation maximization
+12/11/2023 12:11:09 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:11:23 PM INFO: Converted 1386 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:11:23 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:11:24 PM INFO: Genus-wise EM converged in 83 steps
+12/11/2023 12:11:24 PM INFO: Gathering equivalence classes
+12/11/2023 12:11:24 PM INFO: Demultiplexing OTU table
+12/11/2023 12:11:24 PM INFO: Finished genus expectation maximization
+12/11/2023 12:11:24 PM INFO: Total coverage: 16394.685498391616
+12/11/2023 12:11:24 PM INFO: Taxonomic level coverage:
+12/11/2023 12:11:24 PM INFO: kingdom:	0.54%	2 taxons
+12/11/2023 12:11:24 PM INFO: phylum:	0.14%	3 taxons
+12/11/2023 12:11:24 PM INFO: class:	0.75%	7 taxons
+12/11/2023 12:11:24 PM INFO: order:	2.58%	7 taxons
+12/11/2023 12:11:24 PM INFO: family:	14.23%	19 taxons
+12/11/2023 12:11:24 PM INFO: genus:	61.32%	40 taxons
+12/11/2023 12:11:24 PM INFO: species:	20.45%	18 taxons
+12/11/2023 12:11:24 PM INFO: Removing off-target OTUs from Sg5.feces_1
+12/11/2023 12:11:24 PM INFO: Found 22077.78 assigned and 76.41 unassigned OTU coverage units
+12/11/2023 12:11:24 PM INFO: After removing off-target OTUs, found 18662.88 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:11:24 PM INFO: Total coverage by query: 8374.365357855633
+12/11/2023 12:11:24 PM INFO: Total coverage by diamond: 10288.514817684953
+12/11/2023 12:11:24 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:11:24 PM INFO: Found 7 species uniquely hitting >= 10 marker genes
+12/11/2023 12:11:25 PM INFO: Species-wise EM converged in 100 steps
+12/11/2023 12:11:25 PM INFO: Gathering equivalence classes
+12/11/2023 12:11:25 PM INFO: Demultiplexing OTU table
+12/11/2023 12:11:25 PM INFO: Finished expectation maximization
+12/11/2023 12:11:25 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:11:40 PM INFO: Converted 2371 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:11:40 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:11:42 PM INFO: Genus-wise EM converged in 76 steps
+12/11/2023 12:11:42 PM INFO: Gathering equivalence classes
+12/11/2023 12:11:42 PM INFO: Demultiplexing OTU table
+12/11/2023 12:11:42 PM INFO: Finished genus expectation maximization
+12/11/2023 12:11:42 PM INFO: Total coverage: 18662.8801755407
+12/11/2023 12:11:42 PM INFO: Taxonomic level coverage:
+12/11/2023 12:11:42 PM INFO: kingdom:	2.13%	2 taxons
+12/11/2023 12:11:42 PM INFO: phylum:	0.20%	5 taxons
+12/11/2023 12:11:42 PM INFO: class:	0.83%	6 taxons
+12/11/2023 12:11:42 PM INFO: order:	1.90%	9 taxons
+12/11/2023 12:11:42 PM INFO: family:	16.34%	21 taxons
+12/11/2023 12:11:42 PM INFO: genus:	64.75%	63 taxons
+12/11/2023 12:11:42 PM INFO: species:	13.85%	25 taxons
+12/11/2023 12:11:42 PM INFO: Removing off-target OTUs from Sg6.feces_1
+12/11/2023 12:11:42 PM INFO: Found 16756.61 assigned and 24.28 unassigned OTU coverage units
+12/11/2023 12:11:42 PM INFO: After removing off-target OTUs, found 14021.65 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:11:42 PM INFO: Total coverage by query: 6432.232952759223
+12/11/2023 12:11:42 PM INFO: Total coverage by diamond: 7589.4185836883835
+12/11/2023 12:11:42 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:11:42 PM INFO: Found 4 species uniquely hitting >= 10 marker genes
+12/11/2023 12:11:42 PM INFO: Species-wise EM converged in 39 steps
+12/11/2023 12:11:42 PM INFO: Gathering equivalence classes
+12/11/2023 12:11:43 PM INFO: Demultiplexing OTU table
+12/11/2023 12:11:43 PM INFO: Finished expectation maximization
+12/11/2023 12:11:43 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:11:52 PM INFO: Converted 1727 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:11:52 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:11:52 PM INFO: Genus-wise EM converged in 43 steps
+12/11/2023 12:11:52 PM INFO: Gathering equivalence classes
+12/11/2023 12:11:52 PM INFO: Demultiplexing OTU table
+12/11/2023 12:11:52 PM INFO: Finished genus expectation maximization
+12/11/2023 12:11:52 PM INFO: Total coverage: 14021.651536447438
+12/11/2023 12:11:53 PM INFO: Taxonomic level coverage:
+12/11/2023 12:11:53 PM INFO: kingdom:	1.15%	2 taxons
+12/11/2023 12:11:53 PM INFO: phylum:	0.65%	6 taxons
+12/11/2023 12:11:53 PM INFO: class:	0.86%	7 taxons
+12/11/2023 12:11:53 PM INFO: order:	1.40%	7 taxons
+12/11/2023 12:11:53 PM INFO: family:	20.63%	21 taxons
+12/11/2023 12:11:53 PM INFO: genus:	62.13%	53 taxons
+12/11/2023 12:11:53 PM INFO: species:	13.18%	25 taxons
+12/11/2023 12:11:53 PM INFO: Removing off-target OTUs from Sg7.feces_1
+12/11/2023 12:11:53 PM INFO: Found 17059.41 assigned and 15.07 unassigned OTU coverage units
+12/11/2023 12:11:53 PM INFO: After removing off-target OTUs, found 14292.20 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:11:53 PM INFO: Total coverage by query: 6570.445832832479
+12/11/2023 12:11:53 PM INFO: Total coverage by diamond: 7721.754930017737
+12/11/2023 12:11:53 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:11:53 PM INFO: Found 4 species uniquely hitting >= 10 marker genes
+12/11/2023 12:11:53 PM INFO: Species-wise EM converged in 16 steps
+12/11/2023 12:11:53 PM INFO: Gathering equivalence classes
+12/11/2023 12:11:53 PM INFO: Demultiplexing OTU table
+12/11/2023 12:11:53 PM INFO: Finished expectation maximization
+12/11/2023 12:11:53 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:12:07 PM INFO: Converted 1872 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:12:07 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:12:09 PM INFO: Genus-wise EM converged in 89 steps
+12/11/2023 12:12:09 PM INFO: Gathering equivalence classes
+12/11/2023 12:12:09 PM INFO: Demultiplexing OTU table
+12/11/2023 12:12:09 PM INFO: Finished genus expectation maximization
+12/11/2023 12:12:09 PM INFO: Total coverage: 14292.200762850009
+12/11/2023 12:12:09 PM INFO: Taxonomic level coverage:
+12/11/2023 12:12:09 PM INFO: kingdom:	2.52%	2 taxons
+12/11/2023 12:12:09 PM INFO: phylum:	0.31%	7 taxons
+12/11/2023 12:12:09 PM INFO: class:	0.85%	5 taxons
+12/11/2023 12:12:09 PM INFO: order:	3.30%	9 taxons
+12/11/2023 12:12:09 PM INFO: family:	18.32%	23 taxons
+12/11/2023 12:12:09 PM INFO: genus:	60.41%	49 taxons
+12/11/2023 12:12:09 PM INFO: species:	14.29%	24 taxons
+12/11/2023 12:12:09 PM INFO: Removing off-target OTUs from Sg8.feces_1
+12/11/2023 12:12:09 PM INFO: Found 18431.37 assigned and 21.45 unassigned OTU coverage units
+12/11/2023 12:12:09 PM INFO: After removing off-target OTUs, found 15317.60 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:12:09 PM INFO: Total coverage by query: 5907.336931052424
+12/11/2023 12:12:09 PM INFO: Total coverage by diamond: 9410.265521895786
+12/11/2023 12:12:09 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:12:09 PM INFO: Found 5 species uniquely hitting >= 10 marker genes
+12/11/2023 12:12:10 PM INFO: Species-wise EM converged in 153 steps
+12/11/2023 12:12:10 PM INFO: Gathering equivalence classes
+12/11/2023 12:12:10 PM INFO: Demultiplexing OTU table
+12/11/2023 12:12:10 PM INFO: Finished expectation maximization
+12/11/2023 12:12:10 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:12:28 PM INFO: Converted 2109 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:12:28 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:12:30 PM INFO: Genus-wise EM converged in 126 steps
+12/11/2023 12:12:30 PM INFO: Gathering equivalence classes
+12/11/2023 12:12:30 PM INFO: Demultiplexing OTU table
+12/11/2023 12:12:30 PM INFO: Finished genus expectation maximization
+12/11/2023 12:12:30 PM INFO: Total coverage: 15317.602452948013
+12/11/2023 12:12:30 PM INFO: Taxonomic level coverage:
+12/11/2023 12:12:30 PM INFO: kingdom:	2.44%	2 taxons
+12/11/2023 12:12:30 PM INFO: phylum:	0.34%	5 taxons
+12/11/2023 12:12:30 PM INFO: class:	1.27%	6 taxons
+12/11/2023 12:12:30 PM INFO: order:	2.69%	8 taxons
+12/11/2023 12:12:30 PM INFO: family:	19.13%	24 taxons
+12/11/2023 12:12:30 PM INFO: genus:	64.06%	63 taxons
+12/11/2023 12:12:30 PM INFO: species:	10.07%	16 taxons
+12/11/2023 12:12:30 PM INFO: Removing off-target OTUs from Sg9.feces_1
+12/11/2023 12:12:30 PM INFO: Found 15927.15 assigned and 28.20 unassigned OTU coverage units
+12/11/2023 12:12:30 PM INFO: After removing off-target OTUs, found 13318.66 assigned and 0.00 unassigned OTU coverage units
+12/11/2023 12:12:30 PM INFO: Total coverage by query: 6178.2713756903795
+12/11/2023 12:12:30 PM INFO: Total coverage by diamond: 7140.385217193838
+12/11/2023 12:12:30 PM INFO: Applying species-wise expectation maximization algorithm to OTU table
+12/11/2023 12:12:30 PM INFO: Found 3 species uniquely hitting >= 10 marker genes
+12/11/2023 12:12:31 PM INFO: Species-wise EM converged in 29 steps
+12/11/2023 12:12:31 PM INFO: Gathering equivalence classes
+12/11/2023 12:12:31 PM INFO: Demultiplexing OTU table
+12/11/2023 12:12:31 PM INFO: Finished expectation maximization
+12/11/2023 12:12:31 PM INFO: Converting DIAMOND IDs to taxons
+12/11/2023 12:12:38 PM INFO: Converted 1579 Diamond-assigned OTU taxon_ids to taxon strings
+12/11/2023 12:12:38 PM INFO: Applying genus-wise expectation maximization algorithm to OTU table
+12/11/2023 12:12:39 PM INFO: Genus-wise EM converged in 77 steps
+12/11/2023 12:12:39 PM INFO: Gathering equivalence classes
+12/11/2023 12:12:39 PM INFO: Demultiplexing OTU table
+12/11/2023 12:12:39 PM INFO: Finished genus expectation maximization
+12/11/2023 12:12:39 PM INFO: Total coverage: 13318.656592884066
+12/11/2023 12:12:39 PM INFO: Taxonomic level coverage:
+12/11/2023 12:12:39 PM INFO: kingdom:	1.70%	2 taxons
+12/11/2023 12:12:39 PM INFO: phylum:	0.38%	5 taxons
+12/11/2023 12:12:39 PM INFO: class:	0.64%	7 taxons
+12/11/2023 12:12:39 PM INFO: order:	3.10%	10 taxons
+12/11/2023 12:12:39 PM INFO: family:	16.98%	24 taxons
+12/11/2023 12:12:39 PM INFO: genus:	62.37%	42 taxons
+12/11/2023 12:12:39 PM INFO: species:	14.82%	17 taxons
+12/11/2023 12:12:39 PM INFO: Finished condense

@@ -1,0 +1,1091 @@
+---
+title: "Lizards from Mauricio"
+author: "Ostaizka Aizpurua"
+output:
+  html_document: default
+  pdf_document: default
+date: "2023-12-12"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries, message=FALSE, warning=FALSE, echo=FALSE}
+## Load required libraries
+library(tidyverse)
+library(ape)
+library(devtools)
+library(ggplot2)
+library(hillR)
+library(spaa)
+library(vegan)
+library(hilldiv)
+library(phyloseq)
+library(phytools)
+library(microbiome)
+library(matrixStats)
+library(microbiomeutilities)
+library(lme4)
+library(MuMIn)
+library(nlme)
+library(knitr)
+#library(kableExtra)
+library(pairwiseAdonis)
+library(sjPlot)
+library(distillR)
+library(RColorBrewer)
+library(reshape2)
+library(ggpubr)
+library(ggdendro)
+library(grid)
+library(gplots)
+library(dendextend)
+library(stringr)
+library(Rtsne)
+library(glue)
+library(ggtree)
+library(ggnewscale)
+library(ggtreeExtra)
+library(gridExtra)
+library(hilldiv2)
+```
+
+```{r directories, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+set.seed(0024)
+```
+
+```{r loaddata, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+## Load data 
+counts_table <- read_tsv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/coverm/genome.count.tsv") %>%
+    dplyr::rename(Genome=1)
+genomes <- counts_table$Genome # create list of genome names
+basehits <- read_tsv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/coverm/genome.covered_bases.tsv") %>%
+  dplyr::rename(Genome=1) %>%
+  arrange(match(Genome, genomes))
+maglengths <- read_tsv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/coverm/genome.length.tsv") %>%
+  dplyr::rename(Genome=1,MAGlength=2) %>% #remove redundancy and rename
+  dplyr::select(Genome,MAGlength)%>%
+  arrange(match(Genome, genomes))
+metadata <- read_csv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/coverm/metadata.csv")
+metarow <- column_to_rownames(metadata, "sample")
+mags_table <- read_tsv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/gtdbtk/gtdbtk.summary.tsv")%>%
+    dplyr::rename(Genome=1)
+contam_comp_table <- read_tsv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/checkm2/quality_report.tsv") %>%
+  dplyr::rename(Genome=1)%>%
+  arrange(match(Genome, genomes))
+magtree <- read.tree("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/gtdbtk/classify/gtdbtk.backbone.bac120.classify.tree")
+magtree$tip.label <- str_replace_all(magtree$tip.label,"'", "") #remove .fa extension
+magtree <- keep.tip(magtree, tip=maglengths$Genome) # keep only MAG tips
+filtered_df <- read_tsv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/dram/annotations.tsv")
+# Load EHI taxonomy colours. Download it first if you have not them in your computer
+ehi_phylum_colors <- read.table("~/Documents/Projects/ehi_phylum_colors.tsv",sep="\t",header=T,comment.char = "")
+ehi_phylum_colors1 <- ehi_phylum_colors %>%
+  mutate_at(vars(phylum), ~ str_replace(., "[dpcofgs]__", ""))
+taxonomy <- mags_table%>%
+  mutate(Genome = str_replace_all(Genome,"\\.fa", "")) %>%
+  separate(classification, c("Domain", "Phylum","Class","Order","Family","Genus","Species"),  sep =";") %>%
+  select(Genome,Domain,Phylum,Class,Order,Family,Genus,Species) %>%
+  mutate_at(vars(Domain,Phylum,Class,Order,Family,Genus,Species), ~ str_replace(., "[dpcofgs]__", ""))
+coverage <- basehits %>%
+  mutate(across(where(is.numeric), ~ ./maglengths$MAGlength))
+```
+
+```{r coverage, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+## Filtering and normalisation
+counts_table_row <- column_to_rownames(counts_table, "Genome")
+min_coverage=0.3
+count_table_cov <- coverage %>%
+  column_to_rownames(., "Genome") %>%
+  mutate(across(everything(), ~ ifelse(. > min_coverage, 1, 0))) %>%
+  map2_df(., counts_table_row, ~ .x * .y) %>%
+  as.data.frame()
+rownames(count_table_cov) <- rownames(counts_table_row)
+
+readlength=150 #change if sequencing read length is different
+count_table_cov_size <- count_table_cov %>%
+  mutate(across(where(is.numeric), ~ . / (maglengths$MAGlength / readlength) ))
+```
+
+```{r count relative,  comment="", echo=FALSE, message=FALSE, warning=FALSE}
+#Filtered count table
+count_table_cov_size <- count_table_cov_size[,which(colSums(count_table_cov_size) != 0)]
+count <- rownames_to_column(count_table_cov_size, "Genome")
+#Filtered relative count table
+count_rel <- count %>%
+mutate_at(vars(-Genome),~./sum(.))
+count_rel_row <- column_to_rownames(count_rel, "Genome")
+count_rel_row <- count_rel_row[,which(colSums(count_rel_row) != 0)]
+count_rel <- rownames_to_column(count_rel_row, "Genome")
+```
+
+```{r plot_prep, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+count_table_cov_size_pivot <- count_table_cov_size %>%
+  rownames_to_column("Genome") %>%
+  mutate_at(vars(-Genome),~./sum(.)) %>% #apply TSS nornalisation
+  pivot_longer(-Genome, names_to = "sample", values_to = "count") %>% #reduce to minimum number of columns
+  left_join(., taxonomy, by = join_by(Genome == Genome)) #append taxonomy
+
+count_table_cov_size_pivot_meta <- metadata %>%
+  merge(., count_table_cov_size_pivot, by="sample") %>%
+  mutate(Phylum = fct_relevel(Phylum, rev(ehi_phylum_colors1$phylum))) #sort phyla by taxonomy
+
+# Retrieve taxonomy colors to use standardised EHI colors
+phylum_colors <- ehi_phylum_colors1 %>%
+  filter(phylum %in% unique(count_table_cov_size_pivot$Phylum)) %>%
+  select(colors) %>%
+  pull() %>%
+  rev()
+phylum_colors <- c(phylum_colors,"#cccccc") #REMOVE! ONLY FOR ARCHAEANS
+
+# Arrange colors alphabetically
+colors_alphabetic <- ehi_phylum_colors1 %>%
+  right_join(taxonomy, by=join_by(phylum == Phylum)) %>%
+    arrange(match(Genome, magtree$tip.label)) %>%
+  select(phylum, colors) %>%
+    unique() %>%
+    arrange(phylum) %>%
+    select(colors) %>%
+    pull()
+```
+
+```{r phyloseq, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+#Phyloseq object
+count_phy <- otu_table(count_table_cov_size, taxa_are_rows=T)
+sample_info_tab_phy <- sample_data(metarow)
+taxonomy_row <- column_to_rownames(taxonomy, "Genome")
+asv_tax.m <- as.matrix(taxonomy_row)
+TAX = tax_table(asv_tax.m)
+physeq_all = phyloseq(count_phy, TAX, sample_info_tab_phy, magtree)
+```
+
+## Summary
+```{r summary, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+nsamples <- ncol(counts_table_row)
+nmags <- nrow(counts_table_row)
+sequencing_depth <- colSums(counts_table_row)
+sequencing_depth_sum <- sum(sequencing_depth)
+sequencing_depth_mean <- mean(sequencing_depth)
+sequencing_depth_sd <- sd(sequencing_depth)
+```
+
+**Number of samples in total**
+```{r nsamples, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+nsamples
+```
+
+**Number of MAGs**
+```{r nmags, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+nmags
+```
+
+**Number of MAGs without species-level annotation**
+```{r no-species, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+taxonomy %>%
+    filter(Species == "") %>%
+    nrow()
+```
+
+**Number of phylums**
+```{r phylumunique, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+taxonomy %>%
+  select(Phylum) %>%
+  unique() %>%
+  pull() %>%
+  length()
+```
+
+**Total sequencing depth (bacteria)**
+```{r totalseq, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+sequencing_depth_sum
+```
+
+**Average and SD sequencing depth (bacteria)**
+```{r averageseq, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+sequencing_depth_mean
+sequencing_depth_sd
+```
+
+**Reads map to MAGs**
+```{r coveragevalue, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+coverage_row <- coverage %>%
+  column_to_rownames(., "Genome") %>%
+  colSums(.) %>%
+  as.data.frame %>%
+  dplyr::rename( "Mapped" = ".") %>%
+  rownames_to_column(., "Sample")
+coverage_row$Unmapped <-  100 - coverage_row$Mapped
+
+mapping_info <- coverage_row %>%
+  t() %>%
+  as.data.frame()
+
+colnames(mapping_info) <- mapping_info[1,]
+mapping_info <- mapping_info[-1, ]
+
+mapping_info_pivot <- mapping_info %>%
+  rownames_to_column(., "Mapped") %>%
+  pivot_longer(-Mapped, names_to = "sample", values_to = "count")
+
+mapping_info_pivot$count <- as.numeric(mapping_info_pivot$count)
+mapping_info_pivot_meta <- merge(mapping_info_pivot, metadata, by="sample")
+
+mapping_info_pivot_meta$Mapped <- factor(mapping_info_pivot_meta$Mapped, levels=c('Unmapped', 'Mapped'))
+```
+
+```{r plot_MappUnMapp1, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(mapping_info_pivot_meta, aes(x=sample,y=count,fill=Mapped))+ 
+  geom_bar(stat="identity", colour="white", linewidth=0.1) +
+  scale_fill_manual(values = c("lightblue4","lightcoral"))+
+  labs(x = "Samples", y = "% of reads") +
+  ggtitle("Percentage of mapped and unmapped reads to the MAG catalogue") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 4),
+        strip.text.x = element_text(size = 7, face = "bold"),
+        strip.background = element_rect(colour=NA, fill=NA),
+        panel.background = element_rect(fill = NA, color = "black"),
+        panel.border = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(linewidth = 0.5, linetype = "solid", colour = "black"),
+        legend.position="bottom",
+        legend.title=element_blank())
+```
+
+
+```{r dataprep, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+# Which phylum the MAG belongs to
+phyla <- ehi_phylum_colors1 %>%
+  right_join(taxonomy, by=join_by(phylum == Phylum)) %>%
+    arrange(match(Genome, magtree$tip.label)) %>%
+  select(phylum, colors) %>%
+    unique()
+
+# What is the genome size of the MAG in MBs (megabases)
+mag_sizes <- maglengths %>%
+          select(c(Genome,MAGlength)) %>%
+          mutate(MAGlength=round(MAGlength/1000000,2))
+
+# What is the completeness of the MAG
+mag_completeness <- contam_comp_table %>%
+         select(c(Genome,Completeness, Contamination)) %>%
+         as.data.frame() %>%
+         remove_rownames()
+
+# Generate the phylum color heatmap
+heatmap <- ehi_phylum_colors1 %>%
+  right_join(taxonomy, by=join_by(phylum == Phylum)) %>%
+    arrange(match(Genome, magtree$tip.label)) %>%
+  select(Genome,phylum) %>%
+    mutate(phylum = factor(phylum, levels = unique(phylum))) %>%
+    column_to_rownames(var = "Genome")
+```
+
+```{r treeprep, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+# Create baseline circular tree
+circular_tree <- force.ultrametric(magtree,method="extend") %>%
+    ggtree(., layout = 'circular', size = 0.3, angle=45)
+```
+```{r colortreeprep, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+# Add phylum colors ring
+circular_tree <- gheatmap(circular_tree, heatmap, offset=0.85, width=0.1, colnames=FALSE) +
+        scale_fill_manual(values=colors_alphabetic) +
+        geom_tiplab2(size=1, hjust=-0.1) +
+        theme(legend.position = "none", plot.margin = margin(0, 0, 0, 0), panel.margin = margin(0, 0, 0, 0))
+
+# Flush color scale to enable a new color scheme in the next ring
+circular_tree <- circular_tree + new_scale_fill()
+
+# Add completeness ring
+circular_tree <-  circular_tree +
+        new_scale_fill() +
+        scale_fill_gradient(low = "#d1f4ba", high = "#f4baba") +
+        geom_fruit(
+                data=mag_completeness,
+                geom=geom_bar,
+                mapping = aes(x=Completeness, y=Genome, fill=Contamination),
+                offset = 0.55,
+                orientation="y",
+              stat="identity")
+
+# Add genome-size ring
+circular_tree <-  circular_tree +
+        new_scale_fill() +
+        scale_fill_manual(values = "#cccccc") +
+        geom_fruit(
+             data=mag_sizes,
+             geom=geom_bar,
+             mapping = aes(x=MAGlength, y=Genome),
+                 offset = 0.05,
+                 orientation="y",
+         stat="identity")
+
+#Plot circular tree
+circular_tree
+```
+
+```{r legenprep, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+# Create legend
+phyla_legend <- ehi_phylum_colors1 %>%
+  right_join(taxonomy, by=join_by(phylum == Phylum)) %>%
+    arrange(match(Genome, magtree$tip.label)) %>%
+  select(phylum, colors) %>%
+    unique() %>%
+  mutate(phylum = factor(phylum, levels = phylum)) %>%
+    ggplot() +
+      geom_blank() +
+      geom_rect(aes(xmin = 1:(nrow(phyla)) - 0.5, xmax = 1:(nrow(phyla)) + 0.5, ymin = 0.19, ymax = 0.2, fill = phylum)) +
+        scale_fill_manual(values=rev(phyla$colors)) +
+      geom_text(aes(x = 1:(nrow(phyla)), y = 0.15, label = rev(phylum)), angle = 90, hjust = 0, size = 3) +
+      theme_void() +
+      theme(legend.position = "none")
+
+# Plot legend
+phyla_legend
+```
+
+## Mag quality
+```{r Magquality, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+mag_details <- mag_completeness%>%
+  merge(., mag_sizes, by="Genome") %>%
+  merge(., taxonomy[ , c("Genome", "Phylum")], by="Genome") %>%
+  remove_rownames() %>%
+  arrange(match(Genome, rev(magtree$tip.label))) #sort MAGs according to phylogenetic tree
+```
+```{r Magquality1, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+mag_stats_biplot <- mag_details %>%
+        ggplot(aes(x=Completeness,y=Contamination,size=MAGlength,color=Phylum)) +
+              geom_point(alpha=0.7) +
+                    ylim(c(10,0)) +
+                    scale_color_manual(values=colors_alphabetic) +
+                labs(y= "Contamination", x = "Completeness") +
+                    theme_classic() +
+                  theme(legend.position = "none")
+```
+```{r Magquality2, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+mag_stats_cont <- mag_details %>%
+            ggplot(aes(y=Contamination)) +
+                    ylim(c(10,0)) +
+                    geom_boxplot(colour = "#999999", fill="#cccccc") +
+                    theme_void() +
+                    theme(legend.position = "none",
+                        axis.title.x = element_blank(),
+                        axis.title.y = element_blank(),
+                        axis.text.y=element_blank(),
+                  axis.ticks.y=element_blank(),
+                        axis.text.x=element_blank(),
+                  axis.ticks.x=element_blank(),
+                        plot.margin = unit(c(0, 0, 0.40, 0),"inches")) #add bottom-margin (top, right, bottom, left)
+```
+```{r Magquality3, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+mag_stats_comp <-mag_details %>%
+        ggplot(aes(x=Completeness)) +
+                xlim(c(50,100)) +
+                geom_boxplot(colour = "#999999", fill="#cccccc") +
+                theme_void() +
+                theme(legend.position = "none",
+                    axis.title.x = element_blank(),
+                    axis.title.y = element_blank(),
+                    axis.text.y=element_blank(),
+              axis.ticks.y=element_blank(),
+                    axis.text.x=element_blank(),
+              axis.ticks.x=element_blank(),
+                    plot.margin = unit(c(0, 0, 0, 0.50),"inches")) #add left-margin (top, right, bottom, left)
+```
+
+```{r Magquality_plot, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+grid.arrange(grobs = list(mag_stats_comp,mag_stats_biplot,mag_stats_cont),
+        layout_matrix = rbind(c(1,1,1,1,1,1,1,1,1,1,1,4),
+                                                    c(2,2,2,2,2,2,2,2,2,2,2,3),
+                                                    c(2,2,2,2,2,2,2,2,2,2,2,3),
+                                                    c(2,2,2,2,2,2,2,2,2,2,2,3),
+                                                    c(2,2,2,2,2,2,2,2,2,2,2,3),
+                                                    c(2,2,2,2,2,2,2,2,2,2,2,3),
+                                                    c(2,2,2,2,2,2,2,2,2,2,2,3),
+                                                    c(2,2,2,2,2,2,2,2,2,2,2,3),
+                                                    c(2,2,2,2,2,2,2,2,2,2,2,3),
+                                                    c(2,2,2,2,2,2,2,2,2,2,2,3),
+                                                    c(2,2,2,2,2,2,2,2,2,2,2,3),
+                                                    c(2,2,2,2,2,2,2,2,2,2,2,3)))
+```
+
+## Barplots
+### Phylum
+```{r plot_phy, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+# Plot stacked barplot
+ggplot(count_table_cov_size_pivot_meta, aes(x=sample,y=count,fill=Phylum, group=Phylum))+ #grouping enables keeping the same sorting of taxonomic units
+    geom_bar(stat="identity")+ 
+    scale_fill_manual(values=phylum_colors) +
+    labs(x = "Samples", y = "Relative abundance") +
+    guides(fill = guide_legend(ncol = 4)) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 6),
+        strip.text.x = element_text(size = 6, face = "bold"),
+        strip.background = element_rect(colour=NA, fill=NA),
+        panel.background = element_rect(fill = NA, color = "black"),
+        panel.border = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(linewidth = 0.5, linetype = "solid", colour = "black"),
+        legend.position="bottom",
+        legend.title=element_blank(),
+        legend.text = element_text(size=6),
+        legend.key.size = unit(0.3, 'cm'))
+```
+
+### Order
+```{r physeq_caecumO, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+top_order <- aggregate_top_taxa2(physeq_all, top = 9, "Order")
+physeq_caecum_order.rel <-  microbiome::transform(top_order, "compositional")
+dat.dataframe.top_order = psmelt(physeq_caecum_order.rel)
+
+order_colors <- c("#cccccc","#E06708","#E2E308", "#E09F08", "#6b7398", "#2a2d26", "#d57d2c","#086372","#76b183", "#086C98")
+#pdf(paste(workingdir,"/Barplot.pdf",sep=""),width=14, height=9)
+ggplot(dat.dataframe.top_order, aes(x=Sample,y=Abundance,fill=fct_reorder(OTU, Abundance)))+ #grouping enables keeping the same sorting of taxonomic units+
+  scale_fill_manual(values=order_colors)+
+  geom_bar(stat="identity") +
+#    facet_grid(~Groups, scale="free", space = "free") +#, labeller = as_labeller(daynames)
+    labs(x = "Samples", y = "Relative abundance") +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 8),
+        strip.text.x = element_text(size = 10, face = "bold"),
+        strip.background = element_rect(colour=NA, fill=NA),
+        axis.title=element_text(size=14,face="bold"),
+        panel.background = element_rect(fill = NA, color = "black"),
+        panel.border = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(linewidth = 0.5, linetype = "solid", colour = "black"),
+        legend.title = element_text(size=14,face = "bold"),
+        legend.position="bottom",
+        legend.text = element_text(size=8),
+        legend.key.size = unit(0.5, 'cm')) + 
+  labs(fill = "Order")
+#dev.off()
+```
+
+### Family
+```{r barplotF, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+top_family <- aggregate_top_taxa2(physeq_all, top = 9, "Family")
+physeq_top_family.rel <-  microbiome::transform(top_family, "compositional")
+dat.dataframe.top_family = psmelt(physeq_top_family.rel)
+
+order_colors <- c("#cccccc","#E06708","#E2E308", "#E09F08", "#6b7398", "#2a2d26", "#d57d2c","#086372","#76b183", "#086C98")
+#pdf(paste(workingdir,"/BarplotF.pdf",sep=""),width=14, height=9)
+ggplot(dat.dataframe.top_family, aes(x=Sample,y=Abundance,fill=fct_reorder(OTU, Abundance)))+ #grouping enables keeping the same sorting of taxonomic units+
+  scale_fill_manual(values=order_colors)+
+  geom_bar(stat="identity") +
+#    facet_grid(~Groups, scale="free", space = "free") +#, labeller = as_labeller(daynames)
+    labs(x = "Samples", y = "Relative abundance") +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 8),
+        strip.text.x = element_text(size = 10, face = "bold"),
+        strip.background = element_rect(colour=NA, fill=NA),
+        axis.title=element_text(size=14,face="bold"),
+        panel.background = element_rect(fill = NA, color = "black"),
+        panel.border = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(linewidth = 0.5, linetype = "solid", colour = "black"),
+        legend.title = element_text(size=14,face = "bold"),
+        legend.position="bottom",
+        legend.text = element_text(size=8),
+        legend.key.size = unit(0.5, 'cm')) + 
+  labs(fill = "Family")
+#dev.off()
+```
+
+### Alpha diversity
+```{r divs, comment="", echo=FALSE, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+q0n <- hilldiv(count_table_cov_size,q=0) %>% as.numeric()
+q1n <- hilldiv(count_table_cov_size,q=1) %>% as.numeric()
+q1p <- hilldiv(count_table_cov_size,q=1,tree=magtree) %>% as.numeric()
+```
+
+```{r all_divs, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+# Merge all metrics
+alpha_div <- cbind(sample=colnames(count_table_cov_size),richness=q0n,neutral=round(q1n,3),phylo=round(q1p,3)) %>%
+  as.data.frame() %>%
+  column_to_rownames(., "sample") %>%
+  mutate_if(is.character, as.numeric) %>%
+  rownames_to_column(., "sample")
+
+#Means
+alpha_div_N <-  alpha_div  %>%
+  merge(., metadata, by.x="sample", by.y="sample")
+
+q0n_mean_caecum <- alpha_div_N %>% 
+  group_by(Sample_type) %>% 
+  dplyr::summarise_at(.vars = names(.)[2],.funs = c(q0n_mean="mean", q0n_sd="sd"))
+
+q1n_mean_caecum <- alpha_div_N %>% 
+  group_by(Sample_type) %>% 
+  summarise_at(.vars = names(.)[3],.funs = c(q1n_mean="mean", q1n_sd="sd"))
+
+q1P_mean_caecum <- alpha_div_N %>% 
+  group_by(Sample_type) %>% 
+  summarise_at(.vars = names(.)[4],.funs = c(q1P_mean="mean", q1P_sd="sd"))
+
+grouped_div <- cbind(q0n_mean_caecum,q1n_mean_caecum[,2:3],q1P_mean_caecum[,2:3]) %>%
+  as.data.frame()
+knitr::kable(grouped_div, format = "html", digits = 2) #%>%  kable_styling(latex_options="scale_down")
+```
+
+#### Alpha diversity plots
+```{r alpha_div_richness_plot_caecumR, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+alpha_colors <- c("#e5bd5b","#6b7398","#76b183","#d57d2c","#2a2d26","#f9d4cc","#3c634e","#ea68c3")
+group_n <- alpha_div_N %>%
+        select(Sample_type) %>% pull() %>% unique() %>% length()
+
+#pdf(paste(workingdir,"/richnessB692_all_caecum_violin.pdf",sep=""),width=14, height=9)
+alpha_div_N %>%
+  ggplot(aes(x=Sample_type,y=richness,group=Sample_type,color=Sample_type, fill=Sample_type))+
+    geom_jitter(width = 0.2, size = 1.5, show.legend = FALSE)+ 
+    geom_violin(alpha=0.2,outlier.shape = NA, width = 0.5, show.legend = FALSE, coef=0)+
+  scale_color_manual(values=alpha_colors[c(1:group_n)]) +
+  scale_fill_manual(values=paste0(alpha_colors[c(1:group_n)],"50")) +
+#  stat_compare_means() +
+    theme(axis.text.x = element_text(vjust = 0.5), #, size=18
+          axis.text.y = element_text(size=16),
+          axis.title=element_text(size=20,face="bold"),
+          axis.text = element_text(face="bold", size=18),
+          axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+          axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0)),
+          panel.background = element_blank(),
+#          panel.border = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+          legend.text = element_text(size=16),
+          legend.title = element_text(size=18),
+          legend.key.size = unit(1, 'cm'),
+          strip.text.x = element_text(size = 12, color = "black", face = "bold"))+
+  guides(colour = guide_legend(override.aes = list(size=6)))+
+  labs( x = "Sample type", y = "Richness")
+#dev.off()
+```
+
+```{r alpha_div_richness_statis, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+Model_rich <- lme(fixed = richness ~ Sample_type, data = alpha_div_N,
+               random = ~ 1 | Individual)
+summary(Model_rich)
+```
+
+```{r alpha_div_neutral_plot_caecumR, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+alpha_colors <- c("#e5bd5b","#6b7398","#76b183","#d57d2c","#2a2d26","#f9d4cc","#3c634e","#ea68c3")
+group_n <- alpha_div_N %>%
+        select(Sample_type) %>% pull() %>% unique() %>% length()
+
+#pdf(paste(workingdir,"/neutral_violin.pdf",sep=""),width=14, height=9)
+alpha_div_N %>%
+  ggplot(aes(x=Sample_type,y=neutral,group=Sample_type,color=Sample_type, fill=Sample_type))+
+    geom_jitter(width = 0.2, size = 1.5, show.legend = FALSE)+ 
+    geom_violin(alpha=0.2,outlier.shape = NA, width = 0.5, show.legend = FALSE, coef=0)+
+  scale_color_manual(values=alpha_colors[c(1:group_n)]) +
+  scale_fill_manual(values=paste0(alpha_colors[c(1:group_n)],"50")) +
+#  stat_compare_means() +
+    theme(axis.text.x = element_text(vjust = 0.5), #, size=18
+          axis.text.y = element_text(size=16),
+          axis.title=element_text(size=20,face="bold"),
+          axis.text = element_text(face="bold", size=18),
+          axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+          axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0)),
+          panel.background = element_blank(),
+#          panel.border = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+          legend.text = element_text(size=16),
+          legend.title = element_text(size=18),
+          legend.key.size = unit(1, 'cm'),
+          strip.text.x = element_text(size = 12, color = "black", face = "bold"))+
+  guides(colour = guide_legend(override.aes = list(size=6)))+
+  labs( x = "Sample type", y = "Neutral")
+#dev.off()
+```
+
+```{r alpha_div_neutral_statis, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+Model_rich <- lme(fixed = neutral ~ Sample_type, data = alpha_div_N,
+               random = ~ 1 | Individual)
+summary(Model_rich)
+```
+
+
+```{r alpha_div_phylo_plot_caecumR, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+alpha_colors <- c("#e5bd5b","#6b7398","#76b183","#d57d2c","#2a2d26","#f9d4cc","#3c634e","#ea68c3")
+group_n <- alpha_div_N %>%
+        select(Sample_type) %>% pull() %>% unique() %>% length()
+
+#pdf(paste(workingdir,"/neutral_violin.pdf",sep=""),width=14, height=9)
+alpha_div_N %>%
+  ggplot(aes(x=Sample_type,y=phylo,group=Sample_type,color=Sample_type, fill=Sample_type))+
+    geom_jitter(width = 0.2, size = 1.5, show.legend = FALSE)+ 
+    geom_violin(alpha=0.2,outlier.shape = NA, width = 0.5, show.legend = FALSE, coef=0)+
+  scale_color_manual(values=alpha_colors[c(1:group_n)]) +
+  scale_fill_manual(values=paste0(alpha_colors[c(1:group_n)],"50")) +
+#  stat_compare_means() +
+    theme(axis.text.x = element_text(vjust = 0.5), #, size=18
+          axis.text.y = element_text(size=16),
+          axis.title=element_text(size=20,face="bold"),
+          axis.text = element_text(face="bold", size=18),
+          axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+          axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0)),
+          panel.background = element_blank(),
+#          panel.border = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+          legend.text = element_text(size=16),
+          legend.title = element_text(size=18),
+          legend.key.size = unit(1, 'cm'),
+          strip.text.x = element_text(size = 12, color = "black", face = "bold"))+
+  guides(colour = guide_legend(override.aes = list(size=6)))+
+  labs( x = "Sample type", y = "Phylogenetic")
+#dev.off()
+```
+
+```{r alpha_div_phylo_statis, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+Model_rich <- lme(fixed = phylo ~ Sample_type, data = alpha_div_N,
+               random = ~ 1 | Individual)
+summary(Model_rich)
+```
+
+### Beta diversity
+```{r beta_div_neutral_caecum, comment="", echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+
+
+beta_q1n <- hillpair(count_table_cov_size, q=1)
+
+beta_q1p <- hillpair(count_table_cov_size, q=1, tree=magtree)
+
+beta_metric <- beta_q1n$S
+
+beta_q1n_nmds <- beta_metric %>%
+                vegan::metaMDS(.,trymax = 500, k=2, verbosity=FALSE) %>%
+                vegan::scores() %>%
+                as_tibble(., rownames = "sample") %>%
+                dplyr::left_join(metadata, by = join_by(sample == sample))
+
+group_n <- length(unique(beta_q1n_nmds$Sample_type))
+beta_colors <- c("#e5bd5b","#6b7398","#76b183","#d57d2c","#2a2d26","#f9d4cc","#3c634e","#ea68c3")
+#pdf(paste(workingdir,"/betaB692_caecum.pdf",sep=""),width=14, height=9)
+a <- beta_q1n_nmds %>%
+  group_by(Sample_type) %>%
+  mutate(x_cen = mean(NMDS1, na.rm = TRUE)) %>%
+  mutate(y_cen = mean(NMDS2, na.rm = TRUE)) %>%
+  ungroup()
+ggplot(a, aes(x=NMDS1,y=NMDS2, color=Sample_type, shape=Individual)) +
+  scale_color_manual(values=beta_colors[c(1:group_n)]) +
+  scale_shape_manual(values=1:10) +
+  geom_point(size=4) +
+#   stat_ellipse(aes(color = beta_q1n_nmds$Groups))+
+ geom_segment(aes(x=x_cen, y=y_cen, xend=NMDS1, yend=NMDS2), alpha=0.9) +
+  theme_classic()+
+  theme(axis.text.x = element_text(size=12),
+        axis.text.y = element_text(size=12),
+        axis.title=element_text(size=20,face="bold"),
+        axis.text = element_text(face="bold", size=18),
+        panel.background = element_blank(),
+        axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        legend.text = element_text(size=16),
+        legend.title = element_text(size=18),
+        legend.position="right", legend.box="vertical")
+#+ geom_text(aes(label = Sample), size=8)
+#dev.off()
+```
+
+***Permanova Species (strata=habitat)***
+```{r adonisbeta2, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+#### Adonis
+
+metarow <- column_to_rownames(metadata, "sample")
+
+adonis2(beta_metric ~ Sample_type, data=metarow[labels(beta_metric),], permutations = 999, strata=metarow$Individual)%>%
+            as.matrix() %>%
+            kable()
+
+```
+
+## Functional analysis
+
+```{r filter_annotations, comment="", echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+library(distillR)
+
+#Run distillation
+GIFTs <- distill(filtered_df,GIFT_db,genomecol=2,annotcol=c(9,10,19))
+
+```
+
+
+```{r gifts, comment="", echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+
+#Aggregate bundle-level GIFTs into the compound level
+GIFTs_elements <- to.elements(GIFTs,GIFT_db)
+
+#GIFTs_ele_filtered1 <- GIFTs_elements[rownames(GIFTs_elements) %in% count_rel$Genome,]
+#GIFTs_ele_filtered <- count_filt_rel[rownames(count_filt_rel) %in% rownames(GIFTs_elements),]
+
+#Aggregate element-level GIFTs into the function level
+GIFTs_functions <- to.functions(GIFTs_elements,GIFT_db)
+
+#Aggregate function-level GIFTs into overall Biosynthesis, Degradation and Structural GIFTs
+GIFTs_domains <- to.domains(GIFTs_functions,GIFT_db)
+
+rowMeans(GIFTs_functions)
+rowMeans(GIFTs_domains)
+
+#Get community-weighed average GIFTs per sample
+GIFTs_elements_community <- to.community(GIFTs_elements,count_rel_row,GIFT_db)
+GIFTs_functions_community <- to.community(GIFTs_functions,count_rel_row,GIFT_db)
+GIFTs_domains_community <- to.community(GIFTs_domains,count_rel_row,GIFT_db)
+```
+
+```{r alpha_div_funct, comment="", echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+#Convert traits into distance matrix
+dist <- traits2dist(GIFTs_elements, method="gower")
+neutral_div_func <- hilldiv(data=count_rel_row,q=1,dist=dist)
+
+#Q (Rao's Q); D_q (functional hill number, the effective number of equally abundant and functionally equally distinct species); MD_q (mean functional diversity per species, the effective sum of pairwise distances between a fixed species and all other species); FD_q (total functional diversity, the effective total functional distance between species of the assemblage).
+```
+
+### Average functional diversities
+
+```{r div_F_mean, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+alpha_div_F <-  as.data.frame(neutral_div_func) %>%
+  t() %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("sample") %>%
+  merge(., metadata, by="sample")
+
+table_mean_alpha_func <- alpha_div_F %>%
+  group_by(Sample_type) %>% 
+  summarise_at(.vars = names(.)[2],.funs = c(mean="mean", sd="sd"))
+
+knitr::kable(table_mean_alpha_func, format = "html",col.names = c('Sample_type', 'Mean', 'SD'), digits = 3)
+#%>% kable_styling(latex_options="scale_down")
+
+```
+
+### Functional diversity plots
+
+```{r alpha_div_func_plot1, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+alpha_colors <- c("#e5bd5b","#6b7398","#76b183","#d57d2c","#2a2d26","#f9d4cc","#3c634e","#ea68c3")
+group_n <- alpha_div_F %>%
+        select(Sample_type) %>% pull() %>% unique() %>% length()
+alpha_div_F  %>%
+  ggplot(aes(x=Sample_type,y=q1,group=Sample_type,color=Sample_type, fill=Sample_type))+
+    geom_jitter(width = 0.2, size = 1.5, show.legend = FALSE)+ 
+    geom_violin(alpha=0.2,outlier.shape = NA, width = 0.5, show.legend = FALSE, coef=0)+
+  scale_color_manual(values=alpha_colors[c(1:group_n)]) +
+  scale_fill_manual(values=paste0(alpha_colors[c(1:group_n)],"50")) +
+#  stat_compare_means() +
+    theme(axis.text.x = element_text(vjust = 0.5), #, size=18
+          axis.text.y = element_text(size=16),
+          axis.title=element_text(size=20,face="bold"),
+          axis.text = element_text(face="bold", size=18),
+          axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+          axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0)),
+          panel.background = element_blank(),
+#          panel.border = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+          legend.text = element_text(size=16),
+          legend.title = element_text(size=18),
+          legend.key.size = unit(1, 'cm'),
+          strip.text.x = element_text(size = 12, color = "black", face = "bold"))+
+  guides(colour = guide_legend(override.aes = list(size=6)))+
+  labs( x = "Sample_type", y = "Functional diversity")
+
+```
+
+### Functional beta diversity
+
+```{r beta_div_func, comment="", echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+
+beta_div_func <- hillpair(data=count_rel_row,q=1,dist=dist)
+
+beta_metric <- beta_div_func$S
+
+beta_q1n_nmds <- beta_metric %>%
+                vegan::metaMDS(.,trymax = 500, k=2, verbosity=FALSE) %>%
+                vegan::scores() %>%
+                as_tibble(., rownames = "sample") %>%
+                dplyr::left_join(metadata, by = join_by(sample == sample))
+
+group_n <- length(unique(beta_q1n_nmds$Sample_type))
+beta_colors <- c("#e5bd5b","#6b7398","#76b183","#d57d2c","#2a2d26","#f9d4cc","#3c634e","#ea68c3")
+#pdf(paste(workingdir,"/betaB692_caecum.pdf",sep=""),width=14, height=9)
+beta_q1n_nmds %>%
+  group_by(Sample_type)  %>%
+  mutate(x_cen = mean(NMDS1, na.rm = TRUE)) %>%
+  mutate(y_cen = mean(NMDS2, na.rm = TRUE)) %>%
+  ungroup() %>%
+  ggplot(., aes(x=NMDS1,y=NMDS2, color=Sample_type, shape=Individual)) +
+  scale_color_manual(values=beta_colors[c(1:group_n)])  +
+  scale_shape_manual(values=1:10) +
+  geom_point(size=3) +
+#   stat_ellipse(aes(color = beta_q1n_nmds$Groups))+
+ geom_segment(aes(x=x_cen, y=y_cen, xend=NMDS1, yend=NMDS2), alpha=0.7) +
+  theme_classic()+
+  theme(axis.text.x = element_text(size=10),
+        axis.text.y = element_text(size=10),
+        axis.title=element_text(size=18,face="bold"),
+        axis.text = element_text(face="bold", size=18),
+        panel.background = element_blank(),
+        axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        legend.text = element_text(size=14),
+        legend.title = element_text(size=16),
+        legend.position="right", legend.box="vertical")
+#+ geom_text(aes(label = Sample), size=8)
+#dev.off()
+```
+
+***Permanova Sample type (strata=individual)***
+```{r adonisbeta1, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+#### Adonis
+metarow <- column_to_rownames(metadata, "sample")
+adonis2(beta_metric ~ Sample_type, data=metarow[labels(beta_metric),], permutations = 999, strata=metarow$Individual) %>%
+            as.matrix() %>%
+            kable()
+
+```
+
+```{r gift, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+meger_gift <- GIFTs_domains_community %>% 
+  as.data.frame() %>% 
+  rownames_to_column(., "sample") %>% 
+  merge(., metadata, by="sample")
+
+p1 <- meger_gift %>%
+  ggplot(aes(x=Sample_type,y=Degradation,color=Sample_type,fill=Sample_type))+
+    geom_jitter(width = 0.2, size = 3, show.legend = FALSE)+ 
+    geom_boxplot(alpha=0.2,outlier.shape = NA, width = 0.5, show.legend = FALSE, coef=0)+
+  scale_color_manual(values=alpha_colors[c(1:group_n)]) +
+  scale_fill_manual(values=paste0(alpha_colors[c(1:group_n)],"50")) +
+#  stat_compare_means() +
+    theme(axis.text.x = element_text(vjust = 0.5, size=10), #, size=18
+          axis.text.y = element_text(size=10),
+          axis.title=element_text(size=12,face="bold"),
+          axis.text = element_text(face="bold", size=18),
+ #         axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+ #         axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0)),
+          panel.background = element_blank(),
+#          panel.border = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+          legend.text = element_text(size=10),
+          legend.title = element_text(size=12),
+          legend.key.size = unit(1, 'cm'),
+          strip.text.x = element_text(size = 12, color = "black", face = "bold"))+
+  labs( x = "Sample type")
+
+p2 <- meger_gift %>%
+  ggplot(aes(x=Sample_type,y=Degradation,color=Sample_type,fill=Sample_type))+
+    geom_jitter(width = 0.2, size = 3, show.legend = FALSE)+ 
+  geom_boxplot(alpha=0.2,outlier.shape = NA, width = 0.5, show.legend = FALSE, coef=0)+
+  scale_color_manual(values=alpha_colors[c(1:group_n)]) +
+  scale_fill_manual(values=paste0(alpha_colors[c(1:group_n)],"50")) +
+#  stat_compare_means() +
+    theme(axis.text.x = element_text(vjust = 0.5, size=10), #, size=18
+          axis.text.y = element_text(size=10),
+          axis.title=element_text(size=12,face="bold"),
+          axis.text = element_text(face="bold", size=18),
+#          axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+#          axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0)),
+          panel.background = element_blank(),
+#          panel.border = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+          legend.text = element_text(size=10),
+          legend.title = element_text(size=12),
+          legend.key.size = unit(1, 'cm'),
+          strip.text.x = element_text(size = 12, color = "black", face = "bold"))+
+  labs( x = "Sample type")
+p3 <- meger_gift %>%
+  ggplot(aes(x=Sample_type,y=Structure,color=Sample_type,fill=Sample_type))+
+    geom_jitter(width = 0.2, size = 1.5, show.legend = FALSE)+ 
+    geom_boxplot(alpha=0.2,outlier.shape = NA, width = 0.5, show.legend = FALSE, coef=0)+
+ scale_color_manual(values=alpha_colors[c(1:group_n)]) +
+ scale_fill_manual(values=paste0(alpha_colors[c(1:group_n)],"50")) +
+#  stat_compare_means() +
+    theme(axis.text.x = element_text(vjust = 3, size=10), #, size=18
+          axis.text.y = element_text(size=10),
+          axis.title=element_text(size=12,face="bold"),
+          axis.text = element_text(face="bold", size=18),
+#          axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+#          axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0)),
+          panel.background = element_blank(),
+#          panel.border = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+          legend.text = element_text(size=10),
+          legend.title = element_text(size=12),
+          legend.key.size = unit(1, 'cm'),
+          strip.text.x = element_text(size = 12, color = "black", face = "bold"))+
+  labs( x = "Sample type")
+
+p4 <- meger_gift %>%
+  ggplot(aes(x=Sample_type,y=Overall,color=Sample_type,fill=Sample_type))+
+    geom_jitter(width = 0.2, size = 3, show.legend = FALSE)+ 
+    geom_boxplot(alpha=0.2,outlier.shape = NA, width = 0.5, show.legend = FALSE, coef=0)+
+  scale_color_manual(values=alpha_colors[c(1:group_n)]) +
+  scale_fill_manual(values=paste0(alpha_colors[c(1:group_n)],"50")) +
+#  stat_compare_means() +
+    theme(axis.text.x = element_text(vjust = 0.5, size=10), #, size=18
+          axis.text.y = element_text(size=10),
+          axis.title=element_text(size=12,face="bold"),
+          axis.text = element_text(face="bold", size=18),
+#          axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+#          axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0)),
+          panel.background = element_blank(),
+#          panel.border = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+          legend.text = element_text(size=10),
+          legend.title = element_text(size=12),
+          legend.key.size = unit(1, 'cm'),
+          strip.text.x = element_text(size = 12, color = "black", face = "bold"))+
+  labs( x = "Sample type")
+
+p5 <- meger_gift %>%
+  ggplot(aes(x=Sample_type,y=Biosynthesis,color=Sample_type,fill=Sample_type))+
+    geom_jitter(width = 0.2, size = 3, show.legend = FALSE)+ 
+    geom_boxplot(alpha=0.2,outlier.shape = NA, width = 0.5, show.legend = FALSE, coef=0)+
+  scale_color_manual(values=alpha_colors[c(1:group_n)]) +
+  scale_fill_manual(values=paste0(alpha_colors[c(1:group_n)],"50")) +
+#  stat_compare_means() +
+    theme(axis.text.x = element_text(vjust = 0.5, size=10), #, size=18
+          axis.text.y = element_text(size=10),
+          axis.title=element_text(size=12,face="bold"),
+          axis.text = element_text(face="bold", size=18),
+ #         axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+#          axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0)),
+          panel.background = element_blank(),
+#          panel.border = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+          legend.text = element_text(size=10),
+          legend.title = element_text(size=12),
+          legend.key.size = unit(1, 'cm'),
+          strip.text.x = element_text(size = 12, color = "black", face = "bold"))+
+  labs( x = "Sample type")
+
+```
+
+### Differences in bacterial functional capacity
+```{r phylum_plot_together, comment="", echo=FALSE, message=FALSE, warning=FALSE, , fig.dim = c(10, 10)}
+grid.arrange(arrangeGrob(p1, p5,p3, p4, ncol = 2))
+```
+```{r tsne, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+set.seed(100)
+
+GIFTs_elements_tSNE <- Rtsne(X=GIFTs_elements, dims = 2, perplexity = floor((nrow(GIFTs_elements) - 1) / 3), check_duplicates = FALSE)
+
+GIFTs_domains <- as.data.frame(GIFTs_domains)
+GIFTs_domains$Genome <- rownames(GIFTs_domains)
+
+GIFTs_elements_tSNE <- GIFTs_elements_tSNE$Y %>%
+  as.data.frame() %>%
+  mutate(Genome=rownames(GIFTs_elements)) %>%
+  inner_join(GIFTs_domains, by="Genome") %>%
+  inner_join(taxonomy, by="Genome") %>%
+  mutate_at(vars(Phylum, Class, Order, Family, Genus), factor) %>%
+  #mutate(cyl = factor(Phylum, levels = phylum_colors$Phylum)) %>%
+  dplyr::rename(tSNE1="V1", tSNE2="V2")
+
+count_t <- count_rel %>%
+  t() %>%
+  as.data.frame()
+
+colnames(count_t) <- count_t[1,]
+count_t <- count_t[-1, ]
+
+```
+
+```{r tsne_groupA, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+mergetable <- count_t %>%
+  mutate_if(is.character, as.numeric) %>%
+  rownames_to_column("sample") %>%
+  merge(., metadata[ , c("sample", "Sample_type")], by="sample", all.x = TRUE) %>%
+  filter(Sample_type=="feces") %>%
+  column_to_rownames(., "sample")
+
+mergetable <- mergetable [1: ncol(mergetable)-1 ]
+
+GIFTs_elements_tSNE_rel_means <- colMeans(mergetable) %>%
+  as.data.frame() %>%
+  dplyr::rename( "Relative_value" = ".")  %>%
+  rownames_to_column(., "genome") %>%
+  merge(., GIFTs_elements_tSNE, by.x= "genome", by.y= "Genome")
+
+GIFTs_elements_tSNE_rel_means_GroupA <- GIFTs_elements_tSNE_rel_means[GIFTs_elements_tSNE_rel_means$Relative_value != 0, ]
+
+```
+
+```{r tsne_groupB, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+mergetable <- count_t %>%
+  mutate_if(is.character, as.numeric) %>%
+  rownames_to_column("sample") %>%
+  merge(., metadata[ , c("sample", "Sample_type")], by="sample", all.x = TRUE) %>%
+  filter(Sample_type=="cloaca") %>%
+  column_to_rownames(., "sample")
+
+mergetable <- mergetable [1: ncol(mergetable)-1 ]
+
+GIFTs_elements_tSNE_rel_means <- colMeans(mergetable) %>%
+  as.data.frame() %>%
+  dplyr::rename( "Relative_value" = ".")  %>%
+  rownames_to_column(., "genome") %>%
+  merge(., GIFTs_elements_tSNE, by.x= "genome", by.y= "Genome")
+
+GIFTs_elements_tSNE_rel_means_GroupB <- GIFTs_elements_tSNE_rel_means[GIFTs_elements_tSNE_rel_means$Relative_value != 0, ]
+
+```
+
+
+### Feces: tSNE Phylum
+
+```{r tsneA_plot_phylum, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+GIFTs_elements_tSNE_rel_means_GroupA %>%
+  ggplot(aes(x = tSNE1, y = tSNE2, color = Phylum))+
+  geom_point(aes(size = Relative_value), shape=16, alpha=0.8) +
+  #scale_color_gradientn(limits = c(0,1), colours=brewer.pal(7, "YlGnBu"))+
+  theme_minimal() +
+  theme()
+```
+
+### Cloaca: tSNE Phylum
+
+```{r tsneB_plot_phylum, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+GIFTs_elements_tSNE_rel_means_GroupB %>%
+  ggplot(aes(x = tSNE1, y = tSNE2, color = Phylum))+
+  geom_point(aes(size = Relative_value), shape=16, alpha=0.8) +
+  #scale_color_gradientn(limits = c(0,1), colours=brewer.pal(7, "YlGnBu"))+
+  theme_minimal() +
+  theme()
+```
+
+
+### Feces: tSNE gifts
+
+```{r tsneA_plot_gift, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+GIFTs_elements_tSNE_rel_means_GroupA %>%
+  ggplot(aes(x = tSNE1, y = tSNE2, color = Overall))+ #coloured by GIFT
+  geom_point(aes(size = Relative_value), shape=16, alpha=0.8) +
+  scale_color_gradientn(limits = c(0,1), colours=brewer.pal(7, "YlGnBu"))+
+  theme_minimal() +
+  theme()
+```
+
+### Cloaca: tSNE gifts
+
+```{r tsneB_plot_gift, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+GIFTs_elements_tSNE_rel_means_GroupB %>%
+  ggplot(aes(x = tSNE1, y = tSNE2, color = Overall))+ 
+  geom_point(aes(size = Relative_value), shape=16, alpha=0.8) +
+  scale_color_gradientn(limits = c(0,1), colours=brewer.pal(7, "YlGnBu"))+
+  theme_minimal() +
+  theme()
+```
