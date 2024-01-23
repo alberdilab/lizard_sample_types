@@ -1,0 +1,686 @@
+---
+title: "Compositional and functional overview"
+output: html_document
+date: "2024-01-19"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r lib, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(ape))
+suppressPackageStartupMessages(library(distillR))
+suppressPackageStartupMessages(library(ggtree))
+suppressPackageStartupMessages(library(ggnewscale))
+suppressPackageStartupMessages(library(ggtreeExtra))
+suppressPackageStartupMessages(library(gridExtra))
+suppressPackageStartupMessages(library(phytools))
+suppressPackageStartupMessages(library(Rtsne))
+suppressPackageStartupMessages(library(ggh4x))
+suppressPackageStartupMessages(library(hilldiv2))
+library(vegan)
+library(janitor)
+library(knitr)
+```
+
+
+```{r data, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+load("/Users/jtk712/Documents/Projects/lizard_sample_types/resources/data/data.Rdata")
+
+```
+
+# Taxonomy barplot
+```{r color, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+#Get phylum colors from the EHI standard
+phylum_colors <- read_tsv("https://raw.githubusercontent.com/earthhologenome/EHI_taxonomy_colour/main/ehi_phylum_colors.tsv") %>%
+  mutate_at(vars(phylum), ~ str_replace(., "[dpcofgs]__", ""))%>%
+  right_join(genome_metadata, by=join_by(phylum == phylum)) %>%
+    arrange(match(genome, bacteria_tree$tip.label)) %>%
+    dplyr::select(phylum, colors) %>%
+    unique() %>%
+    arrange(phylum) %>%
+    dplyr::select(colors) %>%
+    pull()
+```
+
+```{r barplot1, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+genome_counts %>%
+  mutate_at(vars(-genome),~./sum(.)) %>% #apply TSS nornalisation
+  pivot_longer(-genome, names_to = "sample", values_to = "count") %>% #reduce to minimum number of columns
+  left_join(., genome_metadata, by = join_by(genome == genome)) %>% #append genome metadata
+  left_join(., sample_metadata, by = join_by(sample == sample)) %>% #append sample metadata
+  ggplot(., aes(x=sample,y=count, fill=phylum, group=phylum)) + #grouping enables keeping the same sorting of taxonomic units
+    geom_bar(stat="identity", colour="white", linewidth=0.1) + #plot stacked bars with white borders
+    scale_fill_manual(values=phylum_colors) +
+    labs(y = "Relative abundance") +
+  facet_grid(.~Individual,  scales="free_x")+
+#    facet_nested(.~Individual+Sample_type,  scales="free_x") +
+    guides(fill = guide_legend(ncol = 1)) +
+    theme(axis.text.x=element_blank(),
+          axis.title.x = element_blank(),
+          axis.ticks.x=element_blank(),
+          panel.background = element_blank(),
+          panel.border = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.line = element_line(linewidth = 0.5, linetype = "solid", colour = "black")) +
+   labs(fill="Phylum")
+```
+
+```{r barplot2, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+genome_counts %>%
+  mutate_at(vars(-genome),~./sum(.)) %>% #apply TSS nornalisation
+  pivot_longer(-genome, names_to = "sample", values_to = "count") %>% #reduce to minimum number of columns
+  left_join(., genome_metadata, by = join_by(genome == genome)) %>% #append genome metadata
+  left_join(., sample_metadata, by = join_by(sample == sample)) %>% #append sample metadata
+  ggplot(., aes(x=sample,y=count, fill=phylum, group=phylum)) + #grouping enables keeping the same sorting of taxonomic units
+    geom_bar(stat="identity", colour="white", linewidth=0.1) + #plot stacked bars with white borders
+    scale_fill_manual(values=phylum_colors) +
+    labs(x="Sample",y = "Relative abundance") +
+  facet_grid(.~Sample_type,  scales="free_x")+
+#    facet_nested(.~Individual+Sample_type,  scales="free_x") +
+    guides(fill = guide_legend(ncol = 1)) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 10),
+          panel.background = element_blank(),
+          panel.border = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.line = element_line(linewidth = 0.5, linetype = "solid", colour = "black")) +
+   labs(fill="Phylum")
+```
+
+# Alpha diversity
+## Alpha diversity means by sample type
+```{r alpha_div, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+#Calculate Hill numbers
+richness <- genome_counts %>% 
+            column_to_rownames(var="genome") %>% 
+            dplyr::select(where(~!all(. == 0))) %>% 
+            hilldiv(.,q=0) %>% 
+            t() %>% 
+            as.data.frame() %>%
+            dplyr::rename(richness=1) %>%
+            rownames_to_column(var="sample")
+
+neutral <- genome_counts %>% 
+            column_to_rownames(var="genome") %>% 
+            dplyr::select(where(~!all(. == 0))) %>% 
+            hilldiv(.,q=1) %>% 
+            t() %>% 
+            as.data.frame() %>%
+            dplyr::rename(neutral=1) %>%
+            rownames_to_column(var="sample")
+
+phylogenetic <- genome_counts %>% 
+            column_to_rownames(var="genome") %>% 
+            dplyr::select(where(~!all(. == 0))) %>% 
+            hilldiv(.,q=1,tree=bacteria_tree) %>% 
+            t() %>% 
+            as.data.frame() %>%
+            dplyr::rename(phylogenetic=1) %>%
+            rownames_to_column(var="sample")
+
+# Aggregate basal GIFT into elements
+dist <- genome_gifts %>%
+    to.elements(., GIFT_db) %>%
+    traits2dist(., method="gower")
+
+functional <- genome_counts %>% 
+            column_to_rownames(var="genome") %>% 
+            dplyr::select(where(~!all(. == 0))) %>% 
+            hilldiv(.,q=1,dist=dist) %>% 
+            t() %>% 
+            as.data.frame() %>%
+            dplyr::rename(functional=1) %>%
+            rownames_to_column(var="sample") %>%
+            mutate(functional = if_else(is.nan(functional), 1, functional))
+
+
+# Merge all metrics
+alpha_div <- richness %>%
+      full_join(neutral,by=join_by(sample==sample)) %>%
+      full_join(phylogenetic,by=join_by(sample==sample)) %>%
+      full_join(functional,by=join_by(sample==sample)) %>%
+      left_join(., sample_metadata, by = join_by(sample == sample))
+
+richness_mean <- alpha_div %>%
+  group_by(Sample_type) %>%
+  dplyr::summarise_at(.vars = names(.)[2], .funs = c("Richness mean" = "mean", "Richness sd" = "sd")) %>%
+  dplyr::rename("Sample type"="Sample_type")
+
+neutral_mean <- alpha_div %>%
+  group_by(Sample_type) %>%
+  dplyr::summarise_at(.vars = names(.)[3], .funs = c("Neutral mean" = "mean", "Neutral sd" = "sd"))
+
+phylogenetic_mean <- alpha_div %>%
+  group_by(Sample_type) %>%
+  dplyr::summarise_at(.vars = names(.)[4], .funs = c("Phylogenetic mean" = "mean", "Phylogenetic sd" = "sd"))
+
+functional_mean <- alpha_div %>%
+  group_by(Sample_type) %>%
+  dplyr::summarise_at(.vars = names(.)[5], .funs = c("Functional mean" = "mean", "Functional sd" = "sd"))
+
+cbind(richness_mean, neutral_mean[, 2:3], phylogenetic_mean[, 2:3], functional_mean[, 2:3]) %>%
+  as.data.frame()%>%
+  t() %>%
+  row_to_names(row_number = 1) %>%
+  as.data.frame() %>%
+  mutate_if(is.character, as.numeric)  %>%
+  knitr::kable(.,col.names = c("Cloaca","Feces"), digits = c(3,3))
+```
+
+## Plot diversities
+```{r alpha_div_plot1, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+alpha_div_pivot <- richness %>%
+  full_join(neutral,by=join_by(sample==sample)) %>%
+  full_join(phylogenetic,by=join_by(sample==sample)) %>%
+  full_join(functional,by=join_by(sample==sample)) %>%
+  pivot_longer(-sample, names_to = "data", values_to = "value") %>%
+  left_join(., sample_metadata, by = join_by(sample == sample))
+
+alpha_div_pivot %>%
+  ggplot(aes(x=value, y=sample)) +
+  geom_bar(stat='identity', fill="#6c9ebc") +
+  facet_nested(Individual ~ data,  scales="free")+
+  coord_cartesian(xlim = c(1, NA)) +
+  theme_classic() +
+  theme(strip.background = element_blank(),
+    panel.grid.minor.x = element_line( size=.1, color="grey" ),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+```{r alpha_div_plot2, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+alpha_div_pivot %>%
+  ggplot(aes(x=value, y=sample)) +
+  geom_bar(stat='identity', fill="#6c9ebc") +
+  facet_nested(Sample_type ~ data,  scales="free")+
+  coord_cartesian(xlim = c(1, NA)) +
+  theme_classic() +
+  theme(strip.background = element_blank(),
+        panel.grid.minor.x = element_line( size=.1, color="grey" ),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r alpha_div_rich, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+alpha_colors <- c("#e5bd5b", "#6b7398", "#76b183", "#d57d2c", "#2a2d26", "#f9d4cc", "#3c634e", "#ea68c3")
+group_n <- alpha_div %>%
+  select(Sample_type) %>%
+  pull() %>%
+  unique() %>%
+  length()
+plot1 <- alpha_div %>%
+  ggplot(aes(x = Sample_type, y = richness, group = Sample_type, color = Sample_type, fill = Sample_type)) +
+  geom_jitter(width = 0.05, size = 1.5, show.legend = FALSE) +
+  geom_violin(alpha = 0.2, width = 0.3, show.legend = FALSE) +
+  scale_color_manual(values = alpha_colors[c(1:group_n)]) +
+  scale_fill_manual(values = paste0(alpha_colors[c(1:group_n)], "50")) +
+  #  stat_compare_means() +
+  theme(axis.text.x = element_text(vjust = 0.5),
+    axis.title = element_text(size = 14, face = "bold"),
+    axis.text = element_text(face = "bold", size = 12),
+    axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+    axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0)),
+    panel.background = element_blank(),
+    # panel.border = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(size = 0.5, linetype = "solid", colour = "black")) +
+  guides(colour = guide_legend(override.aes = list(size = 6))) +
+  labs(x = "Sample type", y = "Richness")
+
+```
+
+```{r alpha_div_neutral, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+plot2 <- alpha_div%>%
+  ggplot(aes(x = Sample_type, y = neutral, group = Sample_type, color = Sample_type, fill = Sample_type)) +
+  geom_jitter(width = 0.05, size = 1.5, show.legend = FALSE) +
+  geom_violin(alpha = 0.2, width = 0.3, show.legend = FALSE) +
+  scale_color_manual(values = alpha_colors[c(1:group_n)]) +
+  scale_fill_manual(values = paste0(alpha_colors[c(1:group_n)], "50")) +
+  #  stat_compare_means() +
+  theme(axis.text.x = element_text(vjust = 0.5),
+    axis.title = element_text(size = 14, face = "bold"),
+    axis.text = element_text(face = "bold", size = 12),
+    axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+    axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0)),
+    panel.background = element_blank(),
+    # panel.border = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(size = 0.5, linetype = "solid", colour = "black")) +
+  guides(colour = guide_legend(override.aes = list(size = 6)))+
+  labs(x = "Sample type", y = "Neutral")
+```
+
+```{r alpha_div_phylo, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+plot3 <- alpha_div%>%
+  ggplot(aes(x = Sample_type, y = phylogenetic, group = Sample_type, color = Sample_type, fill = Sample_type)) +
+  geom_jitter(width = 0.05, size = 1.5, show.legend = FALSE) +
+  geom_violin(alpha = 0.2, width = 0.3, show.legend = FALSE) +
+  scale_color_manual(values = alpha_colors[c(1:group_n)]) +
+  scale_fill_manual(values = paste0(alpha_colors[c(1:group_n)], "50")) +
+  #  stat_compare_means() +
+  theme(axis.text.x = element_text(vjust = 0.5),
+    axis.title = element_text(size = 14, face = "bold"),
+    axis.text = element_text(face = "bold", size = 12),
+    axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+    axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0)),
+    panel.background = element_blank(),
+    # panel.border = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(size = 0.5, linetype = "solid", colour = "black")) +
+  guides(colour = guide_legend(override.aes = list(size = 6)))+
+  labs(x = "Sample type", y = "Phylogenetic")
+```
+```{r alpha_div_func, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+plot4 <- alpha_div%>%
+  ggplot(aes(x = Sample_type, y = functional, group = Sample_type, color = Sample_type, fill = Sample_type)) +
+  geom_jitter(width = 0.05, size = 1.5, show.legend = FALSE) +
+  geom_violin(alpha = 0.2, width = 0.3, show.legend = FALSE) +
+  scale_color_manual(values = alpha_colors[c(1:group_n)]) +
+  scale_fill_manual(values = paste0(alpha_colors[c(1:group_n)], "50")) +
+  #  stat_compare_means() +
+  theme(axis.text.x = element_text(vjust = 0.5),
+    axis.title = element_text(size = 14, face = "bold"),
+    axis.text = element_text(face = "bold", size = 12),
+    axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+    axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0)),
+    panel.background = element_blank(),
+    # panel.border = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(size = 0.5, linetype = "solid", colour = "black")) +
+  guides(colour = guide_legend(override.aes = list(size = 6)))+
+  labs(x = "Sample type", y = "Functional")
+```
+
+```{r div_plot_together, comment="", echo=FALSE, message=FALSE, warning=FALSE, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
+grid.arrange(arrangeGrob(plot1,plot2,plot3, plot4, ncol = 2))
+```
+
+# Beta diversity
+```{r beta_div, comment="", echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+beta_q1n <- genome_counts%>%
+  column_to_rownames(., "genome")%>%
+  hillpair(., q = 1)
+
+beta_q1p <- genome_counts%>%
+  column_to_rownames(., "genome")%>%
+  hillpair(., q = 1, tree = bacteria_tree)
+
+beta_div_func <- genome_counts%>%
+  column_to_rownames(., "genome")%>%
+  hillpair(.,q=1,dist=dist)
+```
+
+```{r betan, comment="", echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+beta_metric <- beta_q1n$S
+
+beta_q1n_nmds <- beta_metric %>%
+  vegan::metaMDS(., trymax = 500, k = 2, verbosity = FALSE) %>%
+  vegan::scores() %>%
+  as_tibble(., rownames = "sample") %>%
+  dplyr::left_join(sample_metadata, by = join_by(sample == sample))
+
+group_n <- length(unique(beta_q1n_nmds$Sample_type))
+beta_colors <- c("#e5bd5b", "#6b7398", "#76b183", "#d57d2c", "#2a2d26", "#f9d4cc", "#3c634e", "#ea68c3")
+```
+
+## Neutral beta diversity
+```{r beta_div_neutral, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+
+# pdf(paste(workingdir,"/x.pdf",sep=""),width=14, height=9)
+q1n_nmds <- beta_q1n_nmds %>%
+  group_by(Sample_type) %>%
+  mutate(x_cen = mean(NMDS1, na.rm = TRUE)) %>%
+  mutate(y_cen = mean(NMDS2, na.rm = TRUE)) %>%
+  ungroup()
+ggplot(q1n_nmds, aes(x = NMDS1, y = NMDS2, color = Sample_type, shape = Individual)) +
+  scale_color_manual(values = beta_colors[c(1:group_n)]) +
+  scale_shape_manual(values = 1:10) +
+  geom_point(size = 4) +
+  #   stat_ellipse(aes(color = beta_q1n_nmds$Groups))+
+  geom_segment(aes(x = x_cen, y = y_cen, xend = NMDS1, yend = NMDS2), alpha = 0.9) +
+  theme_classic() +
+  theme(
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_text(size = 12),
+    axis.title = element_text(size = 20, face = "bold"),
+    axis.text = element_text(face = "bold", size = 18),
+    panel.background = element_blank(),
+    axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+    legend.text = element_text(size = 16),
+    legend.title = element_text(size = 18),
+    legend.position = "right", legend.box = "vertical"
+  )
+#+ geom_text(aes(label = Sample), size=8)
+# dev.off()
+```
+
+
+***Permanova***
+```{r adonisbeta2, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+#### Adonis
+
+metarow <- column_to_rownames(sample_metadata, "sample")
+
+adonis2(beta_metric ~ Sample_type, data = metarow[labels(beta_metric), ], permutations = 999, strata = metarow$Individual) %>%
+  as.matrix() %>%
+  knitr::kable(., digits = c(0,3,3,3,3))
+```
+```{r betap, comment="", echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+beta_p_metric <- beta_q1p$S
+
+beta_q1p_nmds <- beta_p_metric %>%
+  vegan::metaMDS(., trymax = 500, k = 2, verbosity = FALSE) %>%
+  vegan::scores() %>%
+  as_tibble(., rownames = "sample") %>%
+  dplyr::left_join(sample_metadata, by = join_by(sample == sample))
+
+group_n <- length(unique(beta_q1p_nmds$Sample_type))
+beta_colors <- c("#e5bd5b", "#6b7398", "#76b183", "#d57d2c", "#2a2d26", "#f9d4cc", "#3c634e", "#ea68c3")
+```
+
+## Phylogenetic beta diversity
+```{r  beta_div_phylo, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+# pdf(paste(workingdir,"/betaB692_caecum.pdf",sep=""),width=14, height=9)
+q1p_nmds <- beta_q1p_nmds %>%
+  group_by(Sample_type) %>%
+  mutate(x_cen = mean(NMDS1, na.rm = TRUE)) %>%
+  mutate(y_cen = mean(NMDS2, na.rm = TRUE)) %>%
+  ungroup()
+ggplot(q1p_nmds, aes(x = NMDS1, y = NMDS2, color = Sample_type, shape = Individual)) +
+  scale_color_manual(values = beta_colors[c(1:group_n)]) +
+  scale_shape_manual(values = 1:10) +
+  geom_point(size = 4) +
+  #   stat_ellipse(aes(color = beta_q1n_nmds$Groups))+
+  geom_segment(aes(x = x_cen, y = y_cen, xend = NMDS1, yend = NMDS2), alpha = 0.9) +
+  theme_classic() +
+  theme(
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_text(size = 12),
+    axis.title = element_text(size = 20, face = "bold"),
+    axis.text = element_text(face = "bold", size = 18),
+    panel.background = element_blank(),
+    axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+    legend.text = element_text(size = 16),
+    legend.title = element_text(size = 18),
+    legend.position = "right", legend.box = "vertical"
+  )
+#+ geom_text(aes(label = Sample), size=8)
+# dev.off()
+```
+
+***Permanova***
+```{r adonisbeta3, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+#### Adonis
+
+metarow <- column_to_rownames(sample_metadata, "sample")
+
+adonis2(beta_p_metric ~ Sample_type, data = metarow[labels(beta_p_metric), ], permutations = 999, strata = metarow$Individual) %>%
+  as.matrix() %>%
+  knitr::kable(., digits = c(0,3,3,3,3))
+```
+
+```{r betaf, comment="", echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+beta_f_metric <- beta_div_func$S
+
+beta_f_nmds <- beta_f_metric %>%
+  vegan::metaMDS(., trymax = 500, k = 2, verbosity = FALSE) %>%
+  vegan::scores() %>%
+  as_tibble(., rownames = "sample") %>%
+  dplyr::left_join(sample_metadata, by = join_by(sample == sample))
+
+group_n <- length(unique(beta_f_nmds$Sample_type))
+beta_colors <- c("#e5bd5b", "#6b7398", "#76b183", "#d57d2c", "#2a2d26", "#f9d4cc", "#3c634e", "#ea68c3")
+```
+
+## Functional beta diversity
+```{r  beta_div_func, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+
+# pdf(paste(workingdir,"/x.pdf",sep=""),width=14, height=9)
+f_nmds <- beta_f_nmds %>%
+  group_by(Sample_type) %>%
+  mutate(x_cen = mean(NMDS1, na.rm = TRUE)) %>%
+  mutate(y_cen = mean(NMDS2, na.rm = TRUE)) %>%
+  ungroup()
+ggplot(f_nmds, aes(x = NMDS1, y = NMDS2, color = Sample_type, shape = Individual)) +
+  scale_color_manual(values = beta_colors[c(1:group_n)]) +
+  scale_shape_manual(values = 1:10) +
+  geom_point(size = 4) +
+  #   stat_ellipse(aes(color = beta_q1n_nmds$Groups))+
+  geom_segment(aes(x = x_cen, y = y_cen, xend = NMDS1, yend = NMDS2), alpha = 0.9) +
+  theme_classic() +
+  theme(
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_text(size = 12),
+    axis.title = element_text(size = 20, face = "bold"),
+    axis.text = element_text(face = "bold", size = 18),
+    panel.background = element_blank(),
+    axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+    legend.text = element_text(size = 16),
+    legend.title = element_text(size = 18),
+    legend.position = "right", legend.box = "vertical"
+  )
+#+ geom_text(aes(label = Sample), size=8)
+# dev.off()
+```
+
+***Permanova***
+```{r adonisbeta4, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+#### Adonis
+
+metarow <- column_to_rownames(sample_metadata, "sample")
+
+adonis2(beta_f_metric ~ Sample_type, data = metarow[labels(beta_f_metric), ], permutations = 999, strata = metarow$Individual) %>%
+  as.matrix() %>%
+  knitr::kable(., digits = c(0,3,3,3,3))
+```
+
+
+```{r gift, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+#Aggregate bundle-level GIFTs into the compound level
+GIFTs_elements <- to.elements(genome_gifts,GIFT_db)
+GIFTs_elements_filtered <- GIFTs_elements[rownames(GIFTs_elements) %in% genome_counts$genome,]
+GIFTs_elements_filtered <- as.data.frame(GIFTs_elements_filtered) %>% 
+  select_if(~ !is.numeric(.) || sum(.) != 0)
+
+#Aggregate element-level GIFTs into the function level
+GIFTs_functions <- to.functions(GIFTs_elements_filtered,GIFT_db)
+
+#Aggregate function-level GIFTs into overall Biosynthesis, Degradation and Structural GIFTs
+GIFTs_domains <- to.domains(GIFTs_functions,GIFT_db)
+
+#Get community-weighed average GIFTs per sample
+genome_counts_row <- genome_counts %>% column_to_rownames(., "genome")
+GIFTs_elements_community <- to.community(GIFTs_elements_filtered,genome_counts_row,GIFT_db)
+GIFTs_functions_community <- to.community(GIFTs_functions,genome_counts_row,GIFT_db)
+GIFTs_domains_community <- to.community(GIFTs_domains,genome_counts_row,GIFT_db)
+```
+
+
+### Community functions differences
+```{r comunity_func, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+function_gift <- GIFTs_functions_community %>% 
+  as.data.frame() %>% 
+  rownames_to_column(., "sample") %>% 
+  merge(., sample_metadata[c(1,3)], by="sample")
+```
+
+```{r commun_wilcox_func, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+table_func <- function_gift[,-c(1)]
+table_func.no <- table_func[,-ncol(table_func)]
+all.function <- colnames(table_func.no)
+
+Wilcox_result <- c()
+for (y in all.function){
+  res.wilcox <- wilcox.test(table_func[,y] ~ Sample_type, data = table_func,
+                            exact = FALSE, alternative = "less")
+  Wilcox_result <- rbind(Wilcox_result,c(res.wilcox[[1]],Pvalue=res.wilcox[[3]]))
+}
+rownames(Wilcox_result) <- all.function
+Wilcox_result <- as.data.frame(Wilcox_result)
+
+Wilcox_result$p_adjusted <- p.adjust(Wilcox_result$Pvalue, method = "fdr")
+
+subset(Wilcox_result, Pvalue <= 0.05) %>%
+  knitr::kable(.,col.names = c("W","p value", "p adjusted"), digits = c(0,4,4))
+```
+
+
+### Community domains differences
+```{r comunity_dom, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+meger_gift <- GIFTs_domains_community %>% 
+  as.data.frame() %>% 
+  rownames_to_column(., "sample") %>% 
+  merge(., sample_metadata, by="sample")
+
+biosynthesis_mean <- meger_gift %>%
+  group_by(Sample_type) %>% 
+  summarise_at(.vars = names(.)[2],.funs = c("Biosynthesis mean"="mean", "Biosynthesis sd"="sd"))
+degradation_mean <- meger_gift %>%
+  group_by(Sample_type) %>% 
+  summarise_at(.vars = names(.)[3],.funs = c("Degradation mean"="mean", "Degradation sd"="sd"))
+structure_mean <- meger_gift %>%
+  group_by(Sample_type) %>% 
+  summarise_at(.vars = names(.)[4],.funs = c("Structure mean"="mean", "Structure sd"="sd"))
+overall_mean <- meger_gift %>%
+  group_by(Sample_type) %>% 
+  summarise_at(.vars = names(.)[5],.funs = c("Overall mean"="mean", "Overall sd"="sd"))
+cbind(biosynthesis_mean, degradation_mean[, 2:3], structure_mean[, 2:3], overall_mean[, 2:3]) %>%
+  t() %>%
+  row_to_names(row_number = 1) %>%
+  as.data.frame() %>%
+  mutate_if(is.character, as.numeric)  %>%
+  knitr::kable(.,col.names = c("Cloaca","Feces"), digits = c(3,3))
+```
+
+```{r comunity_wilcox_func, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+table <- meger_gift[,c(2,3,4,5,7)]
+table.no <- table[,-ncol(table)]
+all.function <- colnames(table.no)
+
+Wilcox_result <- c()
+for (y in all.function){
+  res.wilcox <- wilcox.test(table[,y] ~ Sample_type, data = table,
+                            exact = FALSE)
+  Wilcox_result <- rbind(Wilcox_result,c(res.wilcox[[1]],Pvalue=res.wilcox[[3]]))
+}
+rownames(Wilcox_result) <- all.function
+Wilcox_result <- as.data.frame(Wilcox_result)
+
+Wilcox_result$p_adjusted <- p.adjust(Wilcox_result$Pvalue, method = "fdr")
+Wilcox_result%>%
+  as.data.frame()
+
+```
+
+```{r comunity_plot1, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+group_n <- length(unique(meger_gift$Sample_type))
+select_colors <- c("#e5bd5b","#6b7398","#76b183","#d57d2c","#2a2d26","#f9d4cc","#3c634e","#ea68c3")
+p1 <- meger_gift %>%
+  ggplot(aes(x=Sample_type,y=Biosynthesis,color=Sample_type,fill=Sample_type))+
+    geom_jitter(width = 0.1, size = 1.5, show.legend = FALSE)+ 
+#  facet_grid(~factor(Location)) +
+    geom_boxplot(alpha=0.2,outlier.shape = NA, width = 0.3, show.legend = FALSE, coef=0)+
+  scale_color_manual(values=select_colors[c(1:group_n)]) +
+  scale_fill_manual(values=paste0(select_colors[c(1:group_n)],"50")) +
+#  stat_compare_means() +
+    theme(axis.title=element_text(size=14,face="bold"),
+          axis.text = element_text(face="bold", size=12),
+          axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+          axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0)),
+          panel.background = element_blank(),
+          panel.border = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+          legend.text = element_text(size=16),
+          legend.title = element_text(size=18),
+          legend.key.size = unit(1, 'cm'),
+          strip.text.x = element_text(size = 12, color = "black", face = "bold"))+
+  labs(x = "Sample type", y = "Biosynthesis")
+
+p2 <- meger_gift %>%
+  ggplot(aes(x=Sample_type,y=Degradation,color=Sample_type,fill=Sample_type))+
+    geom_jitter(width = 0.1, size = 1.5, show.legend = FALSE)+ 
+#  facet_grid(~factor(Location)) +
+    geom_boxplot(alpha=0.2,outlier.shape = NA, width = 0.3, show.legend = FALSE, coef=0)+
+  scale_color_manual(values=select_colors[c(1:group_n)]) +
+  scale_fill_manual(values=paste0(select_colors[c(1:group_n)],"50")) +
+#  stat_compare_means() +
+    theme(axis.title=element_text(size=14,face="bold"),
+          axis.text = element_text(face="bold", size=12),
+          axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+          axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0)),
+          panel.background = element_blank(),
+          panel.border = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+          legend.text = element_text(size=16),
+          legend.title = element_text(size=18),
+          legend.key.size = unit(1, 'cm'),
+          strip.text.x = element_text(size = 12, color = "black", face = "bold"))+
+  labs(x = "Sample type", y = "Degradation")
+
+p3 <- meger_gift %>%
+  ggplot(aes(x=Sample_type,y=Structure,color=Sample_type,fill=Sample_type))+
+    geom_jitter(width = 0.1, size = 1.5, show.legend = FALSE)+ 
+#  facet_grid(~factor(Location)) +
+    geom_boxplot(alpha=0.2,outlier.shape = NA, width = 0.3, show.legend = FALSE, coef=0)+
+  scale_color_manual(values=select_colors[c(1:group_n)]) +
+  scale_fill_manual(values=paste0(select_colors[c(1:group_n)],"50")) +
+#  stat_compare_means() +
+    theme(axis.title=element_text(size=14,face="bold"),
+          axis.text = element_text(face="bold", size=12),
+          axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+          axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0)),
+          panel.background = element_blank(),
+          panel.border = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+          legend.text = element_text(size=16),
+          legend.title = element_text(size=18),
+          legend.key.size = unit(1, 'cm'),
+          strip.text.x = element_text(size = 12, color = "black", face = "bold"))+
+  labs(x = "Sample type", y = "Structure")
+
+p4 <- meger_gift %>%
+  ggplot(aes(x=Sample_type,y=Overall,color=Sample_type,fill=Sample_type))+
+    geom_jitter(width = 0.1, size = 1.5, show.legend = FALSE)+ 
+#  facet_grid(~factor(Location)) +
+    geom_boxplot(alpha=0.2,outlier.shape = NA, width = 0.3, show.legend = FALSE, coef=0)+
+  scale_color_manual(values=select_colors[c(1:group_n)]) +
+  scale_fill_manual(values=paste0(select_colors[c(1:group_n)],"50")) +
+#  stat_compare_means() +
+    theme(axis.title=element_text(size=14,face="bold"),
+          axis.text = element_text(face="bold", size=12),
+          axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+          axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0)),
+          panel.background = element_blank(),
+          panel.border = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+          legend.text = element_text(size=16),
+          legend.title = element_text(size=18),
+          legend.key.size = unit(1, 'cm'),
+          strip.text.x = element_text(size = 12, color = "black", face = "bold"))+
+  labs(x = "Sample type", y = "Overall")
+```
+
+```{r comm_plot_together, comment="", echo=FALSE, message=FALSE, warning=FALSE, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
+grid.arrange(arrangeGrob(p1,p2,p3, p4, ncol = 2))
+```
+
+

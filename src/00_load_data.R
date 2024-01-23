@@ -18,6 +18,7 @@ checkm2 <-
     genome_size = Genome_Size, gc_content = GC_Content
   )
 
+
 tree <- ape::read.tree("resources/gtdbtk/gtdbtk.backbone.bac120.classify.tree")
 tips_to_keep <-
   tree$tip.label %>%
@@ -51,6 +52,7 @@ dram <-
   read_tsv("resources/dram/annotations.tsv.xz") %>%
   rename(gene_id = `...1`, mag_id = fasta, contig_id = scaffold) %>%
   select(mag_id, contig_id, gene_id, everything())
+
 
 kegg <-
   read_tsv("resources/dram/product.tsv.xz") %>%
@@ -88,4 +90,5 @@ sample_data <-
   separate(
     col = name, into = c("sample_name", "tissue"), sep = "\\.", remove = FALSE
   ) %>%
-  rename(sample_id = name)
+  rename(sample_id = name) %>%
+  distinct(sample_id, .keep_all = T)
