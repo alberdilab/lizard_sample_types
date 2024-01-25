@@ -18,19 +18,30 @@ checkm2 <-
     genome_size = Genome_Size, gc_content = GC_Content
   )
 
+good_mag_ids <-
+  checkm2 %>%
+  filter(completeness >= 70, contamination <= 10) %>%
+  mutate(mag_id = str_glue("\'{mag_id}\'")) %>%
+  pull(mag_id)
 
 tree <- ape::read.tree("resources/gtdbtk/gtdbtk.backbone.bac120.classify.tree")
-tips_to_keep <-
-  tree$tip.label %>%
-  tibble(node_id = .) %>%
-  filter(
-    !str_detect(node_id, "^GB_"),
-    !str_detect(node_id, "^RS_")
-  ) %>%
-  pull(node_id)
-tree <- ape::keep.tip(tree, tips_to_keep)
+# tips_to_keep <-
+#   tree$tip.label %>%
+#   tibble(node_id = .) %>%
+#   filter(
+#     !str_detect(node_id, "^GB_"),
+#     !str_detect(node_id, "^RS_")
+#   ) %>%
+#   pull(node_id)
+
+tree <-
+  tree %>%
+  # ape::keep.tip(tips_to_keep) %>%
+  ape::keep.tip(good_mag_ids)
 
 tree$tip.label <- tree$tip.label %>% str_remove_all("\\'")
+
+plot(tree)
 
 rm(tips_to_keep)
 

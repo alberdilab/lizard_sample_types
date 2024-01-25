@@ -25,6 +25,12 @@ counts_filtered <-
   select(mag_id, sample_id, counts) %>%
   pivot_wider(names_from = sample_id, values_from = counts)
 
+# counts_long %>%
+#   separate(sep = "\\.", col = "sample_id", into = c("sample", "tissue"), remove = F) %>%
+#   group_by(tissue) %>%
+#   summarise(counts = sum(counts)) %>%
+#   mutate(percent = counts / sum(counts) * 100)
+
 
 # 5.2 Genome size normalization
 read_length <- 150

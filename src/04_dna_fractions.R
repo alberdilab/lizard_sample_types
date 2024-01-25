@@ -13,9 +13,13 @@ reads <-
   pivot_longer(-sample_id)
 
 reads %>%
+  separate(
+    col = "sample_id", into = c("sample", "tissue"), sep = "\\.", remove = FALSE
+  ) %>%
   ggplot(aes(x = sample_id, y = value, fill = name)) +
   geom_bar(stat = "identity", position = "fill") +
-  scale_fill_manual(values = c("#CCCCCC", "#178a94", "#ee8080", "#d03161"))
+  scale_fill_manual(values = c("#CCCCCC", "#178a94", "#ee8080", "#d03161")) +
+  facet_wrap(~tissue, scales = "free")
 # geom_bar(stat = "identity")
 
 
