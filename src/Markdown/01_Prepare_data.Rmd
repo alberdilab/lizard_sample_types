@@ -56,55 +56,55 @@ set.seed(0024)
 ```
 
 ```{r}
-#Counts table
+# Counts table
 read_counts <- read_tsv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/coverm/genome.count.tsv") %>%
   dplyr::rename(genome = 1)
 genomes <- read_counts$genome # create list of genome names
 ```
 
 ```{r}
-#Mags taxonomy
+# Mags taxonomy
 genome_taxonomy <- read_tsv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/gtdbtk/gtdbtk.summary.tsv") %>%
-  dplyr::rename(genome = 1)%>%
-  separate(classification, c("domain","phylum","class","order","family","genus","species"),  sep =";") %>%
-  select(genome,domain,phylum,class,order,family,genus,species) %>%
-  arrange(match(genome, genomes))%>%
-  mutate_at(vars(genome,domain,phylum,class,order,family,genus,species), ~ str_replace(., "[dpcofgs]__", ""))
+  dplyr::rename(genome = 1) %>%
+  separate(classification, c("domain", "phylum", "class", "order", "family", "genus", "species"), sep = ";") %>%
+  select(genome, domain, phylum, class, order, family, genus, species) %>%
+  arrange(match(genome, genomes)) %>%
+  mutate_at(vars(genome, domain, phylum, class, order, family, genus, species), ~ str_replace(., "[dpcofgs]__", ""))
 ```
 
 ```{r}
-#Genome quality
+# Genome quality
 genome_quality <- read_tsv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/checkm2/quality_report.tsv") %>%
   dplyr::rename(genome = 1) %>%
-  filter(genome %in% genomes)%>%
+  filter(genome %in% genomes) %>%
   arrange(match(genome, genomes))
 ```
 
 ```{r}
-#Merged metadata object
-#Merge taxonomy, length and quality information
+# Merged metadata object
+# Merge taxonomy, length and quality information
 genome_metadata <- genome_taxonomy %>%
-  left_join(genome_quality,by=join_by(genome==genome)) #join quality
+  left_join(genome_quality, by = join_by(genome == genome)) # join quality
 ```
 
 ```{r}
-#Genome covered bases
+# Genome covered bases
 basehits <- read_tsv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/coverm/genome.covered_bases.tsv") %>%
   dplyr::rename(genome = 1) %>%
   arrange(match(genome, genomes))
-#Generate coverage table
+# Generate coverage table
 genome_coverage <- basehits %>%
   mutate(across(where(is.numeric), ~ . / genome_metadata$Genome_Size))
 ```
 
 ```{r}
-#Samples metadata
+# Samples metadata
 sample_metadata <- read_csv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/coverm/metadata.csv")
 metarow <- column_to_rownames(sample_metadata, "sample")
 ```
 
 ```{r}
-#Phylogenetic tree
+# Phylogenetic tree
 bacteria_tree <- read.tree("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/gtdbtk/classify/gtdbtk.backbone.bac120.classify.tree")
 bacteria_tree$tip.label <- str_replace_all(bacteria_tree$tip.label, "'", "") # remove .fa extension
 bacteria_tree <- keep.tip(bacteria_tree, tip = genomes) # keep only MAG tips
@@ -118,13 +118,13 @@ read_counts_coverage <- genome_coverage %>%
   mutate(across(where(is.numeric), ~ ifelse(. > min_genome_coverage, 1, 0))) %>%
   mutate(across(-1, ~ . * read_counts[[cur_column()]]))
 
-readlength=150 #change if sequencing read length is different
+readlength <- 150 # change if sequencing read length is different
 genome_counts <- read_counts_coverage %>%
-  mutate(across(where(is.numeric), ~ . / (genome_metadata$Genome_Size / readlength) ))
+  mutate(across(where(is.numeric), ~ . / (genome_metadata$Genome_Size / readlength)))
 
 genome_counts <- genome_counts %>%
-  column_to_rownames(., "genome") %>% 
-  select(which(!colSums(., na.rm=TRUE) %in% 0))%>%
+  column_to_rownames(., "genome") %>%
+  select(which(!colSums(., na.rm = TRUE) %in% 0)) %>%
   rownames_to_column(., "genome")
 
 genome_counts_rel <- genome_counts %>%
@@ -132,14 +132,14 @@ genome_counts_rel <- genome_counts %>%
 ```
 
 ```{r loaddata, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-#Genome functions
-genome_annotations <- read_tsv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/dram/annotations.tsv")%>%
-  rename(gene=1,genome=2)
+# Genome functions
+genome_annotations <- read_tsv("https://sid.erda.dk/share_redirect/dgIbN9vIM4/results/dereplicate/dram/annotations.tsv") %>%
+  rename(gene = 1, genome = 2)
 ```
 
 ```{r}
-#Genome functions distillation
-genome_gifts <- distill(genome_annotations,GIFT_db,genomecol=2,annotcol=c(9,10,19))
+# Genome functions distillation
+genome_gifts <- distill(genome_annotations, GIFT_db, genomecol = 2, annotcol = c(9, 10, 19))
 ```
 
 

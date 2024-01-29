@@ -25,166 +25,166 @@ load("/Users/jtk712/Documents/Projects/lizard_sample_types/resources/data/data.R
 ## MAGs in different sample types and shared sample types
 
 ```{r chart1, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-locationcolors=c('#c4d7d1','#408892')
+locationcolors <- c("#c4d7d1", "#408892")
 MAGrel <- read_counts_coverage %>%
-  mutate_at(vars(-genome),~./sum(.))%>%
+  mutate_at(vars(-genome), ~ . / sum(.)) %>%
   column_to_rownames(., "genome")
-#MAGrel <- read_counts_rel
-MAGrel_pa=1*(MAGrel>0)
-#MAGrel_pa[1:6,1:6]
-table_upset_analysis_cont=t(aggregate(t(MAGrel_pa),by=list(sample_metadata$Sample_type),FUN=sum)[,-1])
-colnames(table_upset_analysis_cont)=levels(as.factor(sample_metadata$Sample_type))
-table_upset_analysis=(table_upset_analysis_cont>0)*1
-table_upset_analysis=data.frame(table_upset_analysis)
-table_upset_analysis=apply(table_upset_analysis,2,as.integer)
+# MAGrel <- read_counts_rel
+MAGrel_pa <- 1 * (MAGrel > 0)
+# MAGrel_pa[1:6,1:6]
+table_upset_analysis_cont <- t(aggregate(t(MAGrel_pa), by = list(sample_metadata$Sample_type), FUN = sum)[, -1])
+colnames(table_upset_analysis_cont) <- levels(as.factor(sample_metadata$Sample_type))
+table_upset_analysis <- (table_upset_analysis_cont > 0) * 1
+table_upset_analysis <- data.frame(table_upset_analysis)
+table_upset_analysis <- apply(table_upset_analysis, 2, as.integer)
 rownames(table_upset_analysis) <- rownames(MAGrel_pa)
 
 upset(as.data.frame(table_upset_analysis),
   keep.order = T,
-  sets = rev(c("feces","cloaca")),
-  sets.bar.color= rev(locationcolors),
-  mb.ratio = c(0.55, 0.45), order.by = "freq")
+  sets = rev(c("feces", "cloaca")),
+  sets.bar.color = rev(locationcolors),
+  mb.ratio = c(0.55, 0.45), order.by = "freq"
+)
 ```
 
 ## Structural zeros
 
 ```{r phylo, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-#phyloseq object
-phylo_samples <- sample_metadata %>% 
-                    column_to_rownames("sample") %>% 
-                    sample_data() #convert to phyloseq sample_data object
+# phyloseq object
+phylo_samples <- sample_metadata %>%
+  column_to_rownames("sample") %>%
+  sample_data() # convert to phyloseq sample_data object
 
-phylo_counts <- read_counts_coverage %>% 
-#                    filter(!genome %in% structural_zeros$genome) %>% # remove structural zeros
-                    column_to_rownames("genome") %>% 
-#                    mutate_all(~ replace(., . == 0, 0.00001)) %>% #add pseudo counts to avoid structural zero issues (note this approach can be improved!)
-                    otu_table(., taxa_are_rows = TRUE) #convert to phyloseq otu_table object
+phylo_counts <- read_counts_coverage %>%
+  #                    filter(!genome %in% structural_zeros$genome) %>% # remove structural zeros
+  column_to_rownames("genome") %>%
+  #                    mutate_all(~ replace(., . == 0, 0.00001)) %>% #add pseudo counts to avoid structural zero issues (note this approach can be improved!)
+  otu_table(., taxa_are_rows = TRUE) # convert to phyloseq otu_table object
 
-phylo_taxonomy <- genome_metadata %>% 
-                    filter(genome %in% rownames(phylo_counts)) %>% # remove structural zeros
-                    mutate(genome2=genome) %>% #create a pseudo genome name column
-                    column_to_rownames("genome2") %>% 
-                    dplyr::select(domain,phylum,class,order,family,genus,species,genome) %>% #add an additional taxonomic level to ensure genome-level analysis (as no all genomes have species-level taxonomic assignments. Otherwise, ANCOMBC2 aggregates analyses per species)
-                    as.matrix() %>% 
-                    tax_table() #convert to phyloseq tax_table object
+phylo_taxonomy <- genome_metadata %>%
+  filter(genome %in% rownames(phylo_counts)) %>% # remove structural zeros
+  mutate(genome2 = genome) %>% # create a pseudo genome name column
+  column_to_rownames("genome2") %>%
+  dplyr::select(domain, phylum, class, order, family, genus, species, genome) %>% # add an additional taxonomic level to ensure genome-level analysis (as no all genomes have species-level taxonomic assignments. Otherwise, ANCOMBC2 aggregates analyses per species)
+  as.matrix() %>%
+  tax_table() # convert to phyloseq tax_table object
 
-#Generate phyloseq object required to input ANCOMBC
+# Generate phyloseq object required to input ANCOMBC
 counts_data <- phyloseq(phylo_counts, phylo_taxonomy, phylo_samples)
 ```
 
 ```{r phylo_clr, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-
-physeq_clr <- microbiome::transform(counts_data, 'clr')
+physeq_clr <- microbiome::transform(counts_data, "clr")
 
 count_crl <- data.frame(physeq_clr@otu_table)
 count_crl_t <- data.frame(t(count_crl))
 metadata_crl <- data.frame(physeq_clr@sam_data)
 metadata_crl <- rownames_to_column(metadata_crl, "sample")
-metadata_crl <- metadata_crl[match(rownames(count_crl_t),metadata_crl$sample),]
+metadata_crl <- metadata_crl[match(rownames(count_crl_t), metadata_crl$sample), ]
 design <- metadata_crl[, c("sample", "Sample_type")]
 ```
 ```{r struct_zeros, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-feces_samples <- sample_metadata %>% 
-                    filter(Sample_type == "feces") %>% 
-                    dplyr::select(sample) %>% pull()
+feces_samples <- sample_metadata %>%
+  filter(Sample_type == "feces") %>%
+  dplyr::select(sample) %>%
+  pull()
 
-cloaca_samples <- sample_metadata %>% 
-                    filter(Sample_type == "cloaca") %>% 
-                    dplyr::select(sample) %>% pull()
+cloaca_samples <- sample_metadata %>%
+  filter(Sample_type == "cloaca") %>%
+  dplyr::select(sample) %>%
+  pull()
 
-structural_zeros <- read_counts_coverage %>% 
-   rowwise() %>% #compute for each row (genome)
-   mutate(all_zeros_feces = all(c_across(all_of(feces_samples)) == 0)) %>% # set true if all samples in 1 have zeros
-   mutate(all_zeros_cloaca = all(c_across(all_of(cloaca_samples)) == 0)) %>% # set true if all samples in 2 have zeros
-   mutate(average_feces = mean(c_across(all_of(feces_samples)), na.rm = TRUE)) %>% # get average genome counts across 1
-   mutate(average_cloaca = mean(c_across(all_of(cloaca_samples)), na.rm = TRUE)) %>% # get average genome counts across 2
-   filter(all_zeros_feces == TRUE || all_zeros_cloaca==TRUE)  %>% # filter only genomes with structural zeros
-   mutate(present = case_when(
-      all_zeros_feces & !all_zeros_cloaca ~ "cloaca",
-      !all_zeros_feces & all_zeros_cloaca ~ "feces",
-      !all_zeros_feces & !all_zeros_cloaca ~ "None",
-      TRUE ~ NA_character_
-    )) %>%
-   mutate(average = ifelse(present == "feces", average_feces, average_cloaca)) %>%
-   dplyr::select(genome, present, average) %>%
-   left_join(genome_metadata, by=join_by(genome==genome)) %>%
-   arrange(present,-average)
+structural_zeros <- read_counts_coverage %>%
+  rowwise() %>% # compute for each row (genome)
+  mutate(all_zeros_feces = all(c_across(all_of(feces_samples)) == 0)) %>% # set true if all samples in 1 have zeros
+  mutate(all_zeros_cloaca = all(c_across(all_of(cloaca_samples)) == 0)) %>% # set true if all samples in 2 have zeros
+  mutate(average_feces = mean(c_across(all_of(feces_samples)), na.rm = TRUE)) %>% # get average genome counts across 1
+  mutate(average_cloaca = mean(c_across(all_of(cloaca_samples)), na.rm = TRUE)) %>% # get average genome counts across 2
+  filter(all_zeros_feces == TRUE || all_zeros_cloaca == TRUE) %>% # filter only genomes with structural zeros
+  mutate(present = case_when(
+    all_zeros_feces & !all_zeros_cloaca ~ "cloaca",
+    !all_zeros_feces & all_zeros_cloaca ~ "feces",
+    !all_zeros_feces & !all_zeros_cloaca ~ "None",
+    TRUE ~ NA_character_
+  )) %>%
+  mutate(average = ifelse(present == "feces", average_feces, average_cloaca)) %>%
+  dplyr::select(genome, present, average) %>%
+  left_join(genome_metadata, by = join_by(genome == genome)) %>%
+  arrange(present, -average)
 ```
 ```{r colors, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-#Get phylum colors from the EHI standard
+# Get phylum colors from the EHI standard
 
 phylum_colors <- read_tsv("https://raw.githubusercontent.com/earthhologenome/EHI_taxonomy_colour/main/ehi_phylum_colors.tsv") %>%
   mutate_at(vars(phylum), ~ str_replace(., "[dpcofgs]__", "")) %>%
-  right_join(structural_zeros, by=join_by(phylum == phylum)) %>%
-    arrange(match(genome, bacteria_tree$tip.label)) %>%
-    dplyr::select(phylum, colors) %>%
-    mutate(colors = str_c(colors, "80"))  %>% #add 80% alpha
-    unique() %>%
-    arrange(phylum) %>%
-    dplyr::select(colors) %>%
-    pull()
+  right_join(structural_zeros, by = join_by(phylum == phylum)) %>%
+  arrange(match(genome, bacteria_tree$tip.label)) %>%
+  dplyr::select(phylum, colors) %>%
+  mutate(colors = str_c(colors, "80")) %>% # add 80% alpha
+  unique() %>%
+  arrange(phylum) %>%
+  dplyr::select(colors) %>%
+  pull()
 
 structural_zeros %>%
-    mutate(average = ifelse(present == "feces", average * -1, average)) %>% #convert TJ1 genome counts to negative
-    ggplot(., aes(x=average, y=forcats::fct_rev(phylum), color=phylum)) +
-      geom_jitter(height = 0.01, size=3) +
-      geom_vline(xintercept=0) + 
-      xlim(-max(structural_zeros$average)-3,max(structural_zeros$average)+3) +
-      scale_color_manual(values=phylum_colors) +
-      geom_text(aes(-260000, 1), label = "Only present\nin feces", color="#666666") + #max(structural_zeros$average)
-      geom_text(aes(250000, 1), label = "Only present\nin cloaca", color="#666666") + #max(structural_zeros$average)
-     theme(legend.position='none',
-          panel.background = element_blank(),
-          axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"))+
-      labs(y="Genus",x="Genome counts") + 
-      guides(col=guide_legend("Phylum"))
+  mutate(average = ifelse(present == "feces", average * -1, average)) %>% # convert TJ1 genome counts to negative
+  ggplot(., aes(x = average, y = forcats::fct_rev(phylum), color = phylum)) +
+  geom_jitter(height = 0.01, size = 3) +
+  geom_vline(xintercept = 0) +
+  xlim(-max(structural_zeros$average) - 3, max(structural_zeros$average) + 3) +
+  scale_color_manual(values = phylum_colors) +
+  geom_text(aes(-260000, 1), label = "Only present\nin feces", color = "#666666") + # max(structural_zeros$average)
+  geom_text(aes(250000, 1), label = "Only present\nin cloaca", color = "#666666") + # max(structural_zeros$average)
+  theme(
+    legend.position = "none",
+    panel.background = element_blank(),
+    axis.line = element_line(size = 0.5, linetype = "solid", colour = "black")
+  ) +
+  labs(y = "Genus", x = "Genome counts") +
+  guides(col = guide_legend("Phylum"))
 ```
 ```{r zero_phylo, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-phylo_samples <- sample_metadata %>% 
-                    column_to_rownames("sample") %>% 
-                    sample_data() #convert to phyloseq sample_data object
-phylo_counts <- read_counts_coverage %>% 
-                    filter(!genome %in% structural_zeros$genome) %>% # remove structural zeros
-                    column_to_rownames("genome") %>% 
-                    mutate_all(~ replace(., . == 0, 0.00001)) %>% #add pseudo counts to avoid structural zero issues (note this approach can be improved!)
-                    otu_table(., taxa_are_rows = TRUE)
-phylo_taxonomy <- genome_metadata %>% 
-                    filter(genome %in% rownames(phylo_counts)) %>% # remove structural zeros
-                    mutate(genome2=genome) %>% #create a pseudo genome name column
-                    column_to_rownames("genome2") %>% 
-                    dplyr::select(domain,phylum,class,order,family,genus,species,genome) %>% #add an additional taxonomic level to ensure genome-level analysis (as no all genomes have species-level taxonomic assignments. Otherwise, ANCOMBC2 aggregates analyses per species)
-                    as.matrix() %>% 
-                    tax_table() #convert to phyloseq tax_table object
+phylo_samples <- sample_metadata %>%
+  column_to_rownames("sample") %>%
+  sample_data() # convert to phyloseq sample_data object
+phylo_counts <- read_counts_coverage %>%
+  filter(!genome %in% structural_zeros$genome) %>% # remove structural zeros
+  column_to_rownames("genome") %>%
+  mutate_all(~ replace(., . == 0, 0.00001)) %>% # add pseudo counts to avoid structural zero issues (note this approach can be improved!)
+  otu_table(., taxa_are_rows = TRUE)
+phylo_taxonomy <- genome_metadata %>%
+  filter(genome %in% rownames(phylo_counts)) %>% # remove structural zeros
+  mutate(genome2 = genome) %>% # create a pseudo genome name column
+  column_to_rownames("genome2") %>%
+  dplyr::select(domain, phylum, class, order, family, genus, species, genome) %>% # add an additional taxonomic level to ensure genome-level analysis (as no all genomes have species-level taxonomic assignments. Otherwise, ANCOMBC2 aggregates analyses per species)
+  as.matrix() %>%
+  tax_table() # convert to phyloseq tax_table object
 
 physeq_all_filtered <- phyloseq(phylo_counts, phylo_taxonomy, phylo_samples)
-
 ```
 ```{r phylo_zero_clr, comment="", echo=FALSE, message=FALSE, warning=FALSE, eval=FALSE}
+physeq_filtered_clr <- microbiome::transform(physeq_all_filtered, "clr")
 
-physeq_filtered_clr <- microbiome::transform(physeq_all_filtered, 'clr')
-
-#count_filtered_crl <- data.frame(physeq_filtered_clr@otu_table)
-#count_filtered_crl_t <- data.frame(t(count_filtered_crl))
-#metadata_filtered_crl <- data.frame(physeq_filtered_clr@sam_data)
-#metadata_filtered_crl <- rownames_to_column(metadata_filtered_crl, "sample")
-#metadata_filtered_crl <- metadata_crl[match(rownames(count_filtered_crl_t),metadata_filtered_crl$sample),]
-#design <- metadata_filtered_crl[, c("sample", "Sample_type")]
+# count_filtered_crl <- data.frame(physeq_filtered_clr@otu_table)
+# count_filtered_crl_t <- data.frame(t(count_filtered_crl))
+# metadata_filtered_crl <- data.frame(physeq_filtered_clr@sam_data)
+# metadata_filtered_crl <- rownames_to_column(metadata_filtered_crl, "sample")
+# metadata_filtered_crl <- metadata_crl[match(rownames(count_filtered_crl_t),metadata_filtered_crl$sample),]
+# design <- metadata_filtered_crl[, c("sample", "Sample_type")]
 ```
 
 ## RDA
 ```{r prep_data, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-
 count_table_t <- data.frame(t(read_counts_coverage)) %>%
   row_to_names(row_number = 1) %>%
   as.data.frame() %>%
-  mutate_if(is.character, as.numeric) 
+  mutate_if(is.character, as.numeric)
 hel1 <- decostand(count_table_t, "hellinger")
-
 ```
 ```{r rda_model, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-rda.model <- rda(count_crl_t ~ Sample_type, data = design)# Run the model
-rda.model.hel <- rda(hel1 ~ Sample_type, data = design)# Run the model
-#summary(rda.model)
+rda.model <- rda(count_crl_t ~ Sample_type, data = design) # Run the model
+rda.model.hel <- rda(hel1 ~ Sample_type, data = design) # Run the model
+# summary(rda.model)
 # Anova
 anova(rda.model)
 anova(rda.model.hel)
@@ -195,11 +195,11 @@ RsquareAdj(rda.model.hel)
 anova.cca(rda.model, step = 1000)
 anova.cca(rda.model, step = 1000, by = "term")
 anova.cca(rda.model, step = 1000, by = "axis")
-perc <- round(100*(summary(rda.model)$cont$importance[2, 1:2]), 2)
+perc <- round(100 * (summary(rda.model)$cont$importance[2, 1:2]), 2)
 ## extract scores - these are coordinates in the RDA space
-sc_si <- vegan::scores(rda.model, display="sites", choices=c(1,2), scaling=1)
-sc_sp <- vegan::scores(rda.model, display="species", choices=c(1,2), scaling=1)
-sc_bp <- vegan::scores(rda.model, display="bp", choices=c(1, 2), scaling=1)
+sc_si <- vegan::scores(rda.model, display = "sites", choices = c(1, 2), scaling = 1)
+sc_sp <- vegan::scores(rda.model, display = "species", choices = c(1, 2), scaling = 1)
+sc_bp <- vegan::scores(rda.model, display = "bp", choices = c(1, 2), scaling = 1)
 
 # Prepare data for plotting
 rda_sc_wa <- vegan::scores(rda.model,
@@ -241,82 +241,90 @@ ggplot(all_dataframe, aes(y = PC1, x = RDA1)) +
   # text
   xlab(paste0("RDA1 (", perc[1], "%)")) +
   ylab(paste0("PC1 (", perc[2], "%)")) +
-#  ggtitle("Caecum microbiome development (AdjR2 = 0.20)") +
+  #  ggtitle("Caecum microbiome development (AdjR2 = 0.20)") +
   # segment
-geom_segment(data = HighFit_ASVs,
-             aes(x = 0, xend = RDA1, y = 0, yend = PC1),
-             arrow = arrow(length = unit(0.25, "cm")),
-             color = "grey") +
-geom_point(data = HighFit_ASVs,
-            aes(y = PC1, x = RDA1),
-            show.legend = FALSE,
-            color = "grey") +
-geom_label_repel(data = HighFit_ASVs,
-                  aes(y = PC1, x = RDA1,label = species_index$Species),
-                  size = 3,
-                  show.legend = FALSE,
-                  colour = "grey",
-                  max.overlaps = 20) +
-#  scale_colour_manual(values = c("red", "blue")) +
+  geom_segment(
+    data = HighFit_ASVs,
+    aes(x = 0, xend = RDA1, y = 0, yend = PC1),
+    arrow = arrow(length = unit(0.25, "cm")),
+    color = "grey"
+  ) +
+  geom_point(
+    data = HighFit_ASVs,
+    aes(y = PC1, x = RDA1),
+    show.legend = FALSE,
+    color = "grey"
+  ) +
+  geom_label_repel(
+    data = HighFit_ASVs,
+    aes(y = PC1, x = RDA1, label = species_index$Species),
+    size = 3,
+    show.legend = FALSE,
+    colour = "grey",
+    max.overlaps = 20
+  ) +
+  #  scale_colour_manual(values = c("red", "blue")) +
   scale_shape_discrete(solid = TRUE) +
   theme_bw() +
   theme(
     plot.title = element_text(size = 10),
     legend.position = "none"
   )
-#i + geom_segment(aes(x = 0, y = 0, xend = -0.5, yend = -0.4),
+# i + geom_segment(aes(x = 0, y = 0, xend = -0.5, yend = -0.4),
 #                  arrow = arrow(length = unit(0.5, "cm")))+
 #  geom_segment(aes(x = 0, y = 0, xend = -0.5, yend = 0.4),
 #                  arrow = arrow(length = unit(0.5, "cm")))
-#arrows(0,0, # start them from (0,0)
+# arrows(0,0, # start them from (0,0)
 #       sc_bp[,1], sc_bp[,2], # end them at the score value
-#       col = "red", 
+#       col = "red",
 #       lwd = 4)
 ```
 
 ## Enrichment analysis between feces and cloaca
 ### Edger
 ```{r table_edger, comment="", echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
-counts_edger <- read_counts_coverage %>% 
-                    column_to_rownames("genome") 
-counts_edger=counts_edger[,which(colnames(counts_edger)%in%sample_metadata$sample)]
-dim(sample_metadata)[1]==dim(counts_edger)[2]
-colnames(counts_edger)==sample_metadata$sample
+counts_edger <- read_counts_coverage %>%
+  column_to_rownames("genome")
+counts_edger <- counts_edger[, which(colnames(counts_edger) %in% sample_metadata$sample)]
+dim(sample_metadata)[1] == dim(counts_edger)[2]
+colnames(counts_edger) == sample_metadata$sample
 ```
 
 ```{r edger, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-#Run EdgeR
-design=model.matrix(~Sample_type,data = sample_metadata)
-dge=DGEList(counts=counts_edger)
-dge=estimateDisp(dge,design,robust = TRUE)
-fit=glmQLFit(dge, design)
-qlf=glmQLFTest(fit)
+# Run EdgeR
+design <- model.matrix(~Sample_type, data = sample_metadata)
+dge <- DGEList(counts = counts_edger)
+dge <- estimateDisp(dge, design, robust = TRUE)
+fit <- glmQLFit(dge, design)
+qlf <- glmQLFTest(fit)
 
-#Plot
+# Plot
 plotMD(qlf)
-abline(h=c(-1, 1), col="grey")
+abline(h = c(-1, 1), col = "grey")
 
-results=topTags(qlf, n=20)
+results <- topTags(qlf, n = 20)
 summary(decideTests(qlf))
-#13 MAGs were were found to be of higher abundance in feral than domestic cats
-#1 MAG was found to be of lower abundance in feral than domestic cats
-difMAGs <- results[results$table$FDR<0.05,]
+# 13 MAGs were were found to be of higher abundance in feral than domestic cats
+# 1 MAG was found to be of lower abundance in feral than domestic cats
+difMAGs <- results[results$table$FDR < 0.05, ]
 taxonomy <- column_to_rownames(genome_metadata, "genome")
-difMAGs <- cbind(as.data.frame(results[results$table$FDR<0.05,]),table_upset_analysis_cont[rownames(difMAGs),], taxonomy[rownames(difMAGs),])
-#write.csv(difMAGs,"results/enrichment.csv")
+difMAGs <- cbind(as.data.frame(results[results$table$FDR < 0.05, ]), table_upset_analysis_cont[rownames(difMAGs), ], taxonomy[rownames(difMAGs), ])
+# write.csv(difMAGs,"results/enrichment.csv")
 ```
 
 ```{r edger_plot, comment="", echo=FALSE, message=FALSE, warning=FALSE}
 difMAGs %>%
-ggplot(aes(x=genus, y=logFC, color=phylum)) + 
-  geom_point(size=4) +
-  geom_hline(yintercept=0) + 
-  coord_flip()+
-  theme(panel.background = element_blank(),
-        axis.text = element_text(size = 10, face="bold.italic"),
-          axis.title = element_text(size = 12),
-          legend.position = "bottom", 
-          legend.title = element_blank())
+  ggplot(aes(x = genus, y = logFC, color = phylum)) +
+  geom_point(size = 4) +
+  geom_hline(yintercept = 0) +
+  coord_flip() +
+  theme(
+    panel.background = element_blank(),
+    axis.text = element_text(size = 10, face = "bold.italic"),
+    axis.title = element_text(size = 12),
+    legend.position = "bottom",
+    legend.title = element_blank()
+  )
 ```
 
 
@@ -327,103 +335,109 @@ library(genefilter)
 ```
 
 ```{r deseq, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-#physeq_caecum_aggreg <- microbiome::aggregate_taxa(physeq_caecum7, 'Genus')
-#diagdds = phyloseq_to_deseq2(physeq_caecum_aggreg, ~ Treatment)
+# physeq_caecum_aggreg <- microbiome::aggregate_taxa(physeq_caecum7, 'Genus')
+# diagdds = phyloseq_to_deseq2(physeq_caecum_aggreg, ~ Treatment)
 
-diagdds = phyloseq_to_deseq2(physeq_all_filtered, ~ Sample_type)
+diagdds <- phyloseq_to_deseq2(physeq_all_filtered, ~Sample_type)
 
-diagdds <- estimateSizeFactors(diagdds, type="poscounts",locfunc=genefilter::shorth)
-diagdds = DESeq(diagdds, test="Wald", fitType="parametric")
-diagdds.ins.fis <- results(diagdds, alpha=0.01, contrast=c("Sample_type", "feces", "cloaca"))
+diagdds <- estimateSizeFactors(diagdds, type = "poscounts", locfunc = genefilter::shorth)
+diagdds <- DESeq(diagdds, test = "Wald", fitType = "parametric")
+diagdds.ins.fis <- results(diagdds, alpha = 0.01, contrast = c("Sample_type", "feces", "cloaca"))
 sigtab_diagdds.ins.fis <- diagdds.ins.fis[which(diagdds.ins.fis$pvalue < 0.05), ]
 sigtab_diagdds_with_tax <- cbind(as(sigtab_diagdds.ins.fis, "data.frame"), as(tax_table(physeq_all_filtered)[row.names(sigtab_diagdds.ins.fis), ], "matrix"))
-#sigtab_diagdds_with_tax[order(sigtab_diagdds_with_tax$baseMean, decreasing=T), ]
+# sigtab_diagdds_with_tax[order(sigtab_diagdds_with_tax$baseMean, decreasing=T), ]
 deseq2_group <- as.data.frame(sigtab_diagdds_with_tax)
 theme_set(theme_bw())
 scale_fill_discrete <- function(palname = "Set1", ...) {
   scale_fill_brewer(palette = palname, ...)
 }
 
-x = tapply(sigtab_diagdds_with_tax$log2FoldChange, sigtab_diagdds_with_tax$order, function(x) max(x))
-x = sort(x, TRUE)
-sigtab_diagdds_with_tax$Family = factor(as.character(sigtab_diagdds_with_tax$order), levels=names(x))
-x = tapply(sigtab_diagdds_with_tax$log2FoldChange, sigtab_diagdds_with_tax$genus, function(x) max(x))
-x = sort(x, TRUE)
-sigtab_diagdds_with_tax$Genus = factor(as.character(sigtab_diagdds_with_tax$genus), levels=names(x))
+x <- tapply(sigtab_diagdds_with_tax$log2FoldChange, sigtab_diagdds_with_tax$order, function(x) max(x))
+x <- sort(x, TRUE)
+sigtab_diagdds_with_tax$Family <- factor(as.character(sigtab_diagdds_with_tax$order), levels = names(x))
+x <- tapply(sigtab_diagdds_with_tax$log2FoldChange, sigtab_diagdds_with_tax$genus, function(x) max(x))
+x <- sort(x, TRUE)
+sigtab_diagdds_with_tax$Genus <- factor(as.character(sigtab_diagdds_with_tax$genus), levels = names(x))
 ```
 
 ```{r deseq_plot, comment="", echo=FALSE, message=FALSE, warning=FALSE}
 sigtab_diagdds_with_tax %>%
-ggplot(aes(x=genome, y=log2FoldChange, color=phylum)) + 
-  geom_point(size=4) +
-  geom_hline(yintercept=0) + 
-  coord_flip()+
-  theme(axis.text = element_text(size = 10, face="bold.italic"),
-          axis.title = element_text(size = 12),
-          legend.position = "bottom", 
-          legend.title = element_blank())
+  ggplot(aes(x = genome, y = log2FoldChange, color = phylum)) +
+  geom_point(size = 4) +
+  geom_hline(yintercept = 0) +
+  coord_flip() +
+  theme(
+    axis.text = element_text(size = 10, face = "bold.italic"),
+    axis.title = element_text(size = 12),
+    legend.position = "bottom",
+    legend.title = element_blank()
+  )
 ```
 
 ### Deseq (without considering structural zeros)
 
 ```{r deseq2, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-diagdds = phyloseq_to_deseq2(counts_data, ~ Sample_type)
+diagdds <- phyloseq_to_deseq2(counts_data, ~Sample_type)
 
-diagdds <- estimateSizeFactors(diagdds, type="poscounts",locfunc=genefilter::shorth)
-diagdds = DESeq(diagdds, test="Wald", fitType="parametric")
-diagdds.ins.fis <- results(diagdds, alpha=0.01, contrast=c("Sample_type", "feces", "cloaca"))
+diagdds <- estimateSizeFactors(diagdds, type = "poscounts", locfunc = genefilter::shorth)
+diagdds <- DESeq(diagdds, test = "Wald", fitType = "parametric")
+diagdds.ins.fis <- results(diagdds, alpha = 0.01, contrast = c("Sample_type", "feces", "cloaca"))
 sigtab_diagdds.ins.fis <- diagdds.ins.fis[which(diagdds.ins.fis$pvalue < 0.05), ]
 sigtab_diagdds_with_tax <- cbind(as(sigtab_diagdds.ins.fis, "data.frame"), as(tax_table(counts_data)[row.names(sigtab_diagdds.ins.fis), ], "matrix"))
-#sigtab_diagdds_with_tax[order(sigtab_diagdds_with_tax$baseMean, decreasing=T), ]
+# sigtab_diagdds_with_tax[order(sigtab_diagdds_with_tax$baseMean, decreasing=T), ]
 deseq2_group <- as.data.frame(sigtab_diagdds_with_tax)
 theme_set(theme_bw())
 scale_fill_discrete <- function(palname = "Set1", ...) {
   scale_fill_brewer(palette = palname, ...)
 }
 
-x = tapply(sigtab_diagdds_with_tax$log2FoldChange, sigtab_diagdds_with_tax$order, function(x) max(x))
-x = sort(x, TRUE)
-sigtab_diagdds_with_tax$Family = factor(as.character(sigtab_diagdds_with_tax$order), levels=names(x))
-x = tapply(sigtab_diagdds_with_tax$log2FoldChange, sigtab_diagdds_with_tax$genus, function(x) max(x))
-x = sort(x, TRUE)
-sigtab_diagdds_with_tax$Genus = factor(as.character(sigtab_diagdds_with_tax$genus), levels=names(x))
+x <- tapply(sigtab_diagdds_with_tax$log2FoldChange, sigtab_diagdds_with_tax$order, function(x) max(x))
+x <- sort(x, TRUE)
+sigtab_diagdds_with_tax$Family <- factor(as.character(sigtab_diagdds_with_tax$order), levels = names(x))
+x <- tapply(sigtab_diagdds_with_tax$log2FoldChange, sigtab_diagdds_with_tax$genus, function(x) max(x))
+x <- sort(x, TRUE)
+sigtab_diagdds_with_tax$Genus <- factor(as.character(sigtab_diagdds_with_tax$genus), levels = names(x))
 ```
 
 ```{r deseq_plot2, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-sigtab_diagdds_with_tax %>% 
-  ggplot(aes(x=genome, y=log2FoldChange, color=phylum)) + 
-  geom_point(size=4) +
-  geom_hline(yintercept=0) + 
-  coord_flip()+
-  theme(axis.text = element_text(size = 8),
-          axis.title = element_text(size = 12),
-          legend.position = "bottom", 
-          legend.title = element_blank())
+sigtab_diagdds_with_tax %>%
+  ggplot(aes(x = genome, y = log2FoldChange, color = phylum)) +
+  geom_point(size = 4) +
+  geom_hline(yintercept = 0) +
+  coord_flip() +
+  theme(
+    axis.text = element_text(size = 8),
+    axis.title = element_text(size = 12),
+    legend.position = "bottom",
+    legend.title = element_blank()
+  )
 ```
 
 ### Mann–Whitney U test (CLR data, considering structural zeros)
 
 ```{r wilcox1, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-physeq_clr <- microbiome::transform(physeq_all_filtered, 'clr')
-#physeq_clr <- microbiome::aggregate_taxa(physeq_clr, 'Phylum')
+physeq_clr <- microbiome::transform(physeq_all_filtered, "clr")
+# physeq_clr <- microbiome::aggregate_taxa(physeq_clr, 'Phylum')
 
-physeq_clr_rel <-  microbiome::transform(physeq_clr, "compositional")
+physeq_clr_rel <- microbiome::transform(physeq_clr, "compositional")
 physeq_metadata <- data.frame(physeq_clr@sam_data)
 physeq_metadata <- rownames_to_column(physeq_metadata, "sample")
 
 physeq_clr.t <- as.data.frame(t(as.matrix(physeq_clr@otu_table)))
 table.W <- tibble::rownames_to_column(physeq_clr.t, "sample")
-origin <- physeq_metadata[,c(1,3)]
-table.W.meta <- merge(table.W,origin,by="sample")
-table <- table.W.meta[,-c(1)]
-table.no <- table[,-ncol(table)]
+origin <- physeq_metadata[, c(1, 3)]
+table.W.meta <- merge(table.W, origin, by = "sample")
+table <- table.W.meta[, -c(1)]
+table.no <- table[, -ncol(table)]
 all.taxa <- colnames(table.no)
 
 Wilcox_result <- c()
-for (y in all.taxa){
-  res.wilcox <- wilcox.test(table[,y] ~ Sample_type, data = table,
-                            exact = FALSE, alternative = "less")
-  Wilcox_result <- rbind(Wilcox_result,c(res.wilcox[[1]],Pvalue=res.wilcox[[3]]))
+for (y in all.taxa) {
+  res.wilcox <- wilcox.test(table[, y] ~ Sample_type,
+    data = table,
+    exact = FALSE, alternative = "less"
+  )
+  Wilcox_result <- rbind(Wilcox_result, c(res.wilcox[[1]], Pvalue = res.wilcox[[3]]))
 }
 rownames(Wilcox_result) <- all.taxa
 Wilcox_result <- as.data.frame(Wilcox_result)
@@ -432,15 +446,15 @@ Wilcox_result$p_adjusted <- p.adjust(Wilcox_result$Pvalue, method = "fdr")
 
 subset(Wilcox_result, p_adjusted <= 0.05) %>%
   rownames_to_column(., "genome") %>%
-  left_join(genome_metadata,by=join_by(genome==genome))
+  left_join(genome_metadata, by = join_by(genome == genome))
 ```
 
 ### Mann–Whitney U test (CLR data, without considering structural zeros)
 ```{r wilcox2, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-physeq_clr <- microbiome::transform(counts_data, 'clr')
-#physeq_clr <- microbiome::aggregate_taxa(physeq_clr, 'Phylum')
+physeq_clr <- microbiome::transform(counts_data, "clr")
+# physeq_clr <- microbiome::aggregate_taxa(physeq_clr, 'Phylum')
 
-physeq_clr_rel <-  microbiome::transform(physeq_clr, "compositional")
+physeq_clr_rel <- microbiome::transform(physeq_clr, "compositional")
 physeq_metadata <- data.frame(physeq_clr@sam_data)
 physeq_metadata <- rownames_to_column(physeq_metadata, "sample")
 
@@ -448,16 +462,16 @@ physeq_clr.t <- as.data.frame(physeq_clr@otu_table)
 
 physeq_clr.t <- as.data.frame(t(as.matrix(physeq_clr@otu_table)))
 table.W <- tibble::rownames_to_column(physeq_clr.t, "sample")
-origin <- physeq_metadata[,c(1,3)]
-table.W.meta <- merge(table.W,origin,by="sample")
-table <- table.W.meta[,-c(1)]
-table.no <- table[,-ncol(table)]
+origin <- physeq_metadata[, c(1, 3)]
+table.W.meta <- merge(table.W, origin, by = "sample")
+table <- table.W.meta[, -c(1)]
+table.no <- table[, -ncol(table)]
 all.taxa <- colnames(table.no)
 
 Wilcox_result <- c()
-for (y in all.taxa){
-  res.wilcox <- wilcox.test(table[,y] ~ Sample_type, data = table, paired = TRUE)
-  Wilcox_result <- rbind(Wilcox_result,c(res.wilcox[[1]],Pvalue=res.wilcox[[3]]))
+for (y in all.taxa) {
+  res.wilcox <- wilcox.test(table[, y] ~ Sample_type, data = table, paired = TRUE)
+  Wilcox_result <- rbind(Wilcox_result, c(res.wilcox[[1]], Pvalue = res.wilcox[[3]]))
 }
 rownames(Wilcox_result) <- all.taxa
 Wilcox_result <- as.data.frame(Wilcox_result)
@@ -465,38 +479,40 @@ Wilcox_result <- as.data.frame(Wilcox_result)
 Wilcox_result$p_adjusted <- p.adjust(Wilcox_result$Pvalue, method = "fdr")
 subset(Wilcox_result, p_adjusted <= 0.05) %>%
   rownames_to_column(., "genome") %>%
-  left_join(genome_metadata,by=join_by(genome==genome))
+  left_join(genome_metadata, by = join_by(genome == genome))
 ```
 
 ## Ancombc2 (with random effect, and considering structural zeros)
 ```{r ancom_rand_zero, comment="", echo=FALSE, message=FALSE, warning=FALSE}
 library(ANCOMBC)
-set.seed(1234) #set seed for reproducibility
-ancom_rand_output = ancombc2(data = physeq_all_filtered, 
-                  assay_name = "counts", 
-                  tax_level = NULL, #change to agglomerate analysis to a higher taxonomic range
-                  fix_formula = "Sample_type", #fixed variable(s)
-                  rand_formula = "(1|Individual)",
-                  p_adj_method = "holm", 
-                  pseudo_sens = TRUE,
-                  prv_cut = 0.10, 
-                  lib_cut = 1, 
-                  s0_perc = 0.05,
-                  group = NULL, 
-                  struc_zero = FALSE, 
-                  neg_lb = FALSE,
-                  alpha = 0.05, 
-                  n_cl = 2, 
-                  verbose = TRUE,
-                  global = FALSE, 
-                  pairwise = FALSE, 
-                  dunnet = FALSE, 
-                  trend = FALSE,
-                  iter_control = list(tol = 1e-5, max_iter = 20, verbose = FALSE),
-                  em_control = list(tol = 1e-5, max_iter = 100),
-                  lme_control = lme4::lmerControl(),
-                  mdfdr_control = list(fwer_ctrl_method = "holm", B = 100), 
-                  trend_control = NULL)
+set.seed(1234) # set seed for reproducibility
+ancom_rand_output <- ancombc2(
+  data = physeq_all_filtered,
+  assay_name = "counts",
+  tax_level = NULL, # change to agglomerate analysis to a higher taxonomic range
+  fix_formula = "Sample_type", # fixed variable(s)
+  rand_formula = "(1|Individual)",
+  p_adj_method = "holm",
+  pseudo_sens = TRUE,
+  prv_cut = 0.10,
+  lib_cut = 1,
+  s0_perc = 0.05,
+  group = NULL,
+  struc_zero = FALSE,
+  neg_lb = FALSE,
+  alpha = 0.05,
+  n_cl = 2,
+  verbose = TRUE,
+  global = FALSE,
+  pairwise = FALSE,
+  dunnet = FALSE,
+  trend = FALSE,
+  iter_control = list(tol = 1e-5, max_iter = 20, verbose = FALSE),
+  em_control = list(tol = 1e-5, max_iter = 100),
+  lme_control = lme4::lmerControl(),
+  mdfdr_control = list(fwer_ctrl_method = "holm", B = 100),
+  trend_control = NULL
+)
 
 tax <- data.frame(physeq_all_filtered@tax_table) %>%
   rownames_to_column(., "taxon")
@@ -505,50 +521,52 @@ ancombc_rand_table <- ancom_rand_output$res %>%
   dplyr::select(taxon, lfc_Sample_typefeces, p_Sample_typefeces) %>%
   filter(p_Sample_typefeces < 0.05) %>%
   dplyr::arrange(p_Sample_typefeces) %>%
-  merge(., tax, by="taxon")
+  merge(., tax, by = "taxon")
 
 colors_alphabetic <- read_tsv("https://raw.githubusercontent.com/earthhologenome/EHI_taxonomy_colour/main/ehi_phylum_colors.tsv") %>%
-  mutate_at(vars(phylum), ~ str_replace(., "[dpcofgs]__", ""))  %>%
-  right_join(tax, by=join_by(phylum == phylum)) %>%
+  mutate_at(vars(phylum), ~ str_replace(., "[dpcofgs]__", "")) %>%
+  right_join(tax, by = join_by(phylum == phylum)) %>%
   dplyr::select(phylum, colors) %>%
-	unique() %>%
-	dplyr::arrange(phylum)
+  unique() %>%
+  dplyr::arrange(phylum)
 
 tax_table <- as.data.frame(unique(ancombc_rand_table$phylum))
 colnames(tax_table)[1] <- "phylum"
-tax_color <- merge(tax_table, colors_alphabetic, by="phylum")%>%
-	dplyr::arrange(phylum) %>%
-	dplyr::select(colors) %>%
-	pull()
+tax_color <- merge(tax_table, colors_alphabetic, by = "phylum") %>%
+  dplyr::arrange(phylum) %>%
+  dplyr::select(colors) %>%
+  pull()
 ```
 
 ```{r ancombc_rand_plot_zero, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(ancombc_rand_table, aes(x=forcats::fct_rev(taxon), y=lfc_Sample_typefeces, color=phylum)) + 
-  geom_point(size=4) + 
-  scale_color_manual(values=tax_color) + 
-  geom_hline(yintercept=0) + 
-  coord_flip()+
-  theme(panel.background = element_blank(),
-          axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
-          axis.title.x=element_blank())+
-  xlab("Genus") + 
-  ylab("log2FoldChange")+
-  guides(col=guide_legend("Phylum"))
+ggplot(ancombc_rand_table, aes(x = forcats::fct_rev(taxon), y = lfc_Sample_typefeces, color = phylum)) +
+  geom_point(size = 4) +
+  scale_color_manual(values = tax_color) +
+  geom_hline(yintercept = 0) +
+  coord_flip() +
+  theme(
+    panel.background = element_blank(),
+    axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+    axis.title.x = element_blank()
+  ) +
+  xlab("Genus") +
+  ylab("log2FoldChange") +
+  guides(col = guide_legend("Phylum"))
 ```
 ```{r ancom_rand_volcano_zero, comment="", echo=FALSE, message=FALSE, warning=FALSE}
 ancom_result <- ancom_rand_output$res %>%
   na.omit() %>%
-  dplyr::rename(genome=taxon) %>%
-  left_join(genome_metadata,by=join_by(genome==genome))
+  dplyr::rename(genome = taxon) %>%
+  left_join(genome_metadata, by = join_by(genome == genome))
 ancom_result %>%
-    mutate(significance = ifelse(p_Sample_typefeces < 0.05, "1", "0")) %>%
-    ggplot(., aes(x=-log(p_Sample_typefeces), y=lfc_Sample_typefeces, color=significance)) +
-      geom_point() +
-      scale_color_manual(values = c("#cccccc","#00FFFF")) +
-      geom_text(aes(3, 5), label = "Enriched\nin feces", color="#666666") +
-      geom_text(aes(3, -5), label = "Enriched\nin cloaca", color="#666666") +
-      labs(color="Significance", y="Difference between behaviours", x="p-value") +
-      theme_classic()
+  mutate(significance = ifelse(p_Sample_typefeces < 0.05, "1", "0")) %>%
+  ggplot(., aes(x = -log(p_Sample_typefeces), y = lfc_Sample_typefeces, color = significance)) +
+  geom_point() +
+  scale_color_manual(values = c("#cccccc", "#00FFFF")) +
+  geom_text(aes(3, 5), label = "Enriched\nin feces", color = "#666666") +
+  geom_text(aes(3, -5), label = "Enriched\nin cloaca", color = "#666666") +
+  labs(color = "Significance", y = "Difference between behaviours", x = "p-value") +
+  theme_classic()
 ```
 
 
@@ -558,198 +576,205 @@ ancom_result %>%
 library(ALDEx2)
 counts_aldex <- read_counts_coverage %>%
   filter(!genome %in% structural_zeros$genome) %>% # remove structural zeros
-  column_to_rownames(var="genome") %>%
-  mutate_all(~ . * 1e6) %>% #multiple by a million
-  round(0) #round to integer
+  column_to_rownames(var = "genome") %>%
+  mutate_all(~ . * 1e6) %>% # multiple by a million
+  round(0) # round to integer
 
-counts_filtered.clr <- aldex.clr(counts_aldex, 
-               sample_metadata$Sample_type, #not a factor
-               mc.samples=128, 
-               denom="all", 
-               verbose=F)
+counts_filtered.clr <- aldex.clr(counts_aldex,
+  sample_metadata$Sample_type, # not a factor
+  mc.samples = 128,
+  denom = "all",
+  verbose = F
+)
 ```
 
 ```{r aldex_test, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-counts_filtered.ttest <- aldex.ttest(counts_filtered.clr, 
-                hist.plot=F, 
-                paired.test=F, 
-                verbose=F)
+counts_filtered.ttest <- aldex.ttest(counts_filtered.clr,
+  hist.plot = F,
+  paired.test = F,
+  verbose = F
+)
 ```
 
 ```{r aldex_effect, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-counts_filtered.effect <- aldex.effect(counts_filtered.clr, 
-              CI=T, 
-              verbose=F, 
-              include.sample.summary=F, 
-              glm.conds=NULL, 
-              useMC=F)
+counts_filtered.effect <- aldex.effect(counts_filtered.clr,
+  CI = T,
+  verbose = F,
+  include.sample.summary = F,
+  glm.conds = NULL,
+  useMC = F
+)
 ```
 
 ```{r aldex_meta, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-counts_filtered.all <- data.frame(counts_filtered.ttest,counts_filtered.effect) %>%
-    rownames_to_column(var="genome") %>%
-    left_join(genome_metadata,by=join_by(genome==genome))
+counts_filtered.all <- data.frame(counts_filtered.ttest, counts_filtered.effect) %>%
+  rownames_to_column(var = "genome") %>%
+  left_join(genome_metadata, by = join_by(genome == genome))
 ```
 
 ```{r aldex_volcano, comment="", echo=FALSE, message=FALSE, warning=FALSE}
 counts_filtered.all %>%
-    mutate(significance = ifelse(wi.ep < 0.05, "1", "0")) %>% # I changed to wi.ep
-    ggplot(., aes(x=-log(wi.ep), y=diff.btw, color=significance)) + # I changed to wi.ep
-      geom_point() +
-      scale_color_manual(values = c("#cccccc","#00FFFF")) +
-      labs(color="Significance", y="Difference between sample types", x="p-value") +
-      theme_classic()
+  mutate(significance = ifelse(wi.ep < 0.05, "1", "0")) %>% # I changed to wi.ep
+  ggplot(., aes(x = -log(wi.ep), y = diff.btw, color = significance)) + # I changed to wi.ep
+  geom_point() +
+  scale_color_manual(values = c("#cccccc", "#00FFFF")) +
+  labs(color = "Significance", y = "Difference between sample types", x = "p-value") +
+  theme_classic()
 ```
 
 ```{r aldex_effect_plot, comment="", echo=FALSE, message=FALSE, warning=FALSE}
 counts_filtered.all %>%
-    mutate(significance = ifelse(wi.eBH < 0.05, "1", "0")) %>% # I changed to wi.ep
-    ggplot(., aes(x=diff.win, y=diff.btw, color=significance)) +
-      geom_abline(intercept = 0, slope =  0, linewidth=0.4, linetype="solid",  color="#000000") +
-      geom_abline(intercept = 0, slope =  1, linewidth=0.4, linetype="dashed", color="#000000") +
-      geom_abline(intercept = 0, slope =  2, linewidth=0.6,   linetype="dashed", color="#000000") +
-      geom_abline(intercept = 0, slope =  4, linewidth=0.8,   linetype="dashed", color="#000000") +
-      geom_abline(intercept = 0, slope = -1, linewidth=0.4, linetype="dashed", color="#000000") + 
-      geom_abline(intercept = 0, slope = -2, linewidth=0.6,   linetype="dashed", color="#000000") +
-      geom_abline(intercept = 0, slope = -4, linewidth=0.8,   linetype="dashed", color="#000000") +
-      geom_point() +
-      scale_color_manual(values = c("#cccccc90","#00FFFF90")) +
-      geom_text(aes(2.5, 20), label = "Enriched\nin feces", color="#666666") +
-      geom_text(aes(2.5, -20), label = "Enriched\nin cloaca", color="#666666") +
-      labs(color="Significance", y="Difference between sample types", x="Dispersion within sample types") +
-      theme_classic()
+  mutate(significance = ifelse(wi.eBH < 0.05, "1", "0")) %>% # I changed to wi.ep
+  ggplot(., aes(x = diff.win, y = diff.btw, color = significance)) +
+  geom_abline(intercept = 0, slope = 0, linewidth = 0.4, linetype = "solid", color = "#000000") +
+  geom_abline(intercept = 0, slope = 1, linewidth = 0.4, linetype = "dashed", color = "#000000") +
+  geom_abline(intercept = 0, slope = 2, linewidth = 0.6, linetype = "dashed", color = "#000000") +
+  geom_abline(intercept = 0, slope = 4, linewidth = 0.8, linetype = "dashed", color = "#000000") +
+  geom_abline(intercept = 0, slope = -1, linewidth = 0.4, linetype = "dashed", color = "#000000") +
+  geom_abline(intercept = 0, slope = -2, linewidth = 0.6, linetype = "dashed", color = "#000000") +
+  geom_abline(intercept = 0, slope = -4, linewidth = 0.8, linetype = "dashed", color = "#000000") +
+  geom_point() +
+  scale_color_manual(values = c("#cccccc90", "#00FFFF90")) +
+  geom_text(aes(2.5, 20), label = "Enriched\nin feces", color = "#666666") +
+  geom_text(aes(2.5, -20), label = "Enriched\nin cloaca", color = "#666666") +
+  labs(color = "Significance", y = "Difference between sample types", x = "Dispersion within sample types") +
+  theme_classic()
 ```
 
 ## Significance based on posterior probabilities
 
 ```{r plota1, comment="", echo=FALSE, message=FALSE, warning=FALSE}
 counts_filtered.all %>%
-    mutate(significance = ifelse(overlap < 0.1, "1", "0")) %>%
-    ggplot(., aes(x=diff.win, y=diff.btw, color=significance)) +
-      geom_abline(intercept = 0, slope =  0, size=0.4, linetype="solid",  color="#000000") +
-      geom_abline(intercept = 0, slope =  1, size=0.4, linetype="dashed", color="#000000") +
-      geom_abline(intercept = 0, slope =  2, size=0.6,   linetype="dashed", color="#000000") +
-      geom_abline(intercept = 0, slope =  4, size=0.8,   linetype="dashed", color="#000000") +
-      geom_abline(intercept = 0, slope = -1, size=0.4, linetype="dashed", color="#000000") + 
-      geom_abline(intercept = 0, slope = -2, size=0.6,   linetype="dashed", color="#000000") +
-      geom_abline(intercept = 0, slope = -4, size=0.8,   linetype="dashed", color="#000000") +
-      geom_point() +
-      scale_color_manual(values = c("#cccccc90","#00FFFF90")) +
-      geom_text(aes(2.5, 20), label = "Enriched\nin feces", color="#666666") +
-      geom_text(aes(2.5, -20), label = "Enriched\nin cloaca", color="#666666") +
-      labs(color="Significance", y="Difference between sample types", x="Dispersion within sample types") +
-      theme_classic()
+  mutate(significance = ifelse(overlap < 0.1, "1", "0")) %>%
+  ggplot(., aes(x = diff.win, y = diff.btw, color = significance)) +
+  geom_abline(intercept = 0, slope = 0, size = 0.4, linetype = "solid", color = "#000000") +
+  geom_abline(intercept = 0, slope = 1, size = 0.4, linetype = "dashed", color = "#000000") +
+  geom_abline(intercept = 0, slope = 2, size = 0.6, linetype = "dashed", color = "#000000") +
+  geom_abline(intercept = 0, slope = 4, size = 0.8, linetype = "dashed", color = "#000000") +
+  geom_abline(intercept = 0, slope = -1, size = 0.4, linetype = "dashed", color = "#000000") +
+  geom_abline(intercept = 0, slope = -2, size = 0.6, linetype = "dashed", color = "#000000") +
+  geom_abline(intercept = 0, slope = -4, size = 0.8, linetype = "dashed", color = "#000000") +
+  geom_point() +
+  scale_color_manual(values = c("#cccccc90", "#00FFFF90")) +
+  geom_text(aes(2.5, 20), label = "Enriched\nin feces", color = "#666666") +
+  geom_text(aes(2.5, -20), label = "Enriched\nin cloaca", color = "#666666") +
+  labs(color = "Significance", y = "Difference between sample types", x = "Dispersion within sample types") +
+  theme_classic()
 ```
 
 ```{r plota, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-#Get phylum colors from the EHI standard
+# Get phylum colors from the EHI standard
 phylum_colors <- read_tsv("https://raw.githubusercontent.com/earthhologenome/EHI_taxonomy_colour/main/ehi_phylum_colors.tsv") %>%
   mutate_at(vars(phylum), ~ str_replace(., "[dpcofgs]__", "")) %>%
-  right_join(counts_filtered.all, by=join_by(phylum == phylum)) %>%
-    arrange(match(genome, bacteria_tree$tip.label)) %>%
-    dplyr::select(phylum, colors) %>%
-    mutate(colors = str_c(colors, "80"))  %>% #add 80% alpha
-    unique() %>%
-    arrange(phylum) %>%
-    dplyr::select(colors) %>%
-    pull()
+  right_join(counts_filtered.all, by = join_by(phylum == phylum)) %>%
+  arrange(match(genome, bacteria_tree$tip.label)) %>%
+  dplyr::select(phylum, colors) %>%
+  mutate(colors = str_c(colors, "80")) %>% # add 80% alpha
+  unique() %>%
+  arrange(phylum) %>%
+  dplyr::select(colors) %>%
+  pull()
 
 counts_filtered.all %>%
-    filter(overlap < 0.1) %>%
-    ggplot(., aes(x=effect, y=forcats::fct_rev(genome), color=phylum)) +
-      geom_jitter(size=3) +
-      geom_vline(xintercept=0) + 
-      xlim(-max(counts_filtered.all$effect)-1,max(counts_filtered.all$effect)+1) +
-      scale_color_manual(values=phylum_colors) +
-      geom_text(aes(-max(counts_filtered.all$effect)+1, 0.7), label = "Enriched\nin feces", color="#666666") +
-      geom_text(aes(max(counts_filtered.all$effect)-1, 0.7), label = "Enriched\nin cloaca", color="#666666") +
-     theme(legend.position='none',
-          panel.background = element_blank(),
-          axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
-          axis.title.x=element_blank())+
-      labs(y="Genus",x="Read counts") + 
-      guides(col=guide_legend("Phylum"))
+  filter(overlap < 0.1) %>%
+  ggplot(., aes(x = effect, y = forcats::fct_rev(genome), color = phylum)) +
+  geom_jitter(size = 3) +
+  geom_vline(xintercept = 0) +
+  xlim(-max(counts_filtered.all$effect) - 1, max(counts_filtered.all$effect) + 1) +
+  scale_color_manual(values = phylum_colors) +
+  geom_text(aes(-max(counts_filtered.all$effect) + 1, 0.7), label = "Enriched\nin feces", color = "#666666") +
+  geom_text(aes(max(counts_filtered.all$effect) - 1, 0.7), label = "Enriched\nin cloaca", color = "#666666") +
+  theme(
+    legend.position = "none",
+    panel.background = element_blank(),
+    axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+    axis.title.x = element_blank()
+  ) +
+  labs(y = "Genus", x = "Read counts") +
+  guides(col = guide_legend("Phylum"))
 ```
 
 ### Linda (without random effect, and without considering structural zeros)
 ```{r linda7, comment="", echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
 library(mia)
 
-tse = mia::makeTreeSummarizedExperimentFromPhyloseq(counts_data)
+tse <- mia::makeTreeSummarizedExperimentFromPhyloseq(counts_data)
 tse_LinDA <- mia::subsetByPrevalentFeatures(tse, detection = 0, prevalence = 0.1)
 
 otu.tab <- as.data.frame(assay(tse_LinDA))
 meta <- as.data.frame(colData(tse_LinDA)) %>% dplyr::select(Sample_type)
 LinDA_phylum <- LinDA::linda(
-  otu.tab, 
-  meta, 
-  formula = '~Sample_type', 
-  alpha = 0.01, 
-  prev.cut = 0, # we already filtered  
-  winsor.quan = 0.97)
+  otu.tab,
+  meta,
+  formula = "~Sample_type",
+  alpha = 0.01,
+  prev.cut = 0, # we already filtered
+  winsor.quan = 0.97
+)
 
-LinDA::linda.plot(LinDA_phylum, c('Sample_type'))
+LinDA::linda.plot(LinDA_phylum, c("Sample_type"))
 ```
 
 ```{r linda_plot7, comment="", echo=FALSE, message=FALSE, warning=FALSE}
 tax <- data.frame(counts_data@tax_table) %>%
   rownames_to_column(., "asv")
 
-LinDA_table_phylum <- rownames_to_column(LinDA_phylum$output$Sample_typefeces, "asv") 
+LinDA_table_phylum <- rownames_to_column(LinDA_phylum$output$Sample_typefeces, "asv")
 LinDA_table_phylum <- merge(LinDA_table_phylum, tax[, c("asv", "phylum", "genus")], by = "asv", all.x = TRUE)
 
 LinDA_table_phylum_filt <- LinDA_table_phylum %>%
   dplyr::select(asv, phylum, genus, lfcSE, padj, log2FoldChange) %>%
   filter(padj < 0.05)
 
-ggplot(LinDA_table_phylum_filt, aes(x=forcats::fct_rev(asv), y=log2FoldChange, color=phylum)) + 
-  geom_point(size=4) + 
-  #scale_color_manual(values=tax_color) + 
-  geom_hline(yintercept=0) + 
-  coord_flip()+
-  xlab("Genera") + 
-  ylab("log2FoldChange")+
-  guides(col=guide_legend("Phylum"))
+ggplot(LinDA_table_phylum_filt, aes(x = forcats::fct_rev(asv), y = log2FoldChange, color = phylum)) +
+  geom_point(size = 4) +
+  # scale_color_manual(values=tax_color) +
+  geom_hline(yintercept = 0) +
+  coord_flip() +
+  xlab("Genera") +
+  ylab("log2FoldChange") +
+  guides(col = guide_legend("Phylum"))
 ```
 
 ### Linda (without random effect, and considering structural zeros)
 ```{r linda_zero, comment="", echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
 library(mia)
 
-tse = mia::makeTreeSummarizedExperimentFromPhyloseq(physeq_all_filtered)
+tse <- mia::makeTreeSummarizedExperimentFromPhyloseq(physeq_all_filtered)
 tse_LinDA <- mia::subsetByPrevalentFeatures(tse, detection = 0, prevalence = 0.1)
 
 otu.tab <- as.data.frame(assay(tse_LinDA))
 meta <- as.data.frame(colData(tse_LinDA)) %>% dplyr::select(Sample_type)
 
 LinDA_phylum <- LinDA::linda(
-  otu.tab, 
-  meta, 
-  formula = '~Sample_type', 
-  alpha = 0.01, 
-  prev.cut = 0, # we already filtered  
-  winsor.quan = 0.97)
+  otu.tab,
+  meta,
+  formula = "~Sample_type",
+  alpha = 0.01,
+  prev.cut = 0, # we already filtered
+  winsor.quan = 0.97
+)
 
-LinDA::linda.plot(LinDA_phylum, c('Sample_type'))
+LinDA::linda.plot(LinDA_phylum, c("Sample_type"))
 ```
 
 ```{r linda_plot_zero, comment="", echo=FALSE, message=FALSE, warning=FALSE}
 tax <- data.frame(counts_data@tax_table) %>%
   rownames_to_column(., "asv")
 
-LinDA_table_phylum <- rownames_to_column(LinDA_phylum$output$Sample_typefeces, "asv") 
+LinDA_table_phylum <- rownames_to_column(LinDA_phylum$output$Sample_typefeces, "asv")
 LinDA_table_phylum <- merge(LinDA_table_phylum, tax[, c("asv", "phylum", "genus")], by = "asv", all.x = TRUE)
 
 LinDA_table_phylum_filt <- LinDA_table_phylum %>%
   dplyr::select(asv, phylum, genus, lfcSE, padj, log2FoldChange) %>%
   filter(padj < 0.05)
 
-ggplot(LinDA_table_phylum_filt, aes(x=forcats::fct_rev(asv), y=log2FoldChange, color=phylum)) + 
-  geom_point(size=4) + 
-  #scale_color_manual(values=tax_color) + 
-  geom_hline(yintercept=0) + 
-  coord_flip()+
-  xlab("Genera") + 
-  ylab("log2FoldChange")+
-  guides(col=guide_legend("Phylum"))
+ggplot(LinDA_table_phylum_filt, aes(x = forcats::fct_rev(asv), y = log2FoldChange, color = phylum)) +
+  geom_point(size = 4) +
+  # scale_color_manual(values=tax_color) +
+  geom_hline(yintercept = 0) +
+  coord_flip() +
+  xlab("Genera") +
+  ylab("log2FoldChange") +
+  guides(col = guide_legend("Phylum"))
 ```

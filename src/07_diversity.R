@@ -212,7 +212,7 @@ beta_colors <- c(
 beta_q1n <-
   counts_filtered %>%
   column_to_rownames("mag_id") %>%
-  hillpair(q = 1, metric = "S")
+  hillpair(q = 1, metric = "V")
 
 sample_table_adonis <-
   sample_data %>%

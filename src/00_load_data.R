@@ -25,20 +25,9 @@ good_mag_ids <-
   pull(mag_id)
 
 tree <- ape::read.tree("resources/gtdbtk/gtdbtk.backbone.bac120.classify.tree")
-# tips_to_keep <-
-#   tree$tip.label %>%
-#   tibble(node_id = .) %>%
-#   filter(
-#     !str_detect(node_id, "^GB_"),
-#     !str_detect(node_id, "^RS_")
-#   ) %>%
-#   pull(node_id)
-
 tree <-
   tree %>%
-  # ape::keep.tip(tips_to_keep) %>%
   ape::keep.tip(good_mag_ids)
-
 tree$tip.label <- tree$tip.label %>% str_remove_all("\\'")
 
 plot(tree)
