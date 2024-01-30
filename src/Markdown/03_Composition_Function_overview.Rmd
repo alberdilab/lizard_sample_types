@@ -10,17 +10,17 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r lib, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-suppressPackageStartupMessages(library(tidyverse))
-suppressPackageStartupMessages(library(ape))
-suppressPackageStartupMessages(library(distillR))
-suppressPackageStartupMessages(library(ggtree))
-suppressPackageStartupMessages(library(ggnewscale))
-suppressPackageStartupMessages(library(ggtreeExtra))
-suppressPackageStartupMessages(library(gridExtra))
-suppressPackageStartupMessages(library(phytools))
-suppressPackageStartupMessages(library(Rtsne))
-suppressPackageStartupMessages(library(ggh4x))
-suppressPackageStartupMessages(library(hilldiv2))
+library(tidyverse)
+library(ape)
+library(distillR)
+library(ggtree)
+library(ggnewscale)
+library(ggtreeExtra)
+library(gridExtra)
+library(phytools)
+library(Rtsne)
+library(ggh4x)
+library(hilldiv2)
 library(vegan)
 library(janitor)
 library(knitr)
@@ -28,7 +28,7 @@ library(knitr)
 
 
 ```{r data, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-load("/Users/jtk712/Documents/Projects/lizard_sample_types/resources/data/data.Rdata")
+load("../../resources/data/data.Rdata")
 ```
 
 # Taxonomy barplot

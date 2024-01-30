@@ -9,20 +9,20 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r libraries, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-suppressPackageStartupMessages(library(tidyverse))
-suppressPackageStartupMessages(library(ape))
-suppressPackageStartupMessages(library(distillR))
-suppressPackageStartupMessages(library(ggtree))
-suppressPackageStartupMessages(library(ggnewscale))
-suppressPackageStartupMessages(library(ggtreeExtra))
-suppressPackageStartupMessages(library(gridExtra))
-suppressPackageStartupMessages(library(phytools))
-suppressPackageStartupMessages(library(Rtsne))
+library(tidyverse)
+library(ape)
+library(distillR)
+library(ggtree)
+library(ggnewscale)
+library(ggtreeExtra)
+library(gridExtra)
+library(phytools)
+library(Rtsne)
 ```
 
 
 ```{r loaddata, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-load("/Users/jtk712/Documents/Projects/lizard_sample_types/resources/data/data.Rdata")
+load("../../resources/data/data.Rdata")
 ```
 
 # Genome phylogeny
@@ -48,8 +48,9 @@ phylum_heatmap <- read_tsv("https://raw.githubusercontent.com/earthhologenome/EH
   column_to_rownames(var = "genome")
 
 # Generate  basal tree
-circular_tree <- force.ultrametric(bacteria_tree, method = "extend") %>% # extend to ultrametric for the sake of visualisation
-  ggtree(., layout = "circular", size = 0.3, angle = 45)
+circular_tree <- bacteria_tree %>%
+  force.ultrametric(method = "extend", message = FALSE) %>% # extend to ultrametric for the sake of visualisation
+  ggtree(layout = "circular", size = 0.3, angle = 45)
 ```
 
 ```{r circular_tree, comment="", echo=FALSE, message=FALSE, warning=FALSE}
@@ -168,13 +169,17 @@ function_table <- genome_gifts %>%
   to.elements(., GIFT_db)
 
 # Generate  basal tree
-function_tree <- force.ultrametric(bacteria_tree, method = "extend") %>%
-  ggtree(., size = 0.3)
+function_tree <-
+  bacteria_tree %>%
+  force.ultrametric(method = "extend", message = FALSE) %>%
+  ggtree(size = 0.3)
 ```
 
 ```{r functional_tree, comment="", echo=FALSE, message=FALSE, warning=FALSE}
 # Add phylum colors next to the tree tips
-function_tree <- gheatmap(function_tree, phylum_heatmap, offset = 0, width = 0.1, colnames = FALSE) +
+function_tree <-
+  function_tree %>%
+  gheatmap(phylum_heatmap, offset = 0, width = 0.1, colnames = FALSE) +
   scale_fill_manual(values = phylum_colors) +
   labs(fill = "Phylum")
 
@@ -204,7 +209,8 @@ function_tree <- function_tree +
     stat = "identity"
   ) +
   scale_color_gradient(low = "#cf8888", high = "#a2cc87") +
-  labs(color = "Genome completeness") + theme(legend.text = element_text(size = 8), title = element_text(size = 10), legend.key.size = unit(0.3, "cm"), )
+  labs(color = "Genome completeness") +
+  theme(legend.text = element_text(size = 8), title = element_text(size = 10), legend.key.size = unit(0.3, "cm"), )
 
 function_tree
 ```
@@ -229,4 +235,3 @@ function_ordination <- tSNE_function$Y %>%
 
 function_ordination
 ```
-

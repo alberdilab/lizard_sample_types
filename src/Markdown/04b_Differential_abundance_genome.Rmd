@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r pressure, echo=FALSE}
-load("/Users/jtk712/Documents/Projects/lizard_sample_types/resources/data/data.Rdata")
+load("../../resources/data/data.Rdata")
 ```
 
 ```{r library, comment="", echo=FALSE, message=FALSE, warning=FALSE}
@@ -20,6 +20,9 @@ library(vegan)
 library(tidyverse)
 library(edgeR)
 library(UpSetR)
+library(phyloseq)
+library(DESeq2)
+library(genefilter)
 ```
 
 ## MAGs in different sample types and shared sample types
@@ -323,8 +326,7 @@ difMAGs %>%
 
 ### Deseq (without considering structural zeros)
 ```{r load_deseq, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-library(DESeq2)
-library(genefilter)
+
 ```
 ```{r deseq2, comment="", echo=FALSE, message=FALSE, warning=FALSE}
 diagdds <- phyloseq_to_deseq2(genome_data, ~Sample_type)

@@ -19,7 +19,7 @@ library(UpSetR)
 ```
 
 ```{r loaddata, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-load("/Users/jtk712/Documents/Projects/lizard_sample_types/resources/data/data.Rdata")
+load("../../resources/data/data.Rdata")
 ```
 
 ## MAGs in different sample types and shared sample types
@@ -83,6 +83,7 @@ metadata_crl <- rownames_to_column(metadata_crl, "sample")
 metadata_crl <- metadata_crl[match(rownames(count_crl_t), metadata_crl$sample), ]
 design <- metadata_crl[, c("sample", "Sample_type")]
 ```
+
 ```{r struct_zeros, comment="", echo=FALSE, message=FALSE, warning=FALSE}
 feces_samples <- sample_metadata %>%
   filter(Sample_type == "feces") %>%
@@ -112,6 +113,7 @@ structural_zeros <- read_counts_coverage %>%
   left_join(genome_metadata, by = join_by(genome == genome)) %>%
   arrange(present, -average)
 ```
+
 ```{r colors, comment="", echo=FALSE, message=FALSE, warning=FALSE}
 # Get phylum colors from the EHI standard
 
@@ -143,15 +145,18 @@ structural_zeros %>%
   labs(y = "Genus", x = "Genome counts") +
   guides(col = guide_legend("Phylum"))
 ```
+
 ```{r zero_phylo, comment="", echo=FALSE, message=FALSE, warning=FALSE}
 phylo_samples <- sample_metadata %>%
   column_to_rownames("sample") %>%
   sample_data() # convert to phyloseq sample_data object
+
 phylo_counts <- read_counts_coverage %>%
   filter(!genome %in% structural_zeros$genome) %>% # remove structural zeros
   column_to_rownames("genome") %>%
   mutate_all(~ replace(., . == 0, 0.00001)) %>% # add pseudo counts to avoid structural zero issues (note this approach can be improved!)
   otu_table(., taxa_are_rows = TRUE)
+
 phylo_taxonomy <- genome_metadata %>%
   filter(genome %in% rownames(phylo_counts)) %>% # remove structural zeros
   mutate(genome2 = genome) %>% # create a pseudo genome name column
@@ -162,6 +167,7 @@ phylo_taxonomy <- genome_metadata %>%
 
 physeq_all_filtered <- phyloseq(phylo_counts, phylo_taxonomy, phylo_samples)
 ```
+
 ```{r phylo_zero_clr, comment="", echo=FALSE, message=FALSE, warning=FALSE, eval=FALSE}
 physeq_filtered_clr <- microbiome::transform(physeq_all_filtered, "clr")
 
@@ -181,14 +187,20 @@ count_table_t <- data.frame(t(read_counts_coverage)) %>%
   mutate_if(is.character, as.numeric)
 hel1 <- decostand(count_table_t, "hellinger")
 ```
+
 ```{r rda_model, comment="", echo=FALSE, message=FALSE, warning=FALSE}
 rda.model <- rda(count_crl_t ~ Sample_type, data = design) # Run the model
+
 rda.model.hel <- rda(hel1 ~ Sample_type, data = design) # Run the model
+
 # summary(rda.model)
+
 # Anova
 anova(rda.model)
 anova(rda.model.hel)
+
 # anova(hel_rda,by="axis")
+
 # summary(hel_rda)
 RsquareAdj(rda.model)
 RsquareAdj(rda.model.hel)
@@ -197,8 +209,11 @@ anova.cca(rda.model, step = 1000, by = "term")
 anova.cca(rda.model, step = 1000, by = "axis")
 perc <- round(100 * (summary(rda.model)$cont$importance[2, 1:2]), 2)
 ## extract scores - these are coordinates in the RDA space
+
 sc_si <- vegan::scores(rda.model, display = "sites", choices = c(1, 2), scaling = 1)
+
 sc_sp <- vegan::scores(rda.model, display = "species", choices = c(1, 2), scaling = 1)
+
 sc_bp <- vegan::scores(rda.model, display = "bp", choices = c(1, 2), scaling = 1)
 
 # Prepare data for plotting
@@ -219,6 +234,7 @@ rda_sc_sp <- data.frame(vegan::scores(rda.model,
 ASV_Scores_RDA1quantiles <- quantile(rda_sc_sp$RDA1,
   probs = c(0.01, 0.99)
 )
+
 HighFit_ASVs <- rda_sc_sp[
   rda_sc_sp$RDA1 < ASV_Scores_RDA1quantiles[1] |
     rda_sc_sp$RDA1 > ASV_Scores_RDA1quantiles[2],

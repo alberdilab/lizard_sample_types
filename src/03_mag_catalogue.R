@@ -10,7 +10,9 @@ circular_tree <-
 
 circular_tree <-
   circular_tree %>%
-  ggtree::gheatmap(data = mag_to_phylum, offset = 0.85, width = 0.1, colnames = FALSE) +
+  ggtree::gheatmap(
+    data = mag_to_phylum, offset = 0.85, width = 0.1, colnames = FALSE
+  ) +
   scale_fill_manual(
     breaks = phylum_to_color$phylum,
     values = phylum_to_color$colors

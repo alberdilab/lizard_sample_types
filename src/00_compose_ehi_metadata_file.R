@@ -41,7 +41,11 @@ host_mapped <-
     host_unmapped = mapping_total - host_mapped
   ) %>%
   filter(!is.na(host_mapped)) %>%
-  separate(col = sample_id, into = c("host_name", "sample_id"), sep = " \\| ") %>%
+  separate(
+    col = sample_id,
+    into = c("host_name", "sample_id"),
+    sep = " \\| "
+  ) %>%
   rename(mapped = host_mapped, unmapped = host_unmapped) %>%
   select(-mapping_total) %>%
   pivot_longer(-host_name:-sample_id) %>%

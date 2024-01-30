@@ -91,4 +91,4 @@ sample_data <-
     col = name, into = c("sample_name", "tissue"), sep = "\\.", remove = FALSE
   ) %>%
   rename(sample_id = name) %>%
-  distinct(sample_id, .keep_all = T)
+  distinct(sample_id, .keep_all = TRUE)
