@@ -16,7 +16,7 @@ alberdilab.github.io/lizard_sample_types
 
 To re-render the webbook, you can use the following code:
 
-```{r render_webbook, warning=FALSE, comments="", message=FALSE}
+```r
 library(bookdown)
 library(htmlwidgets)
 library(webshot)
