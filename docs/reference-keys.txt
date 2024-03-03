@@ -20,3 +20,7 @@ functional-overview
 functional-ordination
 community-composition
 taxonomy-barplot
+differential-abundance
+create-phyloseq-object
+run-ancombc2
+plot-results

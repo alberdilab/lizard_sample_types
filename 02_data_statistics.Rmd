@@ -1,5 +1,6 @@
 # Data statistics
 
+
 ```{r load_data_stats}
 load("resources/data.Rdata")
 ```

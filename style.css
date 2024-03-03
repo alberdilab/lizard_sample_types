@@ -78,3 +78,9 @@ text-decoration: none;
 .script-output {
   background-color: #ffffff !important;
 }
+
+/*--- Titles ---*/
+
+.title {
+  color: #a52929;
+}

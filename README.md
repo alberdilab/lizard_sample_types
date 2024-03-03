@@ -2,7 +2,7 @@
 Repository of the data and analysis procedures for the manuscript:
 
 **Contrasting recovery of metagenome‑assembled genomes and derived microbial communities from lizard fecal and cloacal samples**
-Mauricio Hernández, Jorge Langa, Ostaizka Aizpurua,Yendi E. Navarro-Noya, Antton Alberdi
+Mauricio Hernández, Jorge Langa, Ostaizka Aizpurua, Yendi E. Navarro-Noya, Antton Alberdi
 
 ## Bioinformatic procedures
 
@@ -10,11 +10,11 @@ Data processing to generate annotated metagenome-assembled genomes and genome co
 
 ## Analysis procedures
 
-Data analysis procedures are explained in the following bookdown:
+The raw code used for data analysis is in the **Rmd** files stored in the root directory of this repository, while the bookdown-rendered webbook is available at:
 
-[alberdilab.github.io/lizard_sample_types](alberdilab.github.io/lizard_sample_types)
+[alberdilab.github.io/lizard_sample_types](https://alberdilab.github.io/lizard_sample_types)
 
-To re-render the webbook, you can use the following code:
+While the webbook provides a user-friendly overview of the procedures, analyses can be directly reproduced using the Rmd documents. Note that the code chunks that require heavy computation have been tuned off using 'eval=FALSE'. To re-render the webbook, you can use the following code:
 
 ```r
 library(bookdown)

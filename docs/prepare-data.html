@@ -4,25 +4,26 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 2 Prepare data | Contrasting recovery of metagenome‑assembled genomes and derived microbial communities from lizard fecal and cloacal samples</title>
-  <meta name="description" content="&lt;p&gt;Data analysis code.&lt;/p&gt;" />
+  <title>Chapter 2 Prepare data | AlberdiLab | Hernandez et al. 2024</title>
+  <meta name="description" content="&lt;p&gt;Data analysis code for the study on the recovery of metagenome‑assembled genomes and derived microbial communities from lizard fecal and cloacal samples.&lt;/p&gt;" />
   <meta name="generator" content="bookdown 0.37 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 2 Prepare data | Contrasting recovery of metagenome‑assembled genomes and derived microbial communities from lizard fecal and cloacal samples" />
+  <meta property="og:title" content="Chapter 2 Prepare data | AlberdiLab | Hernandez et al. 2024" />
   <meta property="og:type" content="book" />
   
-  <meta property="og:description" content="&lt;p&gt;Data analysis code.&lt;/p&gt;" />
+  <meta property="og:description" content="&lt;p&gt;Data analysis code for the study on the recovery of metagenome‑assembled genomes and derived microbial communities from lizard fecal and cloacal samples.&lt;/p&gt;" />
   <meta name="github-repo" content="alberdilab/lizard_sample_types" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 2 Prepare data | Contrasting recovery of metagenome‑assembled genomes and derived microbial communities from lizard fecal and cloacal samples" />
+  <meta name="twitter:title" content="Chapter 2 Prepare data | AlberdiLab | Hernandez et al. 2024" />
   
-  <meta name="twitter:description" content="&lt;p&gt;Data analysis code.&lt;/p&gt;" />
+  <meta name="twitter:description" content="&lt;p&gt;Data analysis code for the study on the recovery of metagenome‑assembled genomes and derived microbial communities from lizard fecal and cloacal samples.&lt;/p&gt;" />
   
 
 <meta name="author" content="Mauricio Hernandez" />
-<meta name="author" content="Jorge Langaa" />
+<meta name="author" content="Jorge Langa" />
 <meta name="author" content="Ostaizka Aizpurua" />
+<meta name="author" content="Yendi E. Navarro-Noya" />
 <meta name="author" content="Antton Alberdi" />
 
 
@@ -2008,6 +2009,11 @@ border-left: 3px solid #d65454 !important;
 .script-output {
 background-color: #ffffff !important;
 }
+
+.title {
+color: #a52929;
+margin-bottom: -10px;
+}
 </style>
 </head>
 
@@ -2021,7 +2027,7 @@ background-color: #ffffff !important;
       <nav role="navigation">
 
 <ul class="summary">
-<li class="toc-logo"><img src="docs/alberdilab_minilogo.png" alt="AlberdiLab logo"></li>
+<li class="toc-logo"><a href="index.html" target="blank"><img src="docs/alberdilab_minilogo.png" alt="AlberdiLab logo"></a></li>
 <li align="center"><b>Hernandez et al. 2024</b></li>
 
 <li class="divider"></li>
@@ -2061,6 +2067,12 @@ background-color: #ffffff !important;
 <ul>
 <li class="chapter" data-level="5.1" data-path="community-composition.html"><a href="community-composition.html#taxonomy-barplot"><i class="fa fa-check"></i><b>5.1</b> Taxonomy barplot</a></li>
 </ul></li>
+<li class="chapter" data-level="6" data-path="differential-abundance.html"><a href="differential-abundance.html"><i class="fa fa-check"></i><b>6</b> Differential abundance</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="differential-abundance.html"><a href="differential-abundance.html#create-phyloseq-object"><i class="fa fa-check"></i><b>6.1</b> Create phyloseq object</a></li>
+<li class="chapter" data-level="6.2" data-path="differential-abundance.html"><a href="differential-abundance.html#run-ancombc2"><i class="fa fa-check"></i><b>6.2</b> Run ANCOMBC2</a></li>
+<li class="chapter" data-level="6.3" data-path="differential-abundance.html"><a href="differential-abundance.html#plot-results"><i class="fa fa-check"></i><b>6.3</b> Plot results</a></li>
+</ul></li>
 <li class="divider"></li>
 <li><a href="https://www.alberdilab.dk" target="blank"><b>www.alberdilab.dk</b></a></li>
 <li><a href="https://www.earthhologenome.org" target="blank"><b>www.earthhologenome.org</b></a></li>
@@ -2075,7 +2087,7 @@ background-color: #ffffff !important;
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Contrasting recovery of metagenome‑assembled genomes and derived microbial communities from lizard fecal and cloacal samples</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">AlberdiLab | Hernandez et al. 2024</a>
           </h1>
         </div>
 
