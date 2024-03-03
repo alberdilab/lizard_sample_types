@@ -32,7 +32,7 @@ phyloseq <- phyloseq(phylo_genome, phylo_taxonomy, phylo_samples)
 
 ```{r ancom_model, comment="", echo=FALSE, message=FALSE, warning=FALSE, eval=FALSE}
 set.seed(1234) # set seed for reproducibility
-ancom_rand_output <- ancombc2(
+differential_abundance <- ancombc2(
   data = phyloseq,
   assay_name = "counts",
   tax_level = NULL, # change to agglomerate analysis to a higher taxonomic range
@@ -64,29 +64,48 @@ ancom_rand_output <- ancombc2(
 ## Plot results
 
 ```{r ancom_stats, comment="", echo=FALSE, message=FALSE, warning=FALSE, eval=FALSE}
-tax <- data.frame(physeq_genome_filtered@tax_table) %>%
+tax <- data.frame(phyloseq@tax_table) %>%
   rownames_to_column(., "taxon")
 
-ancombc_rand_table <- ancom_rand_output$res %>%
-  dplyr::select(taxon, lfc_Sample_typefeces, p_Sample_typefeces) %>%
-  filter(p_Sample_typefeces < 0.05) %>%
-  dplyr::arrange(p_Sample_typefeces) %>%
-  merge(., tax, by = "taxon")
+differential_abundance_table <- differential_abundance$res %>%
+  dplyr::select(genome=taxon, lfc_typefeces, p_typefeces) %>%
+  filter(p_typefeces < 0.05) %>%
+  dplyr::arrange(p_typefeces) %>%
+  merge(., tax, by = "genome")
 
 ```
 
-```{r ancom_plot, comment="", echo=FALSE, message=FALSE, warning=FALSE, eval=FALSE}
-colors_alphabetic <- read_tsv("https://raw.githubusercontent.com/earthhologenome/EHI_taxonomy_colour/main/ehi_phylum_colors.tsv") %>%
-  mutate_at(vars(phylum), ~ str_replace(., "[dpcofgs]__", "")) %>%
-  right_join(tax, by = join_by(phylum == phylum)) %>%
-  dplyr::select(phylum, colors) %>%
-  unique() %>%
-  dplyr::arrange(phylum)
+```{r ancombc_plot, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(differential_abundance_table, aes(x = forcats::fct_rev(genome), y = lfc_typefeces, color = phylum)) +
+  geom_point(size = 4) +
+  scale_color_manual(values = phylum_colors[-c(3,4)]) +
+  geom_hline(yintercept = 0) +
+  coord_flip() +
+  facet_grid(phylum ~ ., scales = "free", space = "free") +
+  theme(
+    panel.background = element_blank(),
+    axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+    axis.title.x = element_blank(),
+    strip.background = element_blank(), 
+    strip.text = element_blank()
+  ) +
+  xlab("Genome") +
+  ylab("log2FoldChange") +
+  guides(col = guide_legend("Phylum"))
+```
 
-tax_table <- as.data.frame(unique(ancombc_rand_table$phylum))
-colnames(tax_table)[1] <- "phylum"
-tax_color <- merge(tax_table, colors_alphabetic, by = "phylum") %>%
-  dplyr::arrange(phylum) %>%
-  dplyr::select(colors) %>%
-  pull()
+```{r ancom_rand_volcano, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+ancom_result <- differential_abundance$res %>%
+  na.omit() %>%
+  dplyr::select(genome=taxon, lfc_typefeces, p_typefeces) %>%
+  left_join(genome_metadata, by = join_by(genome == genome))
+ancom_result %>%
+  mutate(significance = ifelse(p_typefeces < 0.05, "1", "0")) %>%
+  ggplot(., aes(x = -log(p_typefeces), y = lfc_typefeces, color = significance)) +
+  geom_point() +
+  scale_color_manual(values = c("#cccccc", "#00FFFF")) +
+  geom_text(aes(3, 5), label = "Enriched\nin cloaca", color = "#666666") +
+  geom_text(aes(3, -5), label = "Enriched\nin faeces", color = "#666666") +
+  labs(color = "Significance", y = "Difference between behaviours", x = "p-value") +
+  theme_classic()
 ```

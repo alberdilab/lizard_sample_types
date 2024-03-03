@@ -4,19 +4,27 @@
 
 Load the original data files outputted by the bioinformatic pipeline.
 
+### Sample metadata
+
 ```{r load_sample_metadata, warning=FALSE, comments="", message=FALSE}
 sample_metadata <- read_tsv("resources/metadata.tsv")
 ```
+
+### Read counts
 
 ```{r load_read_counts, warning=FALSE, comments="", message=FALSE}
 read_counts <- read_tsv("resources/coverm/genome.count.tsv.xz") %>%
     rename(genome=1)
 ```
 
+### Genome base hits
+
 ```{r load_genome_hits, warning=FALSE, comments="", message=FALSE}
 genome_hits <- read_tsv("resources/coverm/genome.covered_bases.tsv.xz") %>%
     rename(genome=1)
 ```
+
+### Genome taxonomy
 
 ```{r load_genome_taxonomy, warning=FALSE, comments="", message=FALSE}
 genome_taxonomy <- read_tsv("resources/gtdbtk/gtdbtk.summary.tsv.xz") %>%
@@ -27,6 +35,8 @@ genome_taxonomy <- read_tsv("resources/gtdbtk/gtdbtk.summary.tsv.xz") %>%
     sep = ";") %>%
     rename(genome=1)
 ```
+
+### Genome quality
 
 ```{r load_genome_quality, warning=FALSE, comments="", message=FALSE}
 genome_quality <- read_tsv("resources/checkm2/quality_report.tsv.xz") %>%
@@ -39,11 +49,15 @@ genome_quality <- read_tsv("resources/checkm2/quality_report.tsv.xz") %>%
   )
 ```
 
+### Genome tree
+
 ```{r load_genome_tree, warning=FALSE, comments="", message=FALSE}
 genome_tree <- read_tree("resources/gtdbtk/gtdbtk.backbone.bac120.classify.tree")
 genome_tree$tip.label <- str_replace_all(genome_tree$tip.label,"'", "") #remove single quotes in MAG names
 genome_tree <- keep.tip(genome_tree, tip=genome_taxonomy$genome) # keep only MAG tips
 ```
+
+### Genome annotations
 
 ```{r load_genome_annotations, warning=FALSE, comments="", message=FALSE}
 genome_annotations <- read_tsv("resources/dram/annotations.tsv.xz") %>%
@@ -54,7 +68,7 @@ genome_annotations <- read_tsv("resources/dram/annotations.tsv.xz") %>%
 
 Transform the original data files into working objects for downstream analyses.
 
-### Merge geno taxonomy and quality
+### Merge genome taxonomy and quality
 
 ```{r generate_genome_metadata, warning=FALSE, comments="", message=FALSE}
 genome_metadata <- genome_taxonomy %>%
@@ -68,12 +82,16 @@ genome_coverage <- genome_hits %>%
   mutate(across(where(is.numeric), ~ ./genome_metadata$length))
 ```
 
+### Filter reads by coverage
+
 ```{r filter_coverage, warning=FALSE, comments="", message=FALSE}
 min_coverage=0.3
 read_counts_filt <- genome_coverage %>%
   mutate(across(where(is.numeric), ~ ifelse(. > min_coverage, 1, 0))) %>%
   mutate(across(-1, ~ . * read_counts[[cur_column()]])) 
 ```
+
+### Transform reads into genome counts
 
 ```{r calculate_genome_counts_unfiltered, warning=FALSE, comments="", message=FALSE}
 readlength=150
@@ -87,12 +105,15 @@ genome_counts_filt <- read_counts_filt %>%
   mutate(across(where(is.numeric), ~ . / (genome_metadata$length / readlength) ))
 ```
 
+### Distill annotations into GIFTs 
+
 ```{r distill_annotations, warning=FALSE, comments="", message=FALSE, eval=FALSE}
 genome_gifts <- distill(genome_annotations,GIFT_db,genomecol=2,annotcol=c(9,10,19), verbosity=F)
 ```
 
 ## Load data statistics
 
+### Raw reads
 
 ```{r raw_reads, warning=FALSE, comments="", message=FALSE}
 raw_reads <-
@@ -107,6 +128,8 @@ raw_reads <-
   ) %>%
   summarise(raw_reads = sum(raw_reads), .by = sample)
 ```
+
+### Quality-filtered reads
 
 ```{r filtered_reads, warning=FALSE, comments="", message=FALSE}
 fastp_reads <-
@@ -125,6 +148,8 @@ fastp_reads <-
   ) %>%
   summarise(trimmed_reads = sum(trimmed_reads), .by = sample)
 ```
+
+### Host-mapped reads
 
 ```{r host_mapped, warning=FALSE, comments="", message=FALSE}
 host_mapped <-
@@ -155,6 +180,8 @@ host_mapped <-
   pivot_wider()
 ```
 
+### Prokaryotic fraction
+
 ```{r singlem, warning=FALSE, comments="", message=FALSE}
 singlem <-
   "resources/singlem/microbial_fraction.tsv.xz" %>%
@@ -173,6 +200,8 @@ singlem <-
   )
 ```
 
+### Metagenomic complexity
+
 ```{r nonpareil, warning=FALSE, comments="", message=FALSE}
 nonpareil <-
   "resources/nonpareil/nonpareil.tsv.xz" %>%
@@ -180,6 +209,7 @@ nonpareil <-
   select(sample=sample_id, nonpareil_c = C, nonpareil_diversity = diversity)
 ```
 
+### MAG-mapped reads
 
 ```{r mag_mapping, warning=FALSE, comments="", message=FALSE}
 mag_mapping <-
@@ -189,6 +219,8 @@ mag_mapping <-
   summarise(value = sum(value), .by = "name") %>%
   rename(sample = name, mapped_mags = value)
 ```
+
+### Wrap data statistics
 
 ```{r wrap_statistics, warning=FALSE, comments="", message=FALSE}
 data_stats <- raw_reads %>%
