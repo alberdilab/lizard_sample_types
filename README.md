@@ -9,3 +9,7 @@ Mauricio Hernández, Jorge Langa, Ostaizka Aizpurua,Yendi E. Navarro-Noya, Antto
 Data processing to generate annotated metagenome-assembled genomes and genome count tables was conducted using the following Snakemake pipeline: [mg_assembly](https://github.com/3d-omics/mg_assembly). Data analysis procedures source from the outputs of this pipeline.
 
 ## Analysis procedures
+
+Data analysis procedures are explained in the following bookdown:
+
+www.alberdilab.github.io/lizard_sample_types

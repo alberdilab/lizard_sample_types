@@ -14,18 +14,18 @@ pre code {
 }
 
 .header-section-number{
-  color: #4e7724;
+  color: #a52929;
 }
 
 /*-----Body Links-------*/
 /*https://rstudio4edu.github.io/rstudio4edu-book/book-fancy.html*/
 
 .book .book-body .page-wrapper .page-inner section.normal a {
-  color: #87c941;
+  color: #a52929;
 }
 
 .book .book-body .page-wrapper .page-inner section.normal a:hover {
-color: #4e7724; /* darker color when hovering */
+color: #d65454; /* darker color when hovering */
 text-decoration: none;
 }
 
@@ -40,12 +40,12 @@ text-decoration: none;
 }
 
 .book .book-summary ul.summary li a:hover {
-  color: #87c941; /* darker color when hovering */
+  color: #a52929; /* darker color when hovering */
   text-decoration: none;
 }
 
 .book .book-summary ul.summary li.active>a { /*active TOC links*/
-  color: #4e7724 !important;
+  color: #d65454 !important;
   font-weight: bold;
 }
 
