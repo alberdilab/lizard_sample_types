@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Page not found | Contrasting recovery of metagenome‑assembled genomes and derived microbial communities from lizard fecal and cloacal samples</title>
+  <title>Chapter 2 Prepare data | Contrasting recovery of metagenome‑assembled genomes and derived microbial communities from lizard fecal and cloacal samples</title>
   <meta name="description" content="&lt;p&gt;Data analysis code.&lt;/p&gt;" />
   <meta name="generator" content="bookdown 0.37 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Page not found | Contrasting recovery of metagenome‑assembled genomes and derived microbial communities from lizard fecal and cloacal samples" />
+  <meta property="og:title" content="Chapter 2 Prepare data | Contrasting recovery of metagenome‑assembled genomes and derived microbial communities from lizard fecal and cloacal samples" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="&lt;p&gt;Data analysis code.&lt;/p&gt;" />
   <meta name="github-repo" content="alberdilab/lizard_sample_types" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Page not found | Contrasting recovery of metagenome‑assembled genomes and derived microbial communities from lizard fecal and cloacal samples" />
+  <meta name="twitter:title" content="Chapter 2 Prepare data | Contrasting recovery of metagenome‑assembled genomes and derived microbial communities from lizard fecal and cloacal samples" />
   
   <meta name="twitter:description" content="&lt;p&gt;Data analysis code.&lt;/p&gt;" />
   
@@ -33,7 +33,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
+<link rel="prev" href="index.html"/>
 
 
 
@@ -2061,18 +2061,48 @@ background-color: #ffffff !important;
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="page-not-found" class="section level1">
-<h1>Page not found</h1>
-<p>The page you requested cannot be found (perhaps it was moved or renamed).</p>
-<p>You may want to try searching to find the page's new location, or use
-the table of contents to find the page you are looking for.</p>
+<div id="prepare-data" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">Chapter 2</span> Prepare data<a href="prepare-data.html#prepare-data" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="load-data" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Load data<a href="prepare-data.html#load-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb3-1"><a href="prepare-data.html#cb3-1" tabindex="-1"></a>read_counts <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">&quot;resources/coverm/genome.count.tsv.xz&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb4-1"><a href="prepare-data.html#cb4-1" tabindex="-1"></a>genome_coverage <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">&quot;resources/coverm/genome.covered_bases.tsv.xz&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb5-1"><a href="prepare-data.html#cb5-1" tabindex="-1"></a>taxonomy <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">&quot;resources/gtdbtk/gtdbtk.summary.tsv.xz&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="prepare-data.html#cb5-2" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">mag_id =</span> user_genome, classification) <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="prepare-data.html#cb5-3" tabindex="-1"></a>  <span class="fu">separate</span>(</span>
+<span id="cb5-4"><a href="prepare-data.html#cb5-4" tabindex="-1"></a>    classification,</span>
+<span id="cb5-5"><a href="prepare-data.html#cb5-5" tabindex="-1"></a>    <span class="at">into =</span> <span class="fu">c</span>(<span class="st">&quot;domain&quot;</span>, <span class="st">&quot;phylum&quot;</span>, <span class="st">&quot;class&quot;</span>, <span class="st">&quot;order&quot;</span>, <span class="st">&quot;family&quot;</span>, <span class="st">&quot;genus&quot;</span>, <span class="st">&quot;species&quot;</span>),</span>
+<span id="cb5-6"><a href="prepare-data.html#cb5-6" tabindex="-1"></a>    <span class="at">sep =</span> <span class="st">&quot;;&quot;</span></span>
+<span id="cb5-7"><a href="prepare-data.html#cb5-7" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb6-1"><a href="prepare-data.html#cb6-1" tabindex="-1"></a>checkm2 <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">&quot;resources/checkm2/quality_report.tsv.xz&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="prepare-data.html#cb6-2" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb6-3"><a href="prepare-data.html#cb6-3" tabindex="-1"></a>    <span class="at">mag_id =</span> Name, <span class="at">completeness =</span> Completeness, <span class="at">contamination =</span> Contamination,</span>
+<span id="cb6-4"><a href="prepare-data.html#cb6-4" tabindex="-1"></a>    <span class="at">genome_size =</span> Genome_Size, <span class="at">gc_content =</span> GC_Content</span>
+<span id="cb6-5"><a href="prepare-data.html#cb6-5" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb7-1"><a href="prepare-data.html#cb7-1" tabindex="-1"></a>genome_tree <span class="ot">&lt;-</span> <span class="fu">read_tree</span>(<span class="st">&quot;resources/gtdbtk/gtdbtk.backbone.bac120.classify.tree&quot;</span>)</span></code></pre></div>
 </div>
+<div id="create-working-objects" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Create working objects<a href="prepare-data.html#create-working-objects" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+</div>
+<div id="prepare-color-scheme" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> Prepare color scheme<a href="prepare-data.html#prepare-color-scheme" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+
+</div>
+</div>
+
+
+
+
+
+
+
+
             </section>
 
           </div>
         </div>
       </div>
-
+<a href="index.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 
     </div>
   </div>

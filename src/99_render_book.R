@@ -16,5 +16,5 @@ suppressPackageStartupMessages(library(webshot))
 #webshot::install_phantomjs()
 
 #Render it as github pages ()
-render_book(input = "src", output_format = "bookdown::gitbook", output_dir = "../docs")
+render_book(input = ".", output_format = "bookdown::gitbook", output_dir = "docs")
 

@@ -28,8 +28,6 @@ knitr::opts_chunk$set(
 
 ## Prepare the R environment
 
-
-
 ### Environment
 
 To reproduce all the analyses locally, clone this repository in your computer using:
@@ -49,22 +47,30 @@ Once the R project has been created, follow the instructions and code chunks sho
 The following R packages are required for the data analysis.
 
 ```{r load_libraries, warning=FALSE, comments="", message=FALSE}
+# Base
 library(R.utils)
 library(knitr)
 library(tidyverse)
+library(devtools)
+
+# For tree handling
 library(ape)
+library(phyloseq)
 library(phytools)
+
+# For plotting
 library(ggplot2)
 library(ggrepel) 
 library(ggpubr)
 library(ggnewscale)
 library(gridExtra)
+library(ggtreeExtra)
+library(ggtree)
+
+# For statistics
 library(spaa)
 library(vegan) 
 library(Rtsne)
-library(devtools)
-library(ggtreeExtra)
-library(ggtree)
 library(geiger)
 library(hilldiv2)
 library(distillR)
