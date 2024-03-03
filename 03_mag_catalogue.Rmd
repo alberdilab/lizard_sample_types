@@ -1,6 +1,6 @@
 # MAG catalogue
 
-```{r load_data_community_mag}
+```{r load_data_mag}
 load("resources/data.Rdata")
 ```
 

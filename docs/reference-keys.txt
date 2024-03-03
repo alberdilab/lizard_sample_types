@@ -7,8 +7,10 @@ load-data
 create-working-objects
 merge-geno-taxonomy-and-quality
 calculate-genome-coverage
+load-data-statistics
 prepare-color-scheme
 wrap-working-objects
+data-statistics
 mag-catalogue
 genome-phylogeny
 genome-quality

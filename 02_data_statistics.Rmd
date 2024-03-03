@@ -1,0 +1,64 @@
+# Data statistics
+
+```{r load_data_stats}
+load("resources/data.Rdata")
+```
+
+```{r data_fractions_plot, message=FALSE, warning=FALSE, fig.height=6, fig.width=10, fig.fullwidth=TRUE}
+data_stats %>%
+  mutate(
+    low_quality = raw_reads - trimmed_reads,
+    unmapped_reads = trimmed_reads - mapped_SceUnd - mapped_mags
+  ) %>%
+  select(sample, low_quality, mapped_SceUnd, mapped_mags, unmapped_reads) %>%
+  pivot_longer(-sample) %>%
+  separate(
+    col = "sample", into = c("sample", "tissue"), sep = "\\.", remove = FALSE
+  ) %>%
+  mutate(name=factor(name,levels=c("low_quality","mapped_SceUnd","unmapped_reads","mapped_mags"))) %>%
+  ggplot(aes(x = sample, y = value, fill = name)) +
+      geom_bar(stat = "identity", position = "fill") +
+      scale_fill_manual(name=NULL,
+                    breaks=c("low_quality","mapped_SceUnd","unmapped_reads","mapped_mags"),
+                    labels=c("Low quality","Mapped to host","Unmapped","Mapped to MAGs"),
+                    values=c("#CCCCCC", "#178a94", "#ee8080", "#d03161"))+
+      facet_wrap(~tissue, scales = "free", labeller = labeller(tissue = c(cloaca="Cloaca",feces="Faeces"))) +
+      theme_minimal() +
+      labs(y="DNA sequence fraction",x="Samples",fill="Sequence type")
+```
+
+```{r data_estimations_plot, message=FALSE, warning=FALSE, fig.height=10, fig.width=10, fig.fullwidth=TRUE}
+data_stats %>%
+  mutate(
+    unmapped_reads = trimmed_reads - mapped_SceUnd - mapped_mags,
+    mag_proportion = mapped_mags / (mapped_mags + unmapped_reads),
+    singlem_read_fraction = singlem_read_fraction
+  ) %>%
+  select(sample, mag_proportion, singlem_read_fraction) %>%
+  mutate(
+    mag_proportion = if_else(singlem_read_fraction == 0, 0, mag_proportion),
+    singlem_read_fraction = if_else(singlem_read_fraction == 0, NA, singlem_read_fraction),
+    singlem_read_fraction = if_else(singlem_read_fraction < mag_proportion, NA, singlem_read_fraction),
+    singlem_read_fraction = if_else(singlem_read_fraction > 1, 1, singlem_read_fraction)
+  ) %>%
+  pivot_longer(-sample, names_to = "proportion", values_to = "value") %>%
+  mutate(
+    proportion = factor(
+      proportion,
+      levels = c("mag_proportion", "singlem_read_fraction")
+    )
+  ) %>%
+  ggplot(aes(x = value, y = sample, color = proportion)) +
+  geom_line(aes(group = sample), color = "#f8a538") +
+  geom_point() +
+  scale_color_manual(values = c("#52e1e8", "#876b53")) +
+  theme_classic() +
+  labs(y = "Samples", x = "Prokaryotic fraction") +
+  scale_x_continuous(limits = c(0, 1)) +
+  theme(
+    axis.text.x = element_text(
+      angle = 90, vjust = 0.5, hjust = 1, size = 6
+    ),
+    legend.position = "right"
+  )
+```
