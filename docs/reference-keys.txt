@@ -5,6 +5,12 @@ libraries
 prepare-data
 load-data
 create-working-objects
+merge-geno-taxonomy-and-quality
+calculate-genome-coverage
 prepare-color-scheme
 wrap-working-objects
 mag-catalogue
+genome-phylogeny
+genome-quality
+functional-overview
+functional-ordination
