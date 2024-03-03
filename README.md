@@ -12,7 +12,7 @@ Data processing to generate annotated metagenome-assembled genomes and genome co
 
 Data analysis procedures are explained in the following bookdown:
 
-alberdilab.github.io/lizard_sample_types
+[alberdilab.github.io/lizard_sample_types](alberdilab.github.io/lizard_sample_types)
 
 To re-render the webbook, you can use the following code:
 

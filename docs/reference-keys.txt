@@ -11,6 +11,8 @@ load-data-statistics
 prepare-color-scheme
 wrap-working-objects
 data-statistics
+dna-fractions
+recovered-microbial-fraction
 mag-catalogue
 genome-phylogeny
 genome-quality

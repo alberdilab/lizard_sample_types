@@ -4,6 +4,8 @@
 load("resources/data.Rdata")
 ```
 
+## DNA fractions
+
 ```{r data_fractions_plot, message=FALSE, warning=FALSE, fig.height=6, fig.width=10, fig.fullwidth=TRUE}
 data_stats %>%
   mutate(
@@ -12,22 +14,22 @@ data_stats %>%
   ) %>%
   select(sample, low_quality, mapped_SceUnd, mapped_mags, unmapped_reads) %>%
   pivot_longer(-sample) %>%
-  separate(
-    col = "sample", into = c("sample", "tissue"), sep = "\\.", remove = FALSE
-  ) %>%
+  separate(col = "sample", into = c("sample", "tissue"), sep = "\\.", remove = FALSE) %>%
   mutate(name=factor(name,levels=c("low_quality","mapped_SceUnd","unmapped_reads","mapped_mags"))) %>%
   ggplot(aes(x = sample, y = value, fill = name)) +
       geom_bar(stat = "identity", position = "fill") +
-      scale_fill_manual(name=NULL,
+      scale_fill_manual(name="Sequence type",
                     breaks=c("low_quality","mapped_SceUnd","unmapped_reads","mapped_mags"),
                     labels=c("Low quality","Mapped to host","Unmapped","Mapped to MAGs"),
                     values=c("#CCCCCC", "#178a94", "#ee8080", "#d03161"))+
       facet_wrap(~tissue, scales = "free", labeller = labeller(tissue = c(cloaca="Cloaca",feces="Faeces"))) +
       theme_minimal() +
-      labs(y="DNA sequence fraction",x="Samples",fill="Sequence type")
+      labs(y="DNA sequence fraction",x="Samples")
 ```
 
-```{r data_estimations_plot, message=FALSE, warning=FALSE, fig.height=10, fig.width=10, fig.fullwidth=TRUE}
+## Recovered microbial fraction
+
+```{r data_estimations_plot, message=FALSE, warning=FALSE, fig.height=6, fig.width=10, fig.fullwidth=TRUE}
 data_stats %>%
   mutate(
     unmapped_reads = trimmed_reads - mapped_SceUnd - mapped_mags,
@@ -48,17 +50,20 @@ data_stats %>%
       levels = c("mag_proportion", "singlem_read_fraction")
     )
   ) %>%
+  separate(col = "sample", into = c("sample", "tissue"), sep = "\\.", remove = FALSE) %>%
   ggplot(aes(x = value, y = sample, color = proportion)) +
-  geom_line(aes(group = sample), color = "#f8a538") +
-  geom_point() +
-  scale_color_manual(values = c("#52e1e8", "#876b53")) +
-  theme_classic() +
-  labs(y = "Samples", x = "Prokaryotic fraction") +
-  scale_x_continuous(limits = c(0, 1)) +
-  theme(
-    axis.text.x = element_text(
-      angle = 90, vjust = 0.5, hjust = 1, size = 6
-    ),
-    legend.position = "right"
-  )
+      geom_line(aes(group = sample), color = "#f8a538") +
+      geom_point() +
+      scale_color_manual(name="Proportion",
+                    breaks=c("mag_proportion","singlem_read_fraction"),
+                    labels=c("Recovered","Estimated"),
+                    values=c("#52e1e8", "#876b53"))+
+      facet_wrap(tissue~., scales = "free", labeller = labeller(tissue = c(cloaca="Cloaca",feces="Faeces"))) +
+      theme_minimal() +
+      labs(y = "Samples", x = "Prokaryotic fraction") +
+      scale_x_continuous(limits = c(0, 1)) +
+      theme(
+        axis.text.x = element_text( angle = 90, vjust = 0.5, hjust = 1, size = 6),
+        legend.position = "right"
+      )
 ```
