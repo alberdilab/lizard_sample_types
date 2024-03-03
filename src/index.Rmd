@@ -1,0 +1,26 @@
+---
+title: "Contrasting recovery of metagenome‑assembled genomes and derived microbial communities from lizard fecal and cloacal samples"
+subtitle: "Data Analysis"
+author:
+  - Ostaizka Aizpurua^[University of Copenhagen, ostaizka.aizpurua@sund.ku.dk]
+  - Antton Alberdi^[University of Copenhagen, antton.alberdi@sund.ku.dk]
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: book
+bibliography: [book.bib, packages.bib]
+url: http://www.earthhologenome.org/analysis
+description: |
+  Detailed information of the data analysis procedures employed in the Earth Hologenome Initiative.
+link-citations: yes
+github-repo: earthhologenome/EHI_analysis
+---
+```{r knitr_opts, echo=FALSE}
+knitr::opts_chunk$set(
+    class.source = "script-source",
+    class.output = "script-output",
+    comment = NA)
+```
+
+# Introduction
+
+## Prepare the R environment
