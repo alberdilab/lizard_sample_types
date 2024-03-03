@@ -2,7 +2,7 @@
 title: "Contrasting recovery of metagenome‑assembled genomes and derived microbial communities from lizard fecal and cloacal samples"
 subtitle: "Data Analysis"
 author:
-  - Mauricio Hernandez^[University of Copenhagen, ostaizka.aizpurua@sund.ku.dk]
+  - Mauricio Hernandez
   - Jorge Langaa^[University of Copenhagen, jorge.langa@sund.ku.dk]
   - Ostaizka Aizpurua^[University of Copenhagen, ostaizka.aizpurua@sund.ku.dk]
   - Antton Alberdi^[University of Copenhagen, antton.alberdi@sund.ku.dk]
@@ -12,9 +12,9 @@ documentclass: book
 bibliography: [book.bib, packages.bib]
 url: https://alberdilab.github.io/lizard_sample_types
 description: |
-  Detailed information of the data analysis procedures employed in the Earth Hologenome Initiative.
+  Data analysis code.
 link-citations: yes
-github-repo: earthhologenome/EHI_analysis
+github-repo: alberdilab/lizard_sample_types
 ---
 ```{r knitr_opts, echo=FALSE}
 knitr::opts_chunk$set(
@@ -27,20 +27,44 @@ knitr::opts_chunk$set(
 
 ## Prepare the R environment
 
+
+
 ### Environment
 
-Clone this repository in your local computer using:
+To reproduce all the analyses locally, clone this repository in your computer using:
 
 ```
-**RStudio > New Project > Version Control > Git.**
+RStudio > New Project > Version Control > Git
 ```
+
+And indicating the following git repository:
 
 > https://github.com/alberdilab/lizard_sample_types.git
 
+Once the R project has been created, follow the instructions and code chunks shown in this webbook. 
+
 ### Libraries
 
-Install and load the required R packages for conducting the analysis
+The following R packages are required for the data analysis.
 
 ```{r load_libraries, warning=FALSE, comments="", message=FALSE}
-
+library(R.utils)
+library(knitr)
+library(tidyverse)
+library(ape)
+library(phytools)
+library(ggplot2)
+library(ggrepel) 
+library(ggpubr)
+library(ggnewscale)
+library(gridExtra)
+library(spaa)
+library(vegan) 
+library(Rtsne)
+library(devtools)
+library(ggtreeExtra)
+library(ggtree)
+library(geiger)
+library(hilldiv2)
+library(distillR)
 ```

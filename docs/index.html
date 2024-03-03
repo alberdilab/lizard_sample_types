@@ -5,19 +5,19 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Contrasting recovery of metagenome‑assembled genomes and derived microbial communities from lizard fecal and cloacal samples</title>
-  <meta name="description" content="&lt;p&gt;Detailed information of the data analysis procedures employed in the Earth Hologenome Initiative.&lt;/p&gt;" />
+  <meta name="description" content="&lt;p&gt;Data analysis code.&lt;/p&gt;" />
   <meta name="generator" content="bookdown 0.37 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Contrasting recovery of metagenome‑assembled genomes and derived microbial communities from lizard fecal and cloacal samples" />
   <meta property="og:type" content="book" />
   
-  <meta property="og:description" content="&lt;p&gt;Detailed information of the data analysis procedures employed in the Earth Hologenome Initiative.&lt;/p&gt;" />
-  <meta name="github-repo" content="earthhologenome/EHI_analysis" />
+  <meta property="og:description" content="&lt;p&gt;Data analysis code.&lt;/p&gt;" />
+  <meta name="github-repo" content="alberdilab/lizard_sample_types" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Contrasting recovery of metagenome‑assembled genomes and derived microbial communities from lizard fecal and cloacal samples" />
   
-  <meta name="twitter:description" content="&lt;p&gt;Detailed information of the data analysis procedures employed in the Earth Hologenome Initiative.&lt;/p&gt;" />
+  <meta name="twitter:description" content="&lt;p&gt;Data analysis code.&lt;/p&gt;" />
   
 
 <meta name="author" content="Mauricio Hernandez" />
@@ -1876,6 +1876,70 @@ a.anchor-section::before {content: '#';font-size: 80%;}
 
 
 
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
 
 <style type="text/css">
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
@@ -1994,10 +2058,10 @@ background-color: #ffffff !important;
 <div id="header">
 <h1 class="title">Contrasting recovery of metagenome‑assembled genomes and derived microbial communities from lizard fecal and cloacal samples</h1>
 <h2 class="subtitle"><em>Data Analysis</em></h2>
-<p class="author"><em>Mauricio Hernandez<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></em></p>
-<p class="author"><em>Jorge Langaa<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></em></p>
-<p class="author"><em>Ostaizka Aizpurua<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></em></p>
-<p class="author"><em>Antton Alberdi<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a></em></p>
+<p class="author"><em>Mauricio Hernandez</em></p>
+<p class="author"><em>Jorge Langaa<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></em></p>
+<p class="author"><em>Ostaizka Aizpurua<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></em></p>
+<p class="author"><em>Antton Alberdi<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></em></p>
 <p class="date"><em>2024-03-03</em></p>
 </div>
 <div id="introduction" class="section level1 hasAnchor" number="1">
@@ -2006,20 +2070,40 @@ background-color: #ffffff !important;
 <h2><span class="header-section-number">1.1</span> Prepare the R environment<a href="#prepare-the-r-environment" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div id="environment" class="section level3 hasAnchor" number="1.1.1">
 <h3><span class="header-section-number">1.1.1</span> Environment<a href="#environment" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Clone this repository in your local computer using:</p>
-<pre><code>**RStudio &gt; New Project &gt; Version Control &gt; Git.**</code></pre>
+<p>To reproduce all the analyses locally, clone this repository in your computer using:</p>
+<pre><code>RStudio &gt; New Project &gt; Version Control &gt; Git</code></pre>
+<p>And indicating the following git repository:</p>
 <blockquote>
 <p><a href="https://github.com/alberdilab/lizard_sample_types.git" class="uri">https://github.com/alberdilab/lizard_sample_types.git</a></p>
 </blockquote>
+<p>Once the R project has been created, follow the instructions and code chunks shown in this webbook.</p>
 </div>
 <div id="libraries" class="section level3 hasAnchor" number="1.1.2">
 <h3><span class="header-section-number">1.1.2</span> Libraries<a href="#libraries" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Install and load the required R packages for conducting the analysis</p>
+<p>The following R packages are required for the data analysis.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(R.utils)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="fu">library</span>(ape)</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="fu">library</span>(phytools)</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="fu">library</span>(ggrepel) </span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="fu">library</span>(ggpubr)</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="fu">library</span>(ggnewscale)</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="fu">library</span>(gridExtra)</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="fu">library</span>(spaa)</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="fu">library</span>(vegan) </span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="fu">library</span>(Rtsne)</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="fu">library</span>(devtools)</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="fu">library</span>(ggtreeExtra)</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="fu">library</span>(ggtree)</span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="fu">library</span>(geiger)</span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="fu">library</span>(hilldiv2)</span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="fu">library</span>(distillR)</span></code></pre></div>
 
 </div>
 </div>
 </div>
-
 
 
 
@@ -2031,10 +2115,9 @@ background-color: #ffffff !important;
 <div class="footnotes">
 <hr />
 <ol start="1">
-<li id="fn1"><p>University of Copenhagen, <a href="mailto:ostaizka.aizpurua@sund.ku.dk" class="email">ostaizka.aizpurua@sund.ku.dk</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p>University of Copenhagen, <a href="mailto:jorge.langa@sund.ku.dk" class="email">jorge.langa@sund.ku.dk</a><a href="#fnref2" class="footnote-back">↩︎</a></p></li>
-<li id="fn3"><p>University of Copenhagen, <a href="mailto:ostaizka.aizpurua@sund.ku.dk" class="email">ostaizka.aizpurua@sund.ku.dk</a><a href="#fnref3" class="footnote-back">↩︎</a></p></li>
-<li id="fn4"><p>University of Copenhagen, <a href="mailto:antton.alberdi@sund.ku.dk" class="email">antton.alberdi@sund.ku.dk</a><a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p>University of Copenhagen, <a href="mailto:jorge.langa@sund.ku.dk" class="email">jorge.langa@sund.ku.dk</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>University of Copenhagen, <a href="mailto:ostaizka.aizpurua@sund.ku.dk" class="email">ostaizka.aizpurua@sund.ku.dk</a><a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>University of Copenhagen, <a href="mailto:antton.alberdi@sund.ku.dk" class="email">antton.alberdi@sund.ku.dk</a><a href="#fnref3" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>
