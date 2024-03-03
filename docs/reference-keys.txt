@@ -14,3 +14,5 @@ genome-phylogeny
 genome-quality
 functional-overview
 functional-ordination
+community-composition
+taxonomy-barplot
