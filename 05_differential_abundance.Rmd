@@ -6,7 +6,7 @@ load("resources/data.Rdata")
 
 ## Create phyloseq object
 
-```{r phyloseq_object, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+```{r phyloseq_object, comment="", message=FALSE, warning=FALSE}
 # phyloseq object considering structual zeros
 phylo_samples <- sample_metadata %>%
   column_to_rownames("sample") %>%
@@ -30,7 +30,7 @@ phyloseq <- phyloseq(phylo_genome, phylo_taxonomy, phylo_samples)
 
 ## Run ANCOMBC2
 
-```{r ancom_model, comment="", echo=FALSE, message=FALSE, warning=FALSE, eval=FALSE}
+```{r ancom_model, comment="", message=FALSE, warning=FALSE, eval=FALSE}
 set.seed(1234) # set seed for reproducibility
 differential_abundance <- ancombc2(
   data = phyloseq,
@@ -63,7 +63,7 @@ differential_abundance <- ancombc2(
 
 ## Plot results
 
-```{r ancom_stats, comment="", echo=FALSE, message=FALSE, warning=FALSE, eval=FALSE}
+```{r ancom_stats, comment="", message=FALSE, warning=FALSE, eval=FALSE}
 tax <- data.frame(phyloseq@tax_table) %>%
   rownames_to_column(., "taxon")
 
@@ -75,7 +75,7 @@ differential_abundance_table <- differential_abundance$res %>%
 
 ```
 
-```{r ancombc_plot, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+```{r ancombc_plot, comment="", message=FALSE, warning=FALSE}
 ggplot(differential_abundance_table, aes(x = forcats::fct_rev(genome), y = lfc_typefeces, color = phylum)) +
   geom_point(size = 4) +
   scale_color_manual(values = phylum_colors[-c(3,4)]) +
@@ -94,18 +94,19 @@ ggplot(differential_abundance_table, aes(x = forcats::fct_rev(genome), y = lfc_t
   guides(col = guide_legend("Phylum"))
 ```
 
-```{r ancom_rand_volcano, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+```{r ancom_rand_volcano, comment="", message=FALSE, warning=FALSE}
 ancom_result <- differential_abundance$res %>%
   na.omit() %>%
   dplyr::select(genome=taxon, lfc_typefeces, p_typefeces) %>%
   left_join(genome_metadata, by = join_by(genome == genome))
 ancom_result %>%
   mutate(significance = ifelse(p_typefeces < 0.05, "1", "0")) %>%
-  ggplot(., aes(x = -log(p_typefeces), y = lfc_typefeces, color = significance)) +
+  ggplot(., aes(x = lfc_typefeces, y = -log(p_typefeces), color = significance)) +
   geom_point() +
+  xlim(c(-10,4)) +
   scale_color_manual(values = c("#cccccc", "#00FFFF")) +
-  geom_text(aes(3, 5), label = "Enriched\nin cloaca", color = "#666666") +
-  geom_text(aes(3, -5), label = "Enriched\nin faeces", color = "#666666") +
+  geom_text(aes(3, 1), label = "Enriched\nin cloaca", color = "#666666") +
+  geom_text(aes(-4, 1), label = "Enriched\nin faeces", color = "#666666") +
   labs(color = "Significance", y = "Difference between behaviours", x = "p-value") +
   theme_classic()
 ```
