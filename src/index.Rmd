@@ -2,13 +2,15 @@
 title: "Contrasting recovery of metagenome‑assembled genomes and derived microbial communities from lizard fecal and cloacal samples"
 subtitle: "Data Analysis"
 author:
+  - Mauricio Hernandez^[University of Copenhagen, ostaizka.aizpurua@sund.ku.dk]
+  - Jorge Langaa^[University of Copenhagen, jorge.langa@sund.ku.dk]
   - Ostaizka Aizpurua^[University of Copenhagen, ostaizka.aizpurua@sund.ku.dk]
   - Antton Alberdi^[University of Copenhagen, antton.alberdi@sund.ku.dk]
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: [book.bib, packages.bib]
-url: http://www.earthhologenome.org/analysis
+url: https://alberdilab.github.io/lizard_sample_types
 description: |
   Detailed information of the data analysis procedures employed in the Earth Hologenome Initiative.
 link-citations: yes
@@ -24,3 +26,21 @@ knitr::opts_chunk$set(
 # Introduction
 
 ## Prepare the R environment
+
+### Environment
+
+Clone this repository in your local computer using:
+
+```
+**RStudio > New Project > Version Control > Git.**
+```
+
+> https://github.com/alberdilab/lizard_sample_types.git
+
+### Libraries
+
+Install and load the required R packages for conducting the analysis
+
+```{r load_libraries, warning=FALSE, comments="", message=FALSE}
+
+```
