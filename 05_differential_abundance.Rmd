@@ -77,7 +77,7 @@ differential_abundance_table <- differential_abundance$res %>%
 
 ```{r ancombc_plot, comment="", message=FALSE, warning=FALSE}
 ggplot(differential_abundance_table, aes(x = forcats::fct_rev(genome), y = lfc_typefeces, color = phylum)) +
-  geom_point(size = 4) +
+  geom_point(size = 3) +
   scale_color_manual(values = phylum_colors[-c(3,4)]) +
   geom_hline(yintercept = 0) +
   coord_flip() +

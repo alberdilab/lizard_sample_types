@@ -37,6 +37,10 @@ functional-overview
 functional-ordination
 community-composition
 taxonomy-barplot
+alpha-diversity
+beta-diversity
+neutral-diversity-plot
+functional-diversity-plot
 differential-abundance
 create-phyloseq-object
 run-ancombc2
