@@ -30,7 +30,7 @@ genome_counts_filt %>%
 
 ## Alpha diversity
 
-```{r alpha_div, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+```{r alpha_div, comment="", message=FALSE, warning=FALSE}
 # Calculate Hill numbers
 richness <- genome_counts_filt %>%
   column_to_rownames(var = "genome") %>%
@@ -81,7 +81,7 @@ alpha_div <- richness %>%
   full_join(functional, by = join_by(sample == sample))
 ```
 
-```{r alpha_div_plot, comment="", echo=FALSE, message=FALSE, warning=FALSE, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
+```{r alpha_div_plot, comment="", message=FALSE, warning=FALSE, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
 alpha_div %>%
   pivot_longer(-sample, names_to = "metric", values_to = "value") %>%
   left_join(., sample_metadata, by = join_by(sample == sample)) %>%
@@ -102,7 +102,7 @@ alpha_div %>%
 
 ## Beta diversity
 
-```{r beta_div, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+```{r beta_div, comment="", message=FALSE, warning=FALSE}
 beta_q0n <- genome_counts_filt %>%
   column_to_rownames(., "genome") %>%
   hillpair(., q = 0)
@@ -122,9 +122,9 @@ beta_q1f <- genome_counts_filt %>%
 
 ### Neutral diversity plot
 
-```{r beta_div_nmds_neutral_plot, comment="", echo=FALSE, message=FALSE, warning=FALSE, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
+```{r beta_div_nmds_neutral_plot, comment="", message=FALSE, warning=FALSE, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
 beta_q0n$C %>%
-  vegan::metaMDS(., trymax = 500, k = 2, verbosity = FALSE) %>%
+  vegan::metaMDS(., trymax = 500, k = 2, verbosity = FALSE, trace=FALSE) %>%
   vegan::scores() %>%
   as_tibble(., rownames = "sample") %>%
   dplyr::left_join(sample_metadata, by = join_by(sample == sample)) %>%
@@ -159,9 +159,9 @@ beta_q0n$C %>%
 
 ### Functional diversity plot
 
-```{r beta_div_nmds_functional_plot, comment="", echo=FALSE, message=FALSE, warning=FALSE, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
+```{r beta_div_nmds_functional_plot, comment="", message=FALSE, warning=FALSE, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
 beta_q1f$C %>%
-  vegan::metaMDS(., trymax = 500, k = 2, verbosity = FALSE) %>%
+  vegan::metaMDS(., trymax = 500, k = 2, verbosity = FALSE, trace=FALSE) %>%
   vegan::scores() %>%
   as_tibble(., rownames = "sample") %>%
   dplyr::left_join(sample_metadata, by = join_by(sample == sample)) %>%
