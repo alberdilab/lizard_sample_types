@@ -28,6 +28,7 @@ wrap-data-statistics
 prepare-color-scheme
 wrap-working-objects
 data-statistics
+sequencing-reads-statistics
 dna-fractions
 recovered-microbial-fraction
 mag-catalogue
@@ -36,7 +37,9 @@ genome-quality-1
 functional-overview
 functional-ordination
 community-composition
-taxonomy-barplot
+taxonomy-overview
+stacked-barplot
+phylum-relative-abundances
 alpha-diversity
 beta-diversity
 neutral-diversity-plot

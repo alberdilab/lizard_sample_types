@@ -64,7 +64,14 @@ circular_tree %>% open_tree(30) %>% rotate_tree(90)
 
 ## Genome quality
 
-```{r genome_quality, message=FALSE, warning=FALSE, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
+```{r genome_quality}
+genome_metadata$completeness %>% mean()
+genome_metadata$completeness %>% sd()
+genome_metadata$contamination %>% mean()
+genome_metadata$contamination %>% sd()
+```
+
+```{r genome_quality_plot, message=FALSE, warning=FALSE, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
 
 #Generate quality biplot
 genome_biplot <- genome_metadata %>%
@@ -74,9 +81,9 @@ genome_biplot <- genome_metadata %>%
               geom_point(alpha=0.7) +
                     ylim(c(10,0)) +
                     scale_color_manual(values=phylum_colors) +
-                labs(y= "Contamination", x = "Completeness") +
+                    labs(y= "Contamination", x = "Completeness") +
                     theme_classic() +
-                  theme(legend.position = "none")
+                    theme(legend.position = "none")
 
 #Generate contamination boxplot
 genome_contamination <- genome_metadata %>%

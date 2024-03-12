@@ -4,7 +4,9 @@
 load("resources/data.Rdata")
 ```
 
-## Taxonomy barplot
+## Taxonomy overview 
+
+### Stacked barplot
 
 ```{r taxonomy_barplot, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
 genome_counts_filt %>%
@@ -26,6 +28,70 @@ genome_counts_filt %>%
           panel.grid.minor = element_blank(),
           axis.line = element_line(linewidth = 0.5, linetype = "solid", colour = "black")) +
    labs(fill="Phylum",y = "Relative abundance",x="Samples")
+```
+
+### Phylum relative abundances
+
+```{r taxonomy_boxplot_phylum, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
+phylum_summary <- genome_counts_filt %>%
+  mutate_at(vars(-genome),~./sum(.)) %>% #apply TSS nornalisation
+  pivot_longer(-genome, names_to = "sample", values_to = "count") %>%
+  left_join(sample_metadata, by = join_by(sample == sample)) %>%
+  left_join(genome_metadata, by = join_by(genome == genome)) %>%
+  group_by(sample,phylum) %>%
+  summarise(relabun=sum(count))
+
+phylum_arrange <- phylum_summary %>%
+    group_by(phylum) %>%
+    summarise(mean=mean(relabun)) %>%
+    arrange(-mean) %>%
+    select(phylum) %>%
+    pull()
+
+phylum_summary %>%
+    group_by(phylum) %>%
+    summarise(mean=mean(relabun))
+
+phylum_summary %>%
+    filter(phylum %in% phylum_arrange) %>%
+    mutate(phylum=factor(phylum,levels=rev(phylum_arrange))) %>%
+    ggplot(aes(x=relabun, y=phylum, group=phylum, color=phylum)) +
+        #scale_color_manual(values=c("#F4D9AE","#DE9E46","#2D8077","#CD4F41")) +
+        #geom_boxplot() +
+        geom_jitter(alpha=0.5) + 
+        theme_minimal()
+
+```
+
+```{r taxonomy_boxplot_genus, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
+
+genus_summary <- genome_counts_filt %>%
+  mutate_at(vars(-genome),~./sum(.)) %>% #apply TSS nornalisation
+  pivot_longer(-genome, names_to = "sample", values_to = "count") %>% #reduce to minimum number of columns
+  left_join(sample_metadata, by = join_by(sample == sample)) %>% #append sample metadata
+  left_join(., genome_metadata, by = join_by(genome == genome)) %>% #append genome metadata
+  group_by(sample,genus) %>%
+  summarise(relabun=sum(count))
+
+genus_arrange <- genus_summary %>%
+    group_by(genus) %>%
+    summarise(mean=sum(relabun)) %>%
+    arrange(-mean) %>%
+    select(genus) %>%
+    pull()
+
+genus_summary %>%
+    left_join(genome_metadata %>% select(genus,phylum) %>% unique(),by=join_by(genus==genus)) %>%
+    left_join(sample_metadata,by=join_by(sample==sample)) %>%
+    filter(genus %in% genus_arrange[1:20]) %>%
+    mutate(genus=factor(genus,levels=rev(genus_arrange[1:20]))) %>%
+    ggplot(aes(x=relabun, y=genus, group=genus, color=phylum)) +
+        scale_color_manual(values=phylum_colors[-8]) +
+        #geom_boxplot() +
+        geom_jitter(alpha=0.5) + 
+        facet_grid(.~type)+
+        theme_minimal()
+
 ```
 
 ## Alpha diversity
@@ -81,14 +147,23 @@ alpha_div <- richness %>%
   full_join(functional, by = join_by(sample == sample))
 ```
 
-```{r alpha_div_plot, comment="", message=FALSE, warning=FALSE, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
+```{r alpha_div_plot, comment="", message=FALSE, warning=FALSE, fig.height=4, fig.width=10, fig.fullwidth=TRUE}
 alpha_div %>%
   pivot_longer(-sample, names_to = "metric", values_to = "value") %>%
   left_join(., sample_metadata, by = join_by(sample == sample)) %>%
   mutate(metric=factor(metric,levels=c("richness","neutral","phylogenetic","functional"))) %>%
-      ggplot(aes(x = value, y = sample)) +
-      geom_bar(stat = "identity", fill = "#6c9ebc") +
-      facet_nested(type ~ metric, scales = "free") +
+      ggplot(aes(y = value, x = type, group=type, color=type, fill=type)) +
+      geom_boxplot(outlier.shape = NA) +
+      geom_jitter(alpha=0.5) +
+      scale_color_manual(name="Sample type",
+          breaks=c("cloaca","feces"),
+          labels=c("Cloaca","Faeces"),
+          values=c("#e5bd5b", "#6b7398")) +
+      scale_fill_manual(name="Sample type",
+          breaks=c("cloaca","feces"),
+          labels=c("Cloaca","Faeces"),
+          values=c("#e5bd5b50", "#6b739850")) +
+      facet_wrap(. ~ metric, scales = "free", ncol=4) +
       coord_cartesian(xlim = c(1, NA)) +
       theme_classic() +
       theme(
@@ -98,6 +173,28 @@ alpha_div %>%
         axis.title.y = element_blank(),
         axis.text.x = element_text(angle = 45, hjust = 1)
       )
+```
+
+```{r alpha_div_test}
+alpha_div %>%
+  left_join(., sample_metadata, by = join_by(sample == sample)) %>%
+  lmerTest::lmer(richness ~ type + (1 | individual), data = ., REML = FALSE) %>%
+  summary()
+
+alpha_div %>%
+  left_join(., sample_metadata, by = join_by(sample == sample)) %>%
+  lmerTest::lmer(neutral ~ type + (1 | individual), data = ., REML = FALSE) %>%
+  summary()
+
+alpha_div %>%
+  left_join(., sample_metadata, by = join_by(sample == sample)) %>%
+  lmerTest::lmer(phylogenetic ~ type + (1 | individual), data = ., REML = FALSE) %>%
+  summary()
+
+alpha_div %>%
+  left_join(., sample_metadata, by = join_by(sample == sample)) %>%
+  lmerTest::lmer(functional ~ type + (1 | individual), data = ., REML = FALSE) %>%
+  summary()
 ```
 
 ## Beta diversity

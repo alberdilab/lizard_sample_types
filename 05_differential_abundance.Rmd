@@ -75,7 +75,7 @@ differential_abundance_table <- differential_abundance$res %>%
 
 ```
 
-```{r ancombc_plot, comment="", message=FALSE, warning=FALSE}
+```{r ancombc_plot, comment="", message=FALSE, warning=FALSE, eval=FALSE}
 ggplot(differential_abundance_table, aes(x = forcats::fct_rev(genome), y = lfc_typefeces, color = phylum)) +
   geom_point(size = 3) +
   scale_color_manual(values = phylum_colors[-c(3,4)]) +
@@ -94,7 +94,7 @@ ggplot(differential_abundance_table, aes(x = forcats::fct_rev(genome), y = lfc_t
   guides(col = guide_legend("Phylum"))
 ```
 
-```{r ancom_rand_volcano, comment="", message=FALSE, warning=FALSE}
+```{r ancom_rand_volcano, comment="", message=FALSE, warning=FALSE, eval=FALSE}
 ancom_result <- differential_abundance$res %>%
   na.omit() %>%
   dplyr::select(genome=taxon, lfc_typefeces, p_typefeces) %>%
