@@ -12,9 +12,10 @@ phylo_samples <- sample_metadata %>%
   column_to_rownames("sample") %>%
   sample_data() # convert to phyloseq sample_data object
 
-phylo_genome <- genome_counts %>%
+phylo_genome <- genome_counts_filt %>%
   column_to_rownames("genome") %>%
-  mutate_all(~ replace(., . == 0, 0.00001)) %>% # add pseudo counts to avoid structural zero issues (note this approach can be improved!)
+  mutate_all(~ replace(., . == 0, 0.00001)) %>% # add pseudo counts to avoid structural zero issues (note this approach can be improved!) %>%
+  mutate_all(~./sum(.)) %>% #apply TSS nornalisation
   otu_table(., taxa_are_rows = TRUE)
 
 phylo_taxonomy <- genome_metadata %>%
@@ -30,8 +31,9 @@ phyloseq <- phyloseq(phylo_genome, phylo_taxonomy, phylo_samples)
 
 ## Run ANCOMBC2
 
-```{r ancom_model, comment="", message=FALSE, warning=FALSE, eval=FALSE}
-set.seed(1234) # set seed for reproducibility
+### MAG level
+
+```{r ancom_model_mag, comment="", message=FALSE, warning=FALSE, eval=FALSE}
 differential_abundance <- ancombc2(
   data = phyloseq,
   assay_name = "counts",
@@ -40,7 +42,7 @@ differential_abundance <- ancombc2(
   rand_formula = "(1|individual)",
   p_adj_method = "holm",
   pseudo_sens = TRUE,
-  prv_cut = 0.10,
+  prv_cut = 0,
   lib_cut = 0,
   s0_perc = 0.05,
   group = NULL,
@@ -59,11 +61,22 @@ differential_abundance <- ancombc2(
   mdfdr_control = list(fwer_ctrl_method = "holm", B = 100),
   trend_control = NULL
 )
+
+# Save differential abundance to data object
+save(sample_metadata, 
+     genome_metadata, 
+     read_counts, 
+     genome_counts, 
+     genome_counts_filt, 
+     genome_tree,
+     genome_gifts, 
+     phylum_colors,
+     data_stats,
+     differential_abundance,
+     file = "resources/data.Rdata")
 ```
 
-## Plot results
-
-```{r ancom_stats, comment="", message=FALSE, warning=FALSE, eval=FALSE}
+```{r ancom_stats_mag, comment="", message=FALSE, warning=FALSE, eval=FALSE}
 tax <- data.frame(phyloseq@tax_table) %>%
   rownames_to_column(., "taxon")
 
@@ -75,7 +88,7 @@ differential_abundance_table <- differential_abundance$res %>%
 
 ```
 
-```{r ancombc_plot, comment="", message=FALSE, warning=FALSE, eval=FALSE}
+```{r ancombc_plot_mag, comment="", message=FALSE, warning=FALSE, eval=FALSE}
 ggplot(differential_abundance_table, aes(x = forcats::fct_rev(genome), y = lfc_typefeces, color = phylum)) +
   geom_point(size = 3) +
   scale_color_manual(values = phylum_colors[-c(3,4)]) +
@@ -95,18 +108,99 @@ ggplot(differential_abundance_table, aes(x = forcats::fct_rev(genome), y = lfc_t
 ```
 
 ```{r ancom_rand_volcano, comment="", message=FALSE, warning=FALSE, eval=FALSE}
-ancom_result <- differential_abundance$res %>%
+differential_abundance$res %>%
   na.omit() %>%
   dplyr::select(genome=taxon, lfc_typefeces, p_typefeces) %>%
-  left_join(genome_metadata, by = join_by(genome == genome))
-ancom_result %>%
-  mutate(significance = ifelse(p_typefeces < 0.05, "1", "0")) %>%
-  ggplot(., aes(x = lfc_typefeces, y = -log(p_typefeces), color = significance)) +
+  left_join(genome_metadata, by = join_by(genome == genome)) %>%
+  mutate(phylum = ifelse(p_typefeces < 0.05, phylum, NA)) %>%
+  ggplot(., aes(x = lfc_typefeces, y = -log(p_typefeces), color = phylum)) +
   geom_point() +
-  xlim(c(-10,4)) +
-  scale_color_manual(values = c("#cccccc", "#00FFFF")) +
-  geom_text(aes(3, 1), label = "Enriched\nin cloaca", color = "#666666") +
-  geom_text(aes(-4, 1), label = "Enriched\nin faeces", color = "#666666") +
-  labs(color = "Significance", y = "Difference between behaviours", x = "p-value") +
+  #xlim(c(-10,4)) +
+  scale_color_manual(values = phylum_colors[-c(3,4)]) +
+  labs(color = "Significance", x = "Log-fold difference between sample types", y = "p-value") +
   theme_classic()
 ```
+
+### Phylum level
+
+```{r ancom_model_phylum, comment="", message=FALSE, warning=FALSE, eval=FALSE}
+differential_abundance_phylum <- ancombc2(
+  data = phyloseq,
+  assay_name = "counts",
+  tax_level = "phylum", # change to agglomerate analysis to a higher taxonomic range
+  fix_formula = "type", # fixed variable(s)
+  rand_formula = "(1|individual)",
+  p_adj_method = "holm",
+  pseudo_sens = TRUE,
+  prv_cut = 0,
+  lib_cut = 0,
+  s0_perc = 0.05,
+  group = NULL,
+  struc_zero = FALSE,
+  neg_lb = FALSE,
+  alpha = 0.05,
+  n_cl = 2,
+  verbose = TRUE,
+  global = FALSE,
+  pairwise = FALSE,
+  dunnet = FALSE,
+  trend = FALSE,
+  iter_control = list(tol = 1e-5, max_iter = 20, verbose = FALSE),
+  em_control = list(tol = 1e-5, max_iter = 100),
+  lme_control = lme4::lmerControl(),
+  mdfdr_control = list(fwer_ctrl_method = "holm", B = 100),
+  trend_control = NULL
+)
+
+# Save differential abundance to data object
+save(sample_metadata, 
+     genome_metadata, 
+     read_counts, 
+     genome_counts, 
+     genome_counts_filt, 
+     genome_tree,
+     genome_gifts, 
+     phylum_colors,
+     data_stats,
+     differential_abundance,
+     differential_abundance_phylum,
+     file = "resources/data.Rdata")
+```
+
+```{r ancom_stats_phylum, comment="", message=FALSE, warning=FALSE, eval=FALSE}
+differential_abundance_phylum_table <- differential_abundance_phylum$res %>%
+  dplyr::select(taxon=taxon, lfc_typefeces, p_typefeces) %>%
+  #filter(p_typefeces < 0.05) %>%
+  dplyr::arrange(lfc_typefeces)
+
+
+phylum_colors2 <- read_tsv("https://raw.githubusercontent.com/earthhologenome/EHI_taxonomy_colour/main/ehi_phylum_colors.tsv") %>%
+    left_join(differential_abundance_phylum_table, by=join_by(phylum == taxon)) %>%
+    arrange(match(phylum, differential_abundance_phylum_table$taxon)) %>%
+    select(phylum, colors) %>% 
+    unique() %>%
+    select(colors) %>%
+    pull()
+```
+
+```{r ancombc_plot_phylum, comment="", message=FALSE, warning=FALSE, eval=FALSE}
+differential_abundance_phylum_table %>%
+      mutate(taxon=factor(taxon,levels=differential_abundance_phylum_table$taxon)) %>%
+      ggplot(aes(x = lfc_typefeces, y = forcats::fct_rev(taxon), fill = taxon)) +
+        geom_col(size = 2) +
+        scale_fill_manual(values = phylum_colors2) +
+        geom_hline(yintercept = 0) +
+        geom_vline(xintercept = 4, linetype="dashed", color = "grey", size=1) +
+        geom_vline(xintercept = -4, linetype="dashed", color = "grey", size=1) +
+        theme(
+          panel.background = element_blank(),
+          axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+          axis.title.x = element_blank(),
+          strip.background = element_blank(), 
+          strip.text = element_blank()
+        ) +
+        labs(x="log2FoldChange", y="Phylum")
+```
+
+
+

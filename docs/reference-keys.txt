@@ -40,6 +40,8 @@ community-composition
 taxonomy-overview
 stacked-barplot
 phylum-relative-abundances
+family
+genus
 alpha-diversity
 beta-diversity
 neutral-diversity-plot
@@ -47,4 +49,11 @@ functional-diversity-plot
 differential-abundance
 create-phyloseq-object
 run-ancombc2
-plot-results
+mag-level
+phylum-level
+functional-differences
+function-level
+gift-test
+gift-test-visualisation
+element-level
+gift-test-1

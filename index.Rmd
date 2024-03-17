@@ -55,6 +55,7 @@ library(R.utils)
 library(knitr)
 library(tidyverse)
 library(devtools)
+library(tinytable)
 
 # For tree handling
 library(ape)

@@ -15,6 +15,7 @@ genome_counts_filt %>%
   left_join(., genome_metadata, by = join_by(genome == genome)) %>% #append genome metadata
   left_join(., sample_metadata, by = join_by(sample == sample)) %>% #append sample metadata
   filter(count > 0) %>% #filter 0 counts
+  mutate(sample=factor(sample,levels=c("Sg1","Sg2","Sg3","Sg4","Sg5","Sg6","Sg7","Sg8","Sg9","Sg10"))) %>%
   ggplot(., aes(x=sample,y=count, fill=phylum, group=phylum)) + #grouping enables keeping the same sorting of taxonomic units
     geom_bar(stat="identity", colour="white", linewidth=0.1) + #plot stacked bars with white borders
     scale_fill_manual(values=phylum_colors) +
@@ -62,6 +63,43 @@ phylum_summary %>%
         theme_minimal()
 
 ```
+## Taxonomy boxplot
+
+### Family
+
+```{r taxonomy_boxplot_family, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
+
+family_summary <- genome_counts_filt %>%
+  mutate_at(vars(-genome),~./sum(.)) %>% #apply TSS nornalisation
+  pivot_longer(-genome, names_to = "sample", values_to = "count") %>% #reduce to minimum number of columns
+  left_join(sample_metadata, by = join_by(sample == sample)) %>% #append sample metadata
+  left_join(., genome_metadata, by = join_by(genome == genome)) %>% #append genome metadata
+  group_by(sample,family) %>%
+  summarise(relabun=sum(count))
+
+family_arrange <- family_summary %>%
+    group_by(family) %>%
+    summarise(mean=sum(relabun)) %>%
+    arrange(-mean) %>%
+    select(family) %>%
+    pull()
+
+family_summary %>%
+    left_join(genome_metadata %>% select(family,phylum) %>% unique(),by=join_by(family==family)) %>%
+    left_join(sample_metadata,by=join_by(sample==sample)) %>%
+    filter(family %in% family_arrange[1:20]) %>%
+    mutate(family=factor(family,levels=rev(family_arrange[1:20]))) %>%
+    filter(relabun > 0) %>%
+    ggplot(aes(x=relabun, y=family, group=family, color=phylum)) +
+        scale_color_manual(values=phylum_colors[-8]) +
+        #geom_boxplot() +
+        geom_jitter(alpha=0.5) + 
+        facet_grid(.~type)+
+        theme_minimal()
+
+```
+
+### Genus
 
 ```{r taxonomy_boxplot_genus, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
 
@@ -69,24 +107,29 @@ genus_summary <- genome_counts_filt %>%
   mutate_at(vars(-genome),~./sum(.)) %>% #apply TSS nornalisation
   pivot_longer(-genome, names_to = "sample", values_to = "count") %>% #reduce to minimum number of columns
   left_join(sample_metadata, by = join_by(sample == sample)) %>% #append sample metadata
-  left_join(., genome_metadata, by = join_by(genome == genome)) %>% #append genome metadata
+  left_join(genome_metadata, by = join_by(genome == genome)) %>% #append genome metadata
   group_by(sample,genus) %>%
-  summarise(relabun=sum(count))
+  summarise(relabun=sum(count)) %>%
+  filter(genus != "g__")
 
 genus_arrange <- genus_summary %>%
     group_by(genus) %>%
     summarise(mean=sum(relabun)) %>%
+    filter(genus != "g__")%>%
     arrange(-mean) %>%
     select(genus) %>%
+    mutate(genus= sub("^g__", "", genus)) %>%
     pull()
 
 genus_summary %>%
     left_join(genome_metadata %>% select(genus,phylum) %>% unique(),by=join_by(genus==genus)) %>%
     left_join(sample_metadata,by=join_by(sample==sample)) %>%
+    mutate(genus= sub("^g__", "", genus)) %>%
     filter(genus %in% genus_arrange[1:20]) %>%
     mutate(genus=factor(genus,levels=rev(genus_arrange[1:20]))) %>%
+    filter(relabun > 0) %>%
     ggplot(aes(x=relabun, y=genus, group=genus, color=phylum)) +
-        scale_color_manual(values=phylum_colors[-8]) +
+        scale_color_manual(values=phylum_colors[-c(3,4,6,8)]) +
         #geom_boxplot() +
         geom_jitter(alpha=0.5) + 
         facet_grid(.~type)+
@@ -179,22 +222,26 @@ alpha_div %>%
 alpha_div %>%
   left_join(., sample_metadata, by = join_by(sample == sample)) %>%
   lmerTest::lmer(richness ~ type + (1 | individual), data = ., REML = FALSE) %>%
-  summary()
+  broom.mixed::tidy() %>%
+  tt()
 
 alpha_div %>%
   left_join(., sample_metadata, by = join_by(sample == sample)) %>%
   lmerTest::lmer(neutral ~ type + (1 | individual), data = ., REML = FALSE) %>%
-  summary()
+  broom.mixed::tidy() %>%
+  tt()
 
 alpha_div %>%
   left_join(., sample_metadata, by = join_by(sample == sample)) %>%
   lmerTest::lmer(phylogenetic ~ type + (1 | individual), data = ., REML = FALSE) %>%
-  summary()
+  broom.mixed::tidy() %>%
+  tt()
 
 alpha_div %>%
   left_join(., sample_metadata, by = join_by(sample == sample)) %>%
   lmerTest::lmer(functional ~ type + (1 | individual), data = ., REML = FALSE) %>%
-  summary()
+  broom.mixed::tidy() %>%
+  tt()
 ```
 
 ## Beta diversity
@@ -217,10 +264,50 @@ beta_q1f <- genome_counts_filt %>%
   hillpair(., q = 1, dist = dist)
 ```
 
+```{r permanova, comment="", message=FALSE, warning=FALSE}
+#Richness
+betadisper(beta_q0n$C, sample_metadata$type) %>% permutest(., pairwise = TRUE) 
+adonis2(beta_q0n$C ~ type, 
+        data = sample_metadata %>% arrange(match(sample,labels(beta_q1n$C))), 
+        permutations = 999, 
+        strata = sample_metadata %>% arrange(match(sample,labels(beta_q1n$C))) %>% select(individual) %>% pull()) %>%
+        broom::tidy() %>%
+        tt()
+
+
+#Neutral diversity
+betadisper(beta_q1n$C, sample_metadata$type) %>% permutest(., pairwise = TRUE) 
+adonis2(beta_q1n$C ~ type, 
+        data = sample_metadata %>% arrange(match(sample,labels(beta_q1n$C))), 
+        permutations = 999, 
+        strata = sample_metadata %>% arrange(match(sample,labels(beta_q1n$C))) %>% select(individual) %>% pull()) %>%
+        broom::tidy() %>%
+        tt()
+
+#Phylogenetic diversity
+betadisper(beta_q1p$C, sample_metadata$type) %>% permutest(., pairwise = TRUE) 
+adonis2(beta_q1p$C ~ type, 
+        data = sample_metadata %>% arrange(match(sample,labels(beta_q1n$C))), 
+        permutations = 999, 
+        strata = sample_metadata %>% arrange(match(sample,labels(beta_q1n$C))) %>% select(individual) %>% pull()) %>%
+        broom::tidy() %>%
+        tt()
+
+#Functional diversity
+betadisper(beta_q1f$C, sample_metadata$type) %>% permutest(., pairwise = TRUE) 
+adonis2(beta_q1f$C ~ type, 
+        data = sample_metadata %>% arrange(match(sample,labels(beta_q1n$C))), 
+        permutations = 999, 
+        strata = sample_metadata %>% arrange(match(sample,labels(beta_q1n$C))) %>% select(individual) %>% pull()) %>%
+        broom::tidy() %>%
+        tt()
+```
+
+
 ### Neutral diversity plot
 
 ```{r beta_div_nmds_neutral_plot, comment="", message=FALSE, warning=FALSE, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
-beta_q0n$C %>%
+beta_q0n$S %>%
   vegan::metaMDS(., trymax = 500, k = 2, verbosity = FALSE, trace=FALSE) %>%
   vegan::scores() %>%
   as_tibble(., rownames = "sample") %>%
@@ -267,7 +354,7 @@ beta_q1f$C %>%
   mutate(y_cen = mean(NMDS2, na.rm = TRUE)) %>%
   ungroup() %>%
   mutate(individual=factor(individual, levels=c("Sg1","Sg2","Sg3","Sg4","Sg5","Sg6","Sg7","Sg8","Sg9","Sg10"))) %>%
-  ggplot(aes(x = NMDS1, y = NMDS2, color = type, shape = individual)) +
+  ggplot(aes(x = NMDS1, y = NMDS2, color = type)) +
     scale_color_manual(name="Sample type",
           breaks=c("cloaca","feces"),
           labels=c("Cloaca","Faeces"),
