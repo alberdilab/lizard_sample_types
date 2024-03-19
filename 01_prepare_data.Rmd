@@ -242,8 +242,7 @@ phylum_colors <- read_tsv("https://raw.githubusercontent.com/earthhologenome/EHI
     select(phylum, colors) %>% 
     unique() %>%
     arrange(phylum) %>%
-    select(colors) %>%
-    pull()
+    pull(colors, name=phylum)
 ```
 
 ## Wrap working objects

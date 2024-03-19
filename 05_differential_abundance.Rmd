@@ -76,7 +76,7 @@ save(sample_metadata,
      file = "resources/data.Rdata")
 ```
 
-```{r ancom_stats_mag, comment="", message=FALSE, warning=FALSE, eval=FALSE}
+```{r ancom_stats_mag, comment="", message=FALSE, warning=FALSE}
 tax <- data.frame(phyloseq@tax_table) %>%
   rownames_to_column(., "taxon")
 
@@ -86,9 +86,12 @@ differential_abundance_table <- differential_abundance$res %>%
   dplyr::arrange(p_typefeces) %>%
   merge(., tax, by = "genome")
 
+differential_abundance_table %>%
+  select(genome,order,phylum, lfc_typefeces, p_typefeces) %>%
+  tt()
 ```
 
-```{r ancombc_plot_mag, comment="", message=FALSE, warning=FALSE, eval=FALSE}
+```{r ancombc_plot_mag, comment="", message=FALSE, warning=FALSE}
 ggplot(differential_abundance_table, aes(x = forcats::fct_rev(genome), y = lfc_typefeces, color = phylum)) +
   geom_point(size = 3) +
   scale_color_manual(values = phylum_colors[-c(3,4)]) +
@@ -107,7 +110,7 @@ ggplot(differential_abundance_table, aes(x = forcats::fct_rev(genome), y = lfc_t
   guides(col = guide_legend("Phylum"))
 ```
 
-```{r ancom_rand_volcano, comment="", message=FALSE, warning=FALSE, eval=FALSE}
+```{r ancom_rand_volcano, comment="", message=FALSE, warning=FALSE}
 differential_abundance$res %>%
   na.omit() %>%
   dplyr::select(genome=taxon, lfc_typefeces, p_typefeces) %>%
@@ -119,6 +122,65 @@ differential_abundance$res %>%
   scale_color_manual(values = phylum_colors[-c(3,4)]) +
   labs(color = "Significance", x = "Log-fold difference between sample types", y = "p-value") +
   theme_classic()
+```
+
+### Genus level
+
+```{r ancom_model_genus, comment="", message=FALSE, warning=FALSE, eval=FALSE}
+differential_abundance_genus <- ancombc2(
+  data = phyloseq,
+  assay_name = "counts",
+  tax_level = "genus", # change to agglomerate analysis to a higher taxonomic range
+  fix_formula = "type", # fixed variable(s)
+  rand_formula = "(1|individual)",
+  p_adj_method = "holm",
+  pseudo_sens = TRUE,
+  prv_cut = 0,
+  lib_cut = 0,
+  s0_perc = 0.05,
+  group = NULL,
+  struc_zero = FALSE,
+  neg_lb = FALSE,
+  alpha = 0.05,
+  n_cl = 2,
+  verbose = TRUE,
+  global = FALSE,
+  pairwise = FALSE,
+  dunnet = FALSE,
+  trend = FALSE,
+  iter_control = list(tol = 1e-5, max_iter = 20, verbose = FALSE),
+  em_control = list(tol = 1e-5, max_iter = 100),
+  lme_control = lme4::lmerControl(),
+  mdfdr_control = list(fwer_ctrl_method = "holm", B = 100),
+  trend_control = NULL
+)
+
+# Save differential abundance to data object
+save(sample_metadata, 
+     genome_metadata, 
+     read_counts, 
+     genome_counts, 
+     genome_counts_filt, 
+     genome_tree,
+     genome_gifts, 
+     phylum_colors,
+     data_stats,
+     differential_abundance,
+     differential_abundance_genus,
+     file = "resources/data.Rdata")
+```
+
+```{r ancom_stats_genus, comment="", message=FALSE, warning=FALSE}
+tax <- data.frame(phyloseq@tax_table) %>%
+  rownames_to_column(., "taxon")
+
+differential_abundance_genus$res %>%
+  filter(nchar(taxon) > 5) %>%
+  dplyr::select(taxon=taxon, lfc_typefeces, p_typefeces) %>%
+  filter(p_typefeces < 0.05) %>%
+  dplyr::arrange(lfc_typefeces) %>%
+  left_join(tax %>% select(-c(taxon,genome,species)) %>% unique(), by = join_by(taxon==genus)) %>%
+  tt()
 ```
 
 ### Phylum level
@@ -163,11 +225,12 @@ save(sample_metadata,
      phylum_colors,
      data_stats,
      differential_abundance,
+     differential_abundance_genus,
      differential_abundance_phylum,
      file = "resources/data.Rdata")
 ```
 
-```{r ancom_stats_phylum, comment="", message=FALSE, warning=FALSE, eval=FALSE}
+```{r ancom_stats_phylum, comment="", message=FALSE, warning=FALSE}
 differential_abundance_phylum_table <- differential_abundance_phylum$res %>%
   dplyr::select(taxon=taxon, lfc_typefeces, p_typefeces) %>%
   #filter(p_typefeces < 0.05) %>%
@@ -181,6 +244,11 @@ phylum_colors2 <- read_tsv("https://raw.githubusercontent.com/earthhologenome/EH
     unique() %>%
     select(colors) %>%
     pull()
+
+differential_abundance_phylum_table %>%
+  filter(p_typefeces < 0.05) %>%
+  dplyr::arrange(lfc_typefeces) %>%
+  tt()
 ```
 
 ```{r ancombc_plot_phylum, comment="", message=FALSE, warning=FALSE, eval=FALSE}

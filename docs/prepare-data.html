@@ -27,7 +27,7 @@
 <meta name="author" content="Antton Alberdi" />
 
 
-<meta name="date" content="2024-03-17" />
+<meta name="date" content="2024-03-19" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -2106,7 +2106,8 @@ color: #a52929;
 <li class="chapter" data-level="6.2" data-path="differential-abundance.html"><a href="differential-abundance.html#run-ancombc2"><i class="fa fa-check"></i><b>6.2</b> Run ANCOMBC2</a>
 <ul>
 <li class="chapter" data-level="6.2.1" data-path="differential-abundance.html"><a href="differential-abundance.html#mag-level"><i class="fa fa-check"></i><b>6.2.1</b> MAG level</a></li>
-<li class="chapter" data-level="6.2.2" data-path="differential-abundance.html"><a href="differential-abundance.html#phylum-level"><i class="fa fa-check"></i><b>6.2.2</b> Phylum level</a></li>
+<li class="chapter" data-level="6.2.2" data-path="differential-abundance.html"><a href="differential-abundance.html#genus-level"><i class="fa fa-check"></i><b>6.2.2</b> Genus level</a></li>
+<li class="chapter" data-level="6.2.3" data-path="differential-abundance.html"><a href="differential-abundance.html#phylum-level"><i class="fa fa-check"></i><b>6.2.3</b> Phylum level</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="functional-differences.html"><a href="functional-differences.html"><i class="fa fa-check"></i><b>7</b> Functional differences</a>
@@ -2345,8 +2346,7 @@ color: #a52929;
 <span id="cb23-4"><a href="prepare-data.html#cb23-4" tabindex="-1"></a>    <span class="fu">select</span>(phylum, colors) <span class="sc">%&gt;%</span> </span>
 <span id="cb23-5"><a href="prepare-data.html#cb23-5" tabindex="-1"></a>    <span class="fu">unique</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb23-6"><a href="prepare-data.html#cb23-6" tabindex="-1"></a>    <span class="fu">arrange</span>(phylum) <span class="sc">%&gt;%</span></span>
-<span id="cb23-7"><a href="prepare-data.html#cb23-7" tabindex="-1"></a>    <span class="fu">select</span>(colors) <span class="sc">%&gt;%</span></span>
-<span id="cb23-8"><a href="prepare-data.html#cb23-8" tabindex="-1"></a>    <span class="fu">pull</span>()</span></code></pre></div>
+<span id="cb23-7"><a href="prepare-data.html#cb23-7" tabindex="-1"></a>    <span class="fu">pull</span>(colors, <span class="at">name=</span>phylum)</span></code></pre></div>
 </div>
 <div id="wrap-working-objects" class="section level2 hasAnchor" number="2.5">
 <h2><span class="header-section-number">2.5</span> Wrap working objects<a href="prepare-data.html#wrap-working-objects" class="anchor-section" aria-label="Anchor link to header"></a></h2>
