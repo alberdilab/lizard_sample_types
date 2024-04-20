@@ -25,9 +25,9 @@ domains <- GIFTs_domains %>%
   as.data.frame()
 
 # Get community-weighed average GIFTs per sample
-GIFTs_elements_community <- to.community(GIFTs_elements_filtered, genome_counts %>% column_to_rownames(., "genome") %>% tss(), GIFT_db)
-GIFTs_functions_community <- to.community(GIFTs_functions, genome_counts %>% column_to_rownames(., "genome") %>% tss(), GIFT_db)
-GIFTs_domains_community <- to.community(GIFTs_domains, genome_counts %>% column_to_rownames(., "genome") %>% tss(), GIFT_db)
+GIFTs_elements_community <- to.community(GIFTs_elements_filtered, genome_counts_filt %>% column_to_rownames(., "genome") %>% tss(), GIFT_db)
+GIFTs_functions_community <- to.community(GIFTs_functions, genome_counts_filt %>% column_to_rownames(., "genome") %>% tss(), GIFT_db)
+GIFTs_domains_community <- to.community(GIFTs_domains, genome_counts_filt %>% column_to_rownames(., "genome") %>% tss(), GIFT_db)
 ```
 
 ## Function level
