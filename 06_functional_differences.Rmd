@@ -32,7 +32,7 @@ GIFTs_domains_community <- to.community(GIFTs_domains, genome_counts %>% column_
 
 ## Function level
 
-```{r gift_function_heatmap}
+```{r gift_function_heatmap, message=FALSE, warning=FALSE, fig.height=6, fig.width=10, fig.fullwidth=TRUE}
 GIFTs_functions_community %>%
     as.data.frame() %>%
     rownames_to_column(var="sample") %>%
@@ -46,8 +46,8 @@ GIFTs_functions_community %>%
 
 ### GIFT test
 
-```{r gift_test_function}
-GIFTs_functions_community %>%
+```{r gift_test_function, message=FALSE, warning=FALSE}
+GIFTs_functions_community_tt <- GIFTs_functions_community %>%
   as.data.frame() %>%
   rownames_to_column("sample") %>%
   separate(sample, into = c("individual", "type"), sep = "\\.") %>%
@@ -57,44 +57,84 @@ GIFTs_functions_community %>%
   ungroup() %>%
   select(trait,model_result) %>%
   unique() %>%
+  mutate(estimate = map_dbl(model_result, ~broom.mixed::tidy(.) %>% filter(term == "typefeces") %>% pull(estimate))) %>%
+
   mutate(p_value = map_dbl(model_result, ~broom.mixed::tidy(.) %>% filter(term == "typefeces") %>% pull(p.value))) %>%
   mutate(p_value_adj = p.adjust(p_value, method = "bonferroni")) %>%
-  select(trait, p_value_adj) %>%
-  tt()
+  left_join(GIFT_db %>% select(Code_function,Function) %>% unique(),by=join_by(trait==Code_function)) %>%
+  rename(id=trait,trait=Function) %>%
+  select(id,trait, estimate, p_value_adj)
+
+GIFTs_functions_community_tt %>% tt() |> 
+      style_tt(
+        i = which(GIFTs_functions_community_tt$estimate < 0 & GIFTs_functions_community_tt$p_value_adj < 0.05),
+        background = "#E5D5B1") |> 
+      style_tt(
+        i = which(GIFTs_functions_community_tt$estimate > 0 & GIFTs_functions_community_tt$p_value_adj < 0.05),
+        background = "#B7BCCE")
 ```
 
 ### GIFT test visualisation
 
-```{r gift_test_function_plot}
+```{r gift_test_function_plot, message=FALSE, warning=FALSE, fig.height=12, fig.width=10, fig.fullwidth=TRUE}
 GIFTs_functions_community %>%
   as.data.frame() %>%
   rownames_to_column("sample") %>%
   separate(sample, into = c("individual", "type"), sep = "\\.") %>%
   pivot_longer(-c(individual, type), names_to = "trait", values_to = "value") %>%
-  ggplot(aes(x=value, y=type, group=type)) +
+  mutate(trait = case_when(
+      trait %in% GIFT_db$Code_function ~ GIFT_db$Function[match(trait, GIFT_db$Code_function)],
+      TRUE ~ trait
+    )) %>%
+  mutate(trait=factor(trait,levels=unique(GIFT_db$Function))) %>%
+  ggplot(aes(x=value, y=type, group=type, fill=type, color=type)) +
     geom_boxplot() +
-    facet_grid(trait ~ ., space="free", scales="free")
+    scale_color_manual(name="Sample type",
+          breaks=c("cloaca","feces"),
+          labels=c("Cloaca","Faeces"),
+          values=c("#e5bd5b", "#6b7398")) +
+      scale_fill_manual(name="Sample type",
+          breaks=c("cloaca","feces"),
+          labels=c("Cloaca","Faeces"),
+          values=c("#e5bd5b50", "#6b739850")) +
+    facet_grid(trait ~ ., space="free", scales="free") +
+              theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+              strip.text.y = element_text(angle = 0)) + 
+        labs(y="Traits",x="Metabolic capacity index")
 ```
 
 ## Element level
 
-```{r gift_element_heatmap}
+```{r gift_element_heatmap, comment="", message=FALSE, warning=FALSE, fig.height=16, fig.width=10, fig.fullwidth=TRUE}
 GIFTs_elements_community %>%
     as.data.frame() %>%
     rownames_to_column(var="sample") %>%
     pivot_longer(!sample,names_to="trait",values_to="gift") %>%
     left_join(sample_metadata, by = join_by(sample == sample)) %>%
     mutate(functionid = substr(trait, 1, 3)) %>%
-    ggplot(aes(x=trait,y=sample,fill=gift)) +
-        geom_tile(colour="white", size=0.2)+
+    mutate(trait = case_when(
+      trait %in% GIFT_db$Code_element ~ GIFT_db$Element[match(trait, GIFT_db$Code_element)],
+      TRUE ~ trait
+    )) %>%
+    mutate(functionid = case_when(
+      functionid %in% GIFT_db$Code_function ~ GIFT_db$Function[match(functionid, GIFT_db$Code_function)],
+      TRUE ~ functionid
+    )) %>%
+    mutate(trait=factor(trait,levels=unique(GIFT_db$Element))) %>%
+    mutate(functionid=factor(functionid,levels=unique(GIFT_db$Function))) %>%
+    ggplot(aes(x=sample,y=trait,fill=gift)) +
+        geom_tile(colour="white", linewidth=0.2)+
         scale_fill_gradientn(colours=rev(c("#d53e4f", "#f46d43", "#fdae61", "#fee08b", "#e6f598", "#abdda4", "#ddf1da")))+
-        facet_grid(type ~ functionid, scales="free", space="free")
+        facet_grid(functionid ~ type, scales="free",space="free") +
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+              strip.text.y = element_text(angle = 0)) + 
+        labs(y="Traits",x="Samples",fill="GIFT")
 ```
 
 ### GIFT test
 
-```{r gift_test_element}
-GIFTs_elements_community %>%
+```{r gift_test_element, comment="", message=FALSE, warning=FALSE}
+GIFTs_elements_community_tt <- GIFTs_elements_community %>%
   as.data.frame() %>%
   rownames_to_column("sample") %>%
   separate(sample, into = c("individual", "type"), sep = "\\.") %>%
@@ -104,8 +144,18 @@ GIFTs_elements_community %>%
   ungroup() %>%
   select(trait,model_result) %>%
   unique() %>%
+  mutate(estimate = map_dbl(model_result, ~broom.mixed::tidy(.) %>% filter(term == "typefeces") %>% pull(estimate))) %>%
   mutate(p_value = map_dbl(model_result, ~broom.mixed::tidy(.) %>% filter(term == "typefeces") %>% pull(p.value))) %>%
   mutate(p_value_adj = p.adjust(p_value, method = "bonferroni")) %>%
-  select(trait, p_value_adj) %>%
-  tt()
+  left_join(GIFT_db %>% select(Code_element,Element) %>% unique(),by=join_by(trait==Code_element)) %>%
+  rename(id=trait,trait=Element) %>%
+  select(id,trait, estimate, p_value_adj)
+
+GIFTs_elements_community_tt %>% tt() |> 
+      style_tt(
+        i = which(GIFTs_elements_community_tt$estimate < 0 & GIFTs_elements_community_tt$p_value_adj < 0.05),
+        background = "#E5D5B1") |> 
+      style_tt(
+        i = which(GIFTs_elements_community_tt$estimate > 0 & GIFTs_elements_community_tt$p_value_adj < 0.05),
+        background = "#B7BCCE")
 ```

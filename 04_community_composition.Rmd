@@ -62,8 +62,11 @@ phylum_summary %>%
     ggplot(aes(x=relabun, y=phylum, group=phylum, color=phylum)) +
         scale_color_manual(values=phylum_colors[rev(phylum_arrange)]) +
         geom_jitter(alpha=0.5) + 
-        theme_minimal()
+        theme_minimal() + 
+        theme(legend.position="none") +
+        labs(y="Phylum",x="Relative abundance")
 ```
+
 ## Taxonomy boxplot
 
 ### Family
@@ -100,10 +103,10 @@ family_summary %>%
     filter(relabun > 0) %>%
     ggplot(aes(x=relabun, y=family, group=family, color=phylum)) +
         scale_color_manual(values=phylum_colors[-8]) +
-        #geom_boxplot() +
         geom_jitter(alpha=0.5) + 
         facet_grid(.~type)+
-        theme_minimal()
+        theme_minimal() + 
+        labs(y="Family", x="Relative abundance", color="Phylum")
 
 ```
 
@@ -144,10 +147,10 @@ genus_summary %>%
     filter(relabun > 0) %>%
     ggplot(aes(x=relabun, y=genus, group=genus, color=phylum)) +
         scale_color_manual(values=phylum_colors[-c(3,4,6,8)]) +
-        #geom_boxplot() +
         geom_jitter(alpha=0.5) + 
         facet_grid(.~type)+
-        theme_minimal()
+        theme_minimal() + 
+        labs(y="Family", x="Relative abundance", color="Phylum")
 
 ```
 
@@ -232,7 +235,7 @@ alpha_div %>%
       )
 ```
 
-```{r alpha_div_test}
+```{r alpha_div_test, comment="", message=FALSE, warning=FALSE}
 alpha_div %>%
   left_join(., sample_metadata, by = join_by(sample == sample)) %>%
   lmerTest::lmer(richness ~ type + (1 | individual), data = ., REML = FALSE) %>%

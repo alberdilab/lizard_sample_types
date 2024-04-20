@@ -33,7 +33,7 @@ phyloseq <- phyloseq(phylo_genome, phylo_taxonomy, phylo_samples)
 
 ### MAG level
 
-```{r ancom_model_mag, comment="", message=FALSE, warning=FALSE, eval=FALSE}
+```{r ancom_model_mag, comment="", message=FALSE, warning=FALSE}
 differential_abundance <- ancombc2(
   data = phyloseq,
   assay_name = "counts",
@@ -126,7 +126,7 @@ differential_abundance$res %>%
 
 ### Genus level
 
-```{r ancom_model_genus, comment="", message=FALSE, warning=FALSE, eval=FALSE}
+```{r ancom_model_genus, comment="", message=FALSE, warning=FALSE}
 differential_abundance_genus <- ancombc2(
   data = phyloseq,
   assay_name = "counts",
@@ -185,7 +185,7 @@ differential_abundance_genus$res %>%
 
 ### Phylum level
 
-```{r ancom_model_phylum, comment="", message=FALSE, warning=FALSE, eval=FALSE}
+```{r ancom_model_phylum, comment="", message=FALSE, warning=FALSE}
 differential_abundance_phylum <- ancombc2(
   data = phyloseq,
   assay_name = "counts",
@@ -251,7 +251,7 @@ differential_abundance_phylum_table %>%
   tt()
 ```
 
-```{r ancombc_plot_phylum, comment="", message=FALSE, warning=FALSE, eval=FALSE}
+```{r ancombc_plot_phylum, comment="", message=FALSE, warning=FALSE}
 differential_abundance_phylum_table %>%
       mutate(taxon=factor(taxon,levels=differential_abundance_phylum_table$taxon)) %>%
       ggplot(aes(x = lfc_typefeces, y = forcats::fct_rev(taxon), fill = taxon)) +

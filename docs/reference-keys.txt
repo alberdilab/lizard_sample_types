@@ -40,6 +40,7 @@ community-composition
 taxonomy-overview
 stacked-barplot
 phylum-relative-abundances
+taxonomy-boxplot
 family
 genus
 alpha-diversity
