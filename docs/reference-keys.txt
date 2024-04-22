@@ -45,6 +45,7 @@ family
 genus
 alpha-diversity
 beta-diversity
+richness-diversity-plot
 neutral-diversity-plot
 functional-diversity-plot
 differential-abundance
