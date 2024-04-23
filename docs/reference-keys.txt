@@ -31,6 +31,7 @@ data-statistics
 sequencing-reads-statistics
 dna-fractions
 recovered-microbial-fraction
+domain-adjusted-mapping-rate-damr
 mag-catalogue
 genome-phylogeny
 genome-quality-1

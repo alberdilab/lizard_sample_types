@@ -106,3 +106,20 @@ data_stats %>%
         legend.position = "right"
       )
 ```
+
+### Domain-adjusted mapping rate (DAMR)
+
+```{r damr}
+data_stats %>%
+  mutate(
+    unmapped_reads = trimmed_reads - mapped_SceUnd - mapped_mags,
+    mag_proportion = mapped_mags / (mapped_mags + unmapped_reads),
+    singlem_read_fraction = singlem_read_fraction
+  ) %>%
+  mutate(damr=pmin(1, mag_proportion/singlem_read_fraction)) %>%
+  select(sample,damr) %>%
+  separate_wider_delim(sample,".",names=c("sample", "type")) %>%
+  group_by(type) %>%
+  summarise(mean=mean(damr),sd=sd(damr)) %>%
+  tt()
+```
