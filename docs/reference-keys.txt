@@ -48,6 +48,7 @@ alpha-diversity
 beta-diversity
 richness-diversity-plot
 neutral-diversity-plot
+phylogenetic-diversity-plot
 functional-diversity-plot
 differential-abundance
 create-phyloseq-object
